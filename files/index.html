@@ -1,28 +1,27 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="bookingApp">
 <head>
-	<meta charset="utf-8" />
-	<meta http-equiv="Content-Language" content="en" />
-	<link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
-	<link type="text/css" href="/css/style.css" rel="stylesheet" />
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-resource.min.js"></script>
-	<script src="/js/app.js"></script>
-	<script src="/js/controllers.js"></script>
-	<script src="/js/filters.js"></script>
-	<script src="/js/services.js"></script>
+  <title>Booking Tool</title>
+  <meta charset="utf-8"/>
+  <meta http-equiv="Content-Language" content="en"/>
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico"/>
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" type="text/css" href="/css/style.css"/>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.27/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.27/angular-route.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.27/angular-resource.min.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/controllers.js"></script>
+  <script src="/js/filters.js"></script>
+  <script src="/js/services.js"></script>
+  <script src="/js/directives.js"></script>
 </head>
 <body>
-<h1>Hello, {{ yourName }}!</h1>
-<input type="text" ng-model="yourName" placeholder="Enter a name here">
 
-
-<ul class="users" ng-controller="UserListCtrl">
-	<li ng-repeat="user in users">
-		{{user.firstName}} {{user.lastName}}
-	</li>
-</ul>
+<div class="view-container">
+  <div ng-view class="view-frame"></div>
+</div>
 
 </body>
 </html>
