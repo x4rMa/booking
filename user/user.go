@@ -12,7 +12,7 @@ type User interface {
 	SetFirstName(name string)
 }
 
-func NewUser() *user {
+func New() *user {
 	return new(user)
 }
 

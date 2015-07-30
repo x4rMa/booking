@@ -3,8 +3,8 @@ package handler
 import (
 	"net/http"
 
+	user_service "github.com/bborbe/booking/user/service"
 	"github.com/bborbe/log"
-	"github.com/bborbe/booking/user"
 	"github.com/bborbe/server/handler/cachingheader"
 	"github.com/bborbe/server/handler/contenttype"
 	"github.com/bborbe/server/handler/fallback"
@@ -29,7 +29,7 @@ func NewHandler(documentRoot string) http.Handler {
 }
 
 func createRestHandler() http.Handler {
-	userService := user.NewUserService()
+	userService := user_service.NewUserService()
 	users := userService.List()
 	return json_handler.NewJsonHandler(users)
 }

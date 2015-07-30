@@ -4,8 +4,8 @@ import (
 	"flag"
 	"net/http"
 
-	"github.com/bborbe/log"
 	"github.com/bborbe/booking/handler"
+	"github.com/bborbe/log"
 	"github.com/facebookgo/grace/gracehttp"
 )
 

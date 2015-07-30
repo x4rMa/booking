@@ -7,7 +7,7 @@ import (
 )
 
 func TestImplementsUser(t *testing.T) {
-	r := NewUser()
+	r := New()
 	var i *User
 	err := AssertThat(r, Implements(i))
 	if err != nil {
