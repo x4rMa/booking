@@ -15,9 +15,17 @@ angular.module('bookingApp').config(['$routeProvider',
         templateUrl: 'partials/login.html',
         controller: 'LoginCtrl'
       }).
-      when('/booking', {
-        templateUrl: 'partials/booking_create.html',
-        controller: 'BookingCreateCtrl'
+      when('/shooting/create', {
+        templateUrl: 'partials/shooting_create.html',
+        controller: 'ShootingCreateCtrl'
+      }).
+      when('/shooting/list', {
+        templateUrl: 'partials/shooting_list.html',
+        controller: 'ShootingListCtrl'
+      }).
+      when('/shooting/show', {
+        templateUrl: 'partials/shooting_show.html',
+        controller: 'ShootingShowCtrl'
       }).
       otherwise({
         redirectTo: '/login'

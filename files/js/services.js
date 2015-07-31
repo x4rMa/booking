@@ -12,3 +12,23 @@ angular.module('bookingServices').factory('AuthService', ['$log',
     };
     return service;
   }]);
+
+angular.module('bookingServices').factory('ShootingService', ['$log',
+  function ($log) {
+    var service = {};
+    service.createShooting = function (shooting) {
+      $log.debug('create shooting with name: ' + shooting.name);
+      return true;
+    };
+    service.listShootings = function () {
+      return [];
+    };
+    service.getShooting = function () {
+      return {
+        'link': 'http://example.com'
+      };
+    };
+    return service;
+  }]);
+
+
