@@ -1,9 +1,12 @@
-<h1>Create Shooting</h1>
+<div>
+  <h1>Create Shooting</h1>
 
-<form name="createShootingForm" ng-submit="submit()">
-  <fieldset>
-    <label for="name">Name</label>
-    <input type="text" id="name" name="name" ng-model="shooting.name" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required=""/>
-  </fieldset>
-  <input type="submit" value="create Shooting"/>
-</form>
+  <form name="createShootingForm" ng-submit="submit()">
+    <fieldset>
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" ng-model="shooting.name" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required=""/>
+    </fieldset>
+    <input type="submit" value="create Shooting"/>
+  </form>
+</div>
+<div ng-include src="'partials/navi.html'"></div>

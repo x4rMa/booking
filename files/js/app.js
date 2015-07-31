@@ -23,7 +23,7 @@ angular.module('bookingApp').config(['$routeProvider',
         templateUrl: 'partials/shooting_list.html',
         controller: 'ShootingListCtrl'
       }).
-      when('/shooting/show', {
+      when('/shooting/show/:shootingId', {
         templateUrl: 'partials/shooting_show.html',
         controller: 'ShootingShowCtrl'
       }).
