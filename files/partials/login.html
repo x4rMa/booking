@@ -1,13 +1,16 @@
-<h1>Login</h1>
+<div ng-include src="'partials/navi-empty.html'"></div>
+<div class="container">
+  <h1>Login</h1>
 
-<form name="loginForm" ng-submit="submit()">
-  <fieldset>
-    <label for="login">Login</label>
-    <input type="text" id="login" name="login" ng-model="user.login" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required=""/>
-  </fieldset>
-  <fieldset>
-    <label for="password">Password</label>
-    <input type="password" id="password" name="password" ng-model="user.password" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required=""/>
-  </fieldset>
-  <input type="submit" value="login"/>
-</form>
+  <form name="loginForm" ng-submit="submit()">
+    <fieldset>
+      <label for="login">Login</label>
+      <input type="text" id="login" name="login" ng-model="user.login" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required=""/>
+    </fieldset>
+    <fieldset>
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" ng-model="user.password" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required=""/>
+    </fieldset>
+    <input type="submit" value="login"/>
+  </form>
+</div>

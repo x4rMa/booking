@@ -46,3 +46,9 @@ angular.module('bookingControllers').controller('ShootingShowCtrl', ['$scope', '
   $log.debug('show shooting with id: ' + $routeParams.shootingId);
   $scope.shooting = ShootingService.getShooting($routeParams.shootingId);
 }]);
+
+angular.module('bookingControllers').controller('ModelListCtrl', [function () {
+}]);
+
+angular.module('bookingControllers').controller('ModelCreateCtrl', [function () {
+}]);

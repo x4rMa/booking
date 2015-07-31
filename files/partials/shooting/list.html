@@ -1,0 +1,14 @@
+<div ng-include src="'partials/navi-admin.html'"></div>
+<div class="container">
+
+  <div class="starter-template">
+    <h1>Shootings</h1>
+    <ul ng-show="shootings.length" class="shootings">
+      <li ng-repeat="shooting in shootings" class="thumbnail shooting-listing">
+        <p><b><a href="#/shootings/show/{{shooting.id}}">Id: {{shooting.id}} Name: {{shooting.name}} Link: {{shooting.link}}</a></b></p>
+      </li>
+    </ul>
+    <div ng-show="!shootings.length">There is no Shooting avaiable.</div>
+
+  </div>
+</div>
