@@ -7,7 +7,7 @@ import (
 )
 
 func TestImplementsDateService(t *testing.T) {
-	r := New()
+	r := New(nil)
 	var i *DateService
 	err := AssertThat(r, Implements(i))
 	if err != nil {
