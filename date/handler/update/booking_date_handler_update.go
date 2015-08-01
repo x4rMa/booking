@@ -1,13 +1,16 @@
-package delete
+package update
 
 import (
+	booking_date "github.com/bborbe/booking/date"
+	booking_date_service "github.com/bborbe/booking/date/service"
+
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
 
-	date_service "github.com/bborbe/booking/date/service"
 	"github.com/bborbe/log"
 	error_handler "github.com/bborbe/server/handler/error"
 	json_handler "github.com/bborbe/server/handler/json"
-	"github.com/bborbe/server/idparser"
 )
 
 var (
@@ -15,10 +18,10 @@ var (
 )
 
 type handler struct {
-	service date_service.Service
+	service booking_date_service.Service
 }
 
-func New(service date_service.Service) http.Handler {
+func New(service booking_date_service.Service) *handler {
 	h := new(handler)
 	h.service = service
 	return h
@@ -35,11 +38,16 @@ func (h *handler) ServeHTTP(responseWriter http.ResponseWriter, request *http.Re
 }
 
 func (h *handler) serveHTTP(responseWriter http.ResponseWriter, request *http.Request) error {
-	id, err := idparser.ParseIdFormRequest(request)
+	content, err := ioutil.ReadAll(request.Body)
 	if err != nil {
 		return err
 	}
-	obj, err := h.service.Delete(id)
+	var f booking_date.Date
+	err = json.Unmarshal(content, &f)
+	if err != nil {
+		return err
+	}
+	obj, err := h.service.Create(&f)
 	if err != nil {
 		return err
 	}

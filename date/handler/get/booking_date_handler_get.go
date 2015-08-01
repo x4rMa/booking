@@ -1,4 +1,4 @@
-package delete
+package get
 
 import (
 	"net/http"
@@ -35,11 +35,11 @@ func (h *handler) ServeHTTP(responseWriter http.ResponseWriter, request *http.Re
 }
 
 func (h *handler) serveHTTP(responseWriter http.ResponseWriter, request *http.Request) error {
-	id, err := idparser.ParseIdFormRequest(request)
+	value, err := idparser.ParseIdFormRequest(request)
 	if err != nil {
 		return err
 	}
-	obj, err := h.service.Delete(id)
+	obj, err := h.service.Get(value)
 	if err != nil {
 		return err
 	}
