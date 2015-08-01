@@ -27,11 +27,9 @@ angular.module('bookingServices').factory('ShootingService', ['$log', function (
       $log.debug('create shooting failed without name');
       return;
     }
-    var shooting = {
-      'id': ++service.counter,
-      'name': data.name,
-      'token': 'abc',
-    };
+    var shooting = {};
+    shooting['id'] = ++service.counter;
+    shooting['name'] = data.name;
     service.shootings[shooting.id] = shooting;
     $log.debug('create shooting successful with id: ' + shooting.id);
     return shooting;
@@ -50,11 +48,26 @@ angular.module('bookingServices').factory('ShootingService', ['$log', function (
   service.deleteShooting = function (id) {
     $log.debug('deleteShooting');
     delete service.shootings[id];
+    return;
   };
 
   service.getShooting = function (id) {
-    $log.debug('getShooting with id: '+id);
-    return service.shootings[id];
+    $log.debug('getShooting with id: ' + id);
+    return angular.copy(service.shootings[id]);
+  };
+
+
+  service.updateShooting = function (data) {
+    $log.debug('updateShooting with id: ' + data.id);
+    var shooting = service.shootings[data.id];
+    if (shooting) {
+      for (var key in data) {
+        shooting[key] = data[key];
+      }
+      return service.getShooting(shooting.id);
+    } else {
+      return;
+    }
   };
 
   return service;
@@ -69,26 +82,38 @@ angular.module('bookingServices').factory('ModelService', ['$log', function ($lo
 
   service.createModel = function (data) {
     $log.debug('createModel');
-    var model = {
-      'id': ++service.counter,
-      'firstnme': data.firstname,
-      'lastname': data.lastname,
-      'email': data.email,
-      'phone': data.phone
-    };
-
+    var model = {};
+    model['id'] = ++service.counter;
+    model['firstname'] = data.firstname;
+    model['lastname'] = data.lastname;
+    model['email'] = data.email;
+    model['phone'] = data.phone;
     service.models[model.id] = model;
-    return model;
+    return service.getModel(model.id);
+  };
+
+  service.updateModel = function (data) {
+    $log.debug('updateModel with id: ' + data.id);
+    var model = service.models[data.id];
+    if (model) {
+      for (var key in data) {
+        model[key] = data[key];
+      }
+      return service.getModel(model.id);
+    } else {
+      return;
+    }
   };
 
   service.deleteModel = function (id) {
     $log.debug('deleteModel');
     delete service.models[id];
+    return;
   };
 
   service.getModel = function (id) {
-    $log.debug('getModel with id: '+id);
-    return service.models[id];
+    $log.debug('getModel with id: ' + id);
+    return angular.copy(service.models[id]);
   };
 
   service.listModels = function () {

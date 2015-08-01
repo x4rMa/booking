@@ -5,7 +5,14 @@
     <h1>Models</h1>
     <ul ng-show="models.length" class="models">
       <li ng-repeat="model in models" class="thumbnail model-listing">
-        <p><b><a href="#/model/show/{{model.id}}">Id: {{model.id}} Firstname: {{model.firstname}} Lastname: {{model.lastname}} Email: {{model.email}} Phone: {{model.phone}}</a></b></p>
+        <p>
+          <a href="#/model/show/{{model.id}}"><b>Id:</b> {{model.id}}</a>
+          <a href="#/model/show/{{model.id}}"><b>Firstname:</b> {{model.firstname}}</a>
+          <a href="#/model/show/{{model.id}}"><b>Lastname:</b> {{model.lastname}}</a>
+          <a href="#/model/show/{{model.id}}"><b>Email:</b> {{model.email}}</a>
+          <a href="#/model/show/{{model.id}}"><b>Phone:</b> {{model.phone}}</a>
+          <a href="#/model/update/{{model.id}}">edit</a>
+        </p>
       </li>
     </ul>
     <div ng-show="!models.length">There is no models avaiable.</div>

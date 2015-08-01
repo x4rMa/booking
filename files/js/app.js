@@ -15,8 +15,12 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
       controller: 'LoginCtrl'
     }).
     when('/shooting/create', {
-      templateUrl: 'partials/shooting/create.html',
+      templateUrl: 'partials/shooting/form.html',
       controller: 'ShootingCreateCtrl'
+    }).
+    when('/shooting/update/:shootingId', {
+      templateUrl: 'partials/shooting/form.html',
+      controller: 'ShootingUpdateCtrl'
     }).
     when('/shooting/list', {
       templateUrl: 'partials/shooting/list.html',
@@ -27,8 +31,12 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
       controller: 'ShootingShowCtrl'
     }).
     when('/model/create', {
-      templateUrl: 'partials/model/create.html',
+      templateUrl: 'partials/model/form.html',
       controller: 'ModelCreateCtrl'
+    }).
+    when('/model/update/:modelId', {
+      templateUrl: 'partials/model/form.html',
+      controller: 'ModelUpdateCtrl'
     }).
     when('/model/list', {
       templateUrl: 'partials/model/list.html',

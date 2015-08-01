@@ -4,7 +4,8 @@
   <form name="shootingForm" class="form-horizontal" ng-submit="submit()">
     <fieldset>
 
-      <legend>Create Shooting</legend>
+      <legend ng-if="!shooting.id">Create Shooting</legend>
+      <legend ng-if="shooting.id">Update Shooting</legend>
 
       <div ng-if="shootingForm.$error.required">
         Foo
@@ -24,7 +25,7 @@
         <label class="col-md-4 control-label" for="singlebutton"></label>
 
         <div class="col-md-4">
-          <input type="submit" id="singlebutton" name="singlebutton" class="btn btn-primary" value="create" />
+          <input type="submit" id="singlebutton" name="singlebutton" class="btn btn-primary" value="save" />
         </div>
       </div>
 

@@ -49,6 +49,26 @@ angular.module('bookingControllers').controller('ShootingShowCtrl', ['$scope', '
   }
 }]);
 
+angular.module('bookingControllers').controller('ShootingUpdateCtrl', ['$scope', '$routeParams', '$log', '$location', 'ShootingService', function ($scope, $routeParams, $log, $location, ShootingService) {
+  $log.debug('show shooting with id: ' + $routeParams.shootingId);
+  var shooting = ShootingService.getShooting($routeParams.shootingId);
+  if (shooting) {
+    $scope.shooting = shooting;
+  } else {
+    $log.debug('shooting not found');
+    $location.path('/shooting/list');
+  }
+  $scope.submit = function () {
+    var shooting = ShootingService.updateShooting($scope.shooting);
+    if (shooting) {
+      $log.debug('update shooting success');
+      $location.path('/shooting/show/' + shooting.id);
+    } else {
+      $log.debug('update shooting failed');
+    }
+  };
+}]);
+
 angular.module('bookingControllers').controller('ShootingListCtrl', ['$scope', 'ShootingService', function ($scope, ShootingService) {
   $scope.shootings = ShootingService.listShootings();
 }]);
@@ -84,4 +104,24 @@ angular.module('bookingControllers').controller('ModelShowCtrl', ['$scope', '$ro
     $log.debug('model not found');
     $location.path('/model/list');
   }
+}]);
+
+angular.module('bookingControllers').controller('ModelUpdateCtrl', ['$scope', '$routeParams', '$log', '$location', 'ModelService', function ($scope, $routeParams, $log, $location, ModelService) {
+  $log.debug('show model with id: ' + $routeParams.modelId);
+  var model = ModelService.getModel($routeParams.modelId);
+  if (model) {
+    $scope.model = model;
+  } else {
+    $log.debug('model not found');
+    $location.path('/model/list');
+  }
+  $scope.submit = function () {
+    var model = ModelService.updateModel($scope.model);
+    if (model) {
+      $log.debug('update model success');
+      $location.path('/model/show/' + model.id);
+    } else {
+      $log.debug('update model failed');
+    }
+  };
 }]);
