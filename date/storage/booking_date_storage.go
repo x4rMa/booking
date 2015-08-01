@@ -1,8 +1,8 @@
 package storage
 
 import (
+	"github.com/bborbe/booking/database"
 	"github.com/bborbe/booking/date"
-	"github.com/jinzhu/gorm"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -15,20 +15,17 @@ type Storage interface {
 }
 
 type storage struct {
-	db      *gorm.DB
-	dbpath  string
-	logmode bool
+	database database.Database
 }
 
-func New(dbpath string, logmode bool) *storage {
+func New(database database.Database) *storage {
 	s := new(storage)
-	s.dbpath = dbpath
-	s.logmode = logmode
+	s.database = database
 	return s
 }
 
 func (s *storage) Truncate() error {
-	db, err := s.getDb()
+	db, err := s.database.DB()
 	if err != nil {
 		return err
 	}
@@ -43,22 +40,8 @@ func (s *storage) Truncate() error {
 	return nil
 }
 
-func (s *storage) getDb() (*gorm.DB, error) {
-	if s.db == nil {
-		db, err := gorm.Open("sqlite3", s.dbpath)
-		if err != nil {
-			return nil, err
-		}
-		db.SingularTable(true)
-		db.LogMode(s.logmode)
-		db.AutoMigrate(&date.Date{})
-		s.db = &db
-	}
-	return s.db, nil
-}
-
 func (s *storage) FindDates() (*[]date.Date, error) {
-	db, err := s.getDb()
+	db, err := s.database.DB()
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +51,7 @@ func (s *storage) FindDates() (*[]date.Date, error) {
 }
 
 func (s *storage) FindLatestDates(limit int) (*[]date.Date, error) {
-	db, err := s.getDb()
+	db, err := s.database.DB()
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +61,7 @@ func (s *storage) FindLatestDates(limit int) (*[]date.Date, error) {
 }
 
 func (s *storage) CreateDate(date *date.Date) error {
-	db, err := s.getDb()
+	db, err := s.database.DB()
 	if err != nil {
 		return err
 	}
@@ -87,7 +70,7 @@ func (s *storage) CreateDate(date *date.Date) error {
 }
 
 func (s *storage) GetDate(id int) (*date.Date, error) {
-	db, err := s.getDb()
+	db, err := s.database.DB()
 	if err != nil {
 		return nil, err
 	}
@@ -100,7 +83,7 @@ func (s *storage) GetDate(id int) (*date.Date, error) {
 }
 
 func (s *storage) DeleteDate(id int) (*date.Date, error) {
-	db, err := s.getDb()
+	db, err := s.database.DB()
 	if err != nil {
 		return nil, err
 	}
