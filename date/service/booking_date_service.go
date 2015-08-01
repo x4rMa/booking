@@ -11,6 +11,7 @@ type Service interface {
 	Get(id int) (*date.Date, error)
 	Create(date *date.Date) (*date.Date, error)
 	Delete(id int) (*date.Date, error)
+	Update(d *date.Date) (*date.Date, error)
 }
 
 type dateService struct {
@@ -24,11 +25,19 @@ func New(storage storage.Storage) *dateService {
 }
 
 func (s *dateService) Create(d *date.Date) (*date.Date, error) {
-	err := s.storage.CreateDate(d)
+	obj, err := s.storage.CreateDate(d)
 	if err != nil {
 		return nil, err
 	}
-	return d, nil
+	return obj, nil
+}
+
+func (s *dateService) Update(d *date.Date) (*date.Date, error) {
+	obj, err := s.storage.UpdateDate(d)
+	if err != nil {
+		return nil, err
+	}
+	return obj, nil
 }
 
 func (s *dateService) List() (*[]date.Date, error) {

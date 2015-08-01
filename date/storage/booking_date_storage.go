@@ -8,9 +8,10 @@ import (
 
 type Storage interface {
 	FindDates() (*[]date.Date, error)
-	CreateDate(date *date.Date) error
+	CreateDate(date *date.Date) (*date.Date, error)
 	GetDate(id int) (*date.Date, error)
 	DeleteDate(id int) (*date.Date, error)
+	UpdateDate(date *date.Date) (*date.Date, error)
 }
 
 type storage struct {
@@ -49,13 +50,22 @@ func (s *storage) FindDates() (*[]date.Date, error) {
 	return dates, query.Error
 }
 
-func (s *storage) CreateDate(date *date.Date) error {
+func (s *storage) CreateDate(date *date.Date) (*date.Date, error) {
 	db, err := s.database.DB()
 	if err != nil {
-		return err
+		return nil, err
 	}
 	query := db.Create(date)
-	return query.Error
+	return date, query.Error
+}
+
+func (s *storage) UpdateDate(date *date.Date) (*date.Date, error) {
+	db, err := s.database.DB()
+	if err != nil {
+		return nil, err
+	}
+	query := db.Save(date)
+	return date, query.Error
 }
 
 func (s *storage) GetDate(id int) (*date.Date, error) {

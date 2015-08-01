@@ -41,7 +41,8 @@ func TestCreateDate(t *testing.T) {
 	if err = AssertThat(len(*dates), Is(0)); err != nil {
 		t.Fatal(err)
 	}
-	if err = AssertThat(storage.CreateDate(d), NilValue()); err != nil {
+	_, err = storage.CreateDate(d)
+	if err = AssertThat(err, NilValue()); err != nil {
 		t.Fatal(err)
 	}
 	dates, err = storage.FindDates()

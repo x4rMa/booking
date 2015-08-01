@@ -47,7 +47,7 @@ func (h *handler) serveHTTP(responseWriter http.ResponseWriter, request *http.Re
 	if err != nil {
 		return err
 	}
-	obj, err := h.service.Create(&f)
+	obj, err := h.service.Update(&f)
 	if err != nil {
 		return err
 	}
