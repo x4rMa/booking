@@ -8,7 +8,6 @@ type ModelService interface {
 }
 
 type modelService struct {
-
 }
 
 func New() *modelService {

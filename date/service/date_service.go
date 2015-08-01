@@ -2,10 +2,11 @@ package service
 
 import (
 	"database/sql"
-	"github.com/bborbe/booking/date"
-	_ "github.com/lib/pq"
-	"github.com/bborbe/log"
 	"fmt"
+
+	"github.com/bborbe/booking/date"
+	"github.com/bborbe/log"
+	_ "github.com/lib/pq"
 )
 
 var logger = log.DefaultLogger

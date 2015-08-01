@@ -8,7 +8,6 @@ type ShootingService interface {
 }
 
 type shootingService struct {
-
 }
 
 func New() *shootingService {
