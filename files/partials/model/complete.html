@@ -1,0 +1,26 @@
+<div class="container">
+
+  <div class="starter-template">
+    <h1>Daten vervollst&auml;ndigen</h1>
+
+    <form name="completeDataForm" ng-submit="submit()">
+      <fieldset>
+        <label for="firstname">Vorname</label>
+        <input type="text" id="firstname" name="firstname" ng-model="model.firstname" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required=""/>
+      </fieldset>
+      <fieldset>
+        <label for="lastname">Nachname</label>
+        <input type="text" id="lastname" name="lastname" ng-model="model.lastname" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required=""/>
+      </fieldset>
+      <fieldset>
+        <label for="email">Email</label>
+        <input type="text" id="email" name="email" ng-model="model.email" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required=""/>
+      </fieldset>
+      <fieldset>
+        <label for="mobile">Handy</label>
+        <input type="text" id="mobile" name="mobile" ng-model="model.mobile" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required=""/>
+      </fieldset>
+      <input type="submit" value="weiter"/>
+    </form>
+  </div>
+</div>

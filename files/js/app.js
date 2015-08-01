@@ -34,6 +34,10 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
       templateUrl: 'partials/model/list.html',
       controller: 'ModelListCtrl'
     }).
+    when('/model/complete/:token', {
+      templateUrl: 'partials/model/complete.html',
+      controller: 'ModelCompleteCtrl'
+    }).
     otherwise({
       redirectTo: '/login'
     });
