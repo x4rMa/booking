@@ -14,6 +14,7 @@ import (
 	"github.com/bborbe/server/handler_finder/rest"
 
 	booking_date_handler_create "github.com/bborbe/booking/date/handler/create"
+	booking_date_handler_delete "github.com/bborbe/booking/date/handler/delete"
 	booking_date_handler_list "github.com/bborbe/booking/date/handler/list"
 	booking_date_service "github.com/bborbe/booking/date/service"
 )
@@ -36,5 +37,6 @@ func createDateHandlerFinder(prefix string, dateService booking_date_service.Ser
 	hf := rest.New(prefix)
 	hf.RegisterListHandler(booking_date_handler_list.New(dateService))
 	hf.RegisterCreateHandler(booking_date_handler_create.New(dateService))
+	hf.RegisterDeleteHandler(booking_date_handler_delete.New(dateService))
 	return hf
 }
