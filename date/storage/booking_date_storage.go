@@ -7,8 +7,8 @@ import (
 )
 
 type Storage interface {
-	FindEntries() (*[]date.Date, error)
-	FindLatestEntries(limit int) (*[]date.Date, error)
+	FindDates() (*[]date.Date, error)
+	FindLatestDates(limit int) (*[]date.Date, error)
 	CreateDate(date *date.Date) error
 	GetDate(id int) (*date.Date, error)
 	DeleteDate(id int) (*date.Date, error)
@@ -57,7 +57,7 @@ func (s *storage) getDb() (*gorm.DB, error) {
 	return s.db, nil
 }
 
-func (s *storage) FindEntries() (*[]date.Date, error) {
+func (s *storage) FindDates() (*[]date.Date, error) {
 	db, err := s.getDb()
 	if err != nil {
 		return nil, err
@@ -67,7 +67,7 @@ func (s *storage) FindEntries() (*[]date.Date, error) {
 	return dates, query.Error
 }
 
-func (s *storage) FindLatestEntries(limit int) (*[]date.Date, error) {
+func (s *storage) FindLatestDates(limit int) (*[]date.Date, error) {
 	db, err := s.getDb()
 	if err != nil {
 		return nil, err

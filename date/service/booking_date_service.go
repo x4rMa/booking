@@ -1,58 +1,34 @@
 package service
 
 import (
-	"database/sql"
-	"fmt"
-
 	"github.com/bborbe/booking/date"
 	"github.com/bborbe/log"
 	_ "github.com/lib/pq"
+	"github.com/bborbe/booking/date/storage"
 )
 
 var logger = log.DefaultLogger
 
-type DatabaseConfig interface {
-	Username() string
-	Password() string
-	Hostname() string
-	Database() string
-}
-
 type DateService interface {
-	List() ([]date.Date, error)
-	Create(date date.Date) error
+	List() (*[]date.Date, error)
+	Create(date *date.Date) error
 }
 
 type dateService struct {
-	config DatabaseConfig
+	storage storage.Storage
 }
 
-func New(config DatabaseConfig) *dateService {
+func New(storage storage.Storage) *dateService {
 	d := new(dateService)
-	d.config = config
+	d.storage = storage
 	return d
 }
 
-func (d *dateService) List() ([]date.Date, error) {
+func (d *dateService) List() (*[]date.Date, error) {
 	logger.Debug("List")
-	db, err := sql.Open("postgres", fmt.Sprintf("postgres://{}:{}@{}/{}?sslmode=verify-full", d.config.Username(), d.config.Password(), d.config.Hostname(), d.config.Database()))
-	if err != nil {
-		return nil, err
-	}
-
-	rows, err := db.Query("SELECT * FROM date")
-	defer rows.Close()
-	if err != nil {
-		return nil, err
-	}
-
-	for rows.Next() {
-		rows.Columns()
-	}
-
-	return make([]date.Date, 0), nil
+	return d.storage.FindDates()
 }
 
-func (d *dateService) Create(date date.Date) error {
+func (d *dateService) Create(date *date.Date) error {
 	return nil
 }
