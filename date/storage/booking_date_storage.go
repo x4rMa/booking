@@ -67,7 +67,7 @@ func (s *storage) FindEntries() (*[]date.Date, error) {
 	return dates, query.Error
 }
 
-func (s *storage) FindLatestEntries(limit int) ([]date.Date, error) {
+func (s *storage) FindLatestEntries(limit int) (*[]date.Date, error) {
 	db, err := s.getDb()
 	if err != nil {
 		return nil, err

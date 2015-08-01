@@ -7,7 +7,7 @@ import (
 )
 
 func TestImplementsStorage(t *testing.T) {
-	r := New("/tmp/stats_test.db", false)
+	r := New("/tmp/booking_test.db", false)
 	var i *Storage
 	err := AssertThat(r, Implements(i))
 	if err != nil {
