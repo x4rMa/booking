@@ -8,7 +8,6 @@ import (
 
 type Storage interface {
 	FindDates() (*[]date.Date, error)
-	FindLatestDates(limit int) (*[]date.Date, error)
 	CreateDate(date *date.Date) error
 	GetDate(id int) (*date.Date, error)
 	DeleteDate(id int) (*date.Date, error)
@@ -46,17 +45,7 @@ func (s *storage) FindDates() (*[]date.Date, error) {
 		return nil, err
 	}
 	dates := &[]date.Date{}
-	query := db.Order("timestamp desc").Find(dates)
-	return dates, query.Error
-}
-
-func (s *storage) FindLatestDates(limit int) (*[]date.Date, error) {
-	db, err := s.database.DB()
-	if err != nil {
-		return nil, err
-	}
-	dates := &[]date.Date{}
-	query := db.Order("timestamp desc").Limit(limit).Find(dates)
+	query := db.Find(dates)
 	return dates, query.Error
 }
 
