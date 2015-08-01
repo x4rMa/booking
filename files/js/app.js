@@ -39,6 +39,6 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
       controller: 'ModelCompleteCtrl'
     }).
     otherwise({
-      redirectTo: '/login'
+      redirectTo: '/shooting/create'
     });
 }]);
