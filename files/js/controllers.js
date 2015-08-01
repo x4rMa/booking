@@ -47,8 +47,24 @@ angular.module('bookingControllers').controller('ShootingShowCtrl', ['$scope', '
   $scope.shooting = ShootingService.getShooting($routeParams.shootingId);
 }]);
 
-angular.module('bookingControllers').controller('ModelListCtrl', [function () {
+angular.module('bookingControllers').controller('ModelListCtrl', ['$scope', 'ModelService', function ($scope, ModelService) {
+  $scope.models = ModelService.listModels();
 }]);
 
-angular.module('bookingControllers').controller('ModelCreateCtrl', [function () {
+angular.module('bookingControllers').controller('ModelCreateCtrl', ['$scope', '$log', 'ModelService', function ($scope, $log, ModelService) {
+  $scope.reset = function () {
+    $log.debug('reset create model form');
+    $scope.model = {};
+  }
+  $scope.submit = function () {
+    var model = ModelService.createModel($scope.model);
+    if (model) {
+      $log.debug('create model success');
+      $scope.reset();
+      $location.path('/model/show/' + model.id);
+    } else {
+      $log.debug('create model failed');
+    }
+  };
+  $scope.reset();
 }]);

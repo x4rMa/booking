@@ -1,16 +1,34 @@
 <div ng-include src="'partials/navi-admin.html'"></div>
 <div class="container">
 
-  <div class="starter-template">
-    <h1>Create Shooting</h1>
+  <form name="shootingForm" class="form-horizontal" ng-submit="submit()">
+    <fieldset>
 
-    <form name="createShootingForm" ng-submit="submit()">
-      <fieldset>
-        <label for="name">Name</label>
-        <input type="text" id="name" name="name" ng-model="shooting.name" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required=""/>
-      </fieldset>
-      <input type="submit" value="create Shooting"/>
-    </form>
+      <legend>Create Shooting</legend>
 
-  </div>
+      <div ng-if="shootingForm.$error.required">
+        Foo
+      </div>
+
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="shooting">Name</label>
+
+        <div class="col-md-4">
+          <input type="text" id="shooting" name="shooting" ng-model="shooting.name" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required=""
+                 placeholder="name" class="form-control input-md"/>
+          <span class="help-block">help</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="singlebutton"></label>
+
+        <div class="col-md-4">
+          <button id="singlebutton" name="singlebutton" class="btn btn-primary">create</button>
+        </div>
+      </div>
+
+    </fieldset>
+  </form>
+
 </div>

@@ -18,42 +18,86 @@ angular.module('bookingServices').factory('ShootingService', ['$log', function (
   var service = {};
 
   service.counter = 0;
-  service.list = [];
+  service.shootings = {};
 
-  service.createShooting = function (shooting) {
-    $log.debug('create shooting with name: ' + shooting.name);
+  service.createShooting = function (data) {
+    $log.debug('create shooting with name: ' + data.name);
 
-    if (!shooting.name) {
+    if (!data.name) {
       $log.debug('create shooting failed without name');
       return;
     }
-    service.counter = service.counter + 1;
-    $log.debug('increase counter to ' + service.counter);
-    var data = {
-      'id': service.counter,
+    var shooting = {
+      'id': service.counter++,
       'name': shooting.name,
       'token': 'abc',
     };
-    service.list.push(data);
-    $log.debug('create shooting successful with id: ' + data.id);
-    return data;
+    service.shootings[shooting.id] = shooting;
+    $log.debug('create shooting successful with id: ' + shooting.id);
+    return shooting;
   };
 
   service.listShootings = function () {
+    $log.debug('listShootings');
+    var list = [];
+    for (var id in service.shootings) {
+      list.push(service.shootings[id]);
+    }
     return service.list;
   };
 
+  service.deleteShooting = function (id) {
+    $log.debug('deleteShooting');
+    delete service.shootings[id];
+  };
+
   service.getShooting = function (id) {
-    var result;
-    angular.forEach(service.list, function (shooting) {
-      if (id == shooting.id) {
-        result = shooting;
-      }
-    });
-    return result;
+    $log.debug('getShooting');
+    service.shootings[id];
   };
 
   return service;
 }]);
 
 
+angular.module('bookingServices').factory('ModelService', ['$log', function ($log) {
+  var service = {};
+
+  service.counter = 0;
+  service.models = {};
+
+  service.createModel = function (data) {
+    $log.debug('createModel');
+    var model = {
+      'id': service.counter++,
+      'firstnme': data.firstname,
+      'lastname': data.lastname,
+      'email': data.email,
+      'phone': data.phone
+    };
+
+    service.models[model.id] = model;
+    return model;
+  };
+
+  service.deleteModel = function (id) {
+    $log.debug('deleteModel');
+    delete service.models[id];
+  };
+
+  service.getModel = function (id) {
+    $log.debug('getModel');
+    return service.models[id];
+  };
+
+  service.listModels = function () {
+    $log.debug('listModels');
+    var list = [];
+    for (var id in service.models) {
+      list.push(service.models[id]);
+    }
+    return service.list;
+  };
+
+  return service;
+}]);
