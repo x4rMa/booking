@@ -1,4 +1,4 @@
-package date
+package storage
 
 import (
 	"testing"
@@ -6,9 +6,9 @@ import (
 	. "github.com/bborbe/assert"
 )
 
-func TestImplementsDate(t *testing.T) {
-	r := New()
-	var i *Date
+func TestImplementsStorage(t *testing.T) {
+	r := New("/tmp/stats_test.db", false)
+	var i *Storage
 	err := AssertThat(r, Implements(i))
 	if err != nil {
 		t.Fatal(err)
