@@ -2,16 +2,16 @@ package service
 
 import (
 	"github.com/bborbe/booking/date"
+	"github.com/bborbe/booking/date/storage"
 	"github.com/bborbe/log"
 	_ "github.com/lib/pq"
-	"github.com/bborbe/booking/date/storage"
 )
 
 var logger = log.DefaultLogger
 
-type DateService interface {
+type Service interface {
 	List() (*[]date.Date, error)
-	Create(date *date.Date) error
+	Create(date *date.Date) (*date.Date, error)
 }
 
 type dateService struct {
@@ -29,6 +29,6 @@ func (d *dateService) List() (*[]date.Date, error) {
 	return d.storage.FindDates()
 }
 
-func (d *dateService) Create(date *date.Date) error {
-	return nil
+func (d *dateService) Create(date *date.Date) (*date.Date, error) {
+	return nil, nil
 }

@@ -8,7 +8,7 @@ import (
 )
 
 func TestNewHandlerImplementsHttpHandler(t *testing.T) {
-	r := NewHandler("/tmp")
+	r := NewHandler("/tmp", nil)
 	var i (*http.Handler) = nil
 	err := AssertThat(r, Implements(i).Message("check implements server.Server"))
 	if err != nil {

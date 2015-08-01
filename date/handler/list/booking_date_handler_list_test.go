@@ -1,14 +1,16 @@
-package service
+package list
 
 import (
 	"testing"
 
+	"net/http"
+
 	. "github.com/bborbe/assert"
 )
 
-func TestImplementsDateService(t *testing.T) {
+func TestImplementsHttpHandler(t *testing.T) {
 	r := New(nil)
-	var i *Service
+	var i *http.Handler
 	err := AssertThat(r, Implements(i))
 	if err != nil {
 		t.Fatal(err)
