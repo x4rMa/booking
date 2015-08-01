@@ -28,8 +28,8 @@ angular.module('bookingServices').factory('ShootingService', ['$log', function (
       return;
     }
     var shooting = {
-      'id': service.counter++,
-      'name': shooting.name,
+      'id': ++service.counter,
+      'name': data.name,
       'token': 'abc',
     };
     service.shootings[shooting.id] = shooting;
@@ -41,9 +41,10 @@ angular.module('bookingServices').factory('ShootingService', ['$log', function (
     $log.debug('listShootings');
     var list = [];
     for (var id in service.shootings) {
+      $log.debug('add shooting with id: ' + id + ' to result');
       list.push(service.shootings[id]);
     }
-    return service.list;
+    return list;
   };
 
   service.deleteShooting = function (id) {
@@ -52,8 +53,8 @@ angular.module('bookingServices').factory('ShootingService', ['$log', function (
   };
 
   service.getShooting = function (id) {
-    $log.debug('getShooting');
-    service.shootings[id];
+    $log.debug('getShooting with id: '+id);
+    return service.shootings[id];
   };
 
   return service;
@@ -69,7 +70,7 @@ angular.module('bookingServices').factory('ModelService', ['$log', function ($lo
   service.createModel = function (data) {
     $log.debug('createModel');
     var model = {
-      'id': service.counter++,
+      'id': ++service.counter,
       'firstnme': data.firstname,
       'lastname': data.lastname,
       'email': data.email,
@@ -86,7 +87,7 @@ angular.module('bookingServices').factory('ModelService', ['$log', function ($lo
   };
 
   service.getModel = function (id) {
-    $log.debug('getModel');
+    $log.debug('getModel with id: '+id);
     return service.models[id];
   };
 
@@ -94,9 +95,10 @@ angular.module('bookingServices').factory('ModelService', ['$log', function ($lo
     $log.debug('listModels');
     var list = [];
     for (var id in service.models) {
+      $log.debug('add model with id: ' + id + ' to result');
       list.push(service.models[id]);
     }
-    return service.list;
+    return list;
   };
 
   return service;

@@ -38,20 +38,26 @@ angular.module('bookingControllers').controller('ShootingCreateCtrl', ['$scope',
   $scope.reset();
 }]);
 
-angular.module('bookingControllers').controller('ShootingListCtrl', ['$scope', 'ShootingService', function ($scope, ShootingService) {
-  $scope.shootings = ShootingService.listShootings();
+angular.module('bookingControllers').controller('ShootingShowCtrl', ['$scope', '$routeParams', '$log', '$location', 'ShootingService', function ($scope, $routeParams, $log, $location, ShootingService) {
+  $log.debug('show shooting with id: ' + $routeParams.shootingId);
+  var shooting = ShootingService.getShooting($routeParams.shootingId);
+  if (shooting) {
+    $scope.shooting = shooting;
+  } else {
+    $log.debug('shooting not found');
+    $location.path('/shooting/list');
+  }
 }]);
 
-angular.module('bookingControllers').controller('ShootingShowCtrl', ['$scope', '$routeParams', '$log', 'ShootingService', function ($scope, $routeParams, $log, ShootingService) {
-  $log.debug('show shooting with id: ' + $routeParams.shootingId);
-  $scope.shooting = ShootingService.getShooting($routeParams.shootingId);
+angular.module('bookingControllers').controller('ShootingListCtrl', ['$scope', 'ShootingService', function ($scope, ShootingService) {
+  $scope.shootings = ShootingService.listShootings();
 }]);
 
 angular.module('bookingControllers').controller('ModelListCtrl', ['$scope', 'ModelService', function ($scope, ModelService) {
   $scope.models = ModelService.listModels();
 }]);
 
-angular.module('bookingControllers').controller('ModelCreateCtrl', ['$scope', '$log', 'ModelService', function ($scope, $log, ModelService) {
+angular.module('bookingControllers').controller('ModelCreateCtrl', ['$scope', '$log', '$location', 'ModelService', function ($scope, $log, $location, ModelService) {
   $scope.reset = function () {
     $log.debug('reset create model form');
     $scope.model = {};
@@ -67,4 +73,15 @@ angular.module('bookingControllers').controller('ModelCreateCtrl', ['$scope', '$
     }
   };
   $scope.reset();
+}]);
+
+angular.module('bookingControllers').controller('ModelShowCtrl', ['$scope', '$routeParams', '$log', '$location', 'ModelService', function ($scope, $routeParams, $log, $location, ModelService) {
+  $log.debug('show model with id: ' + $routeParams.modelId);
+  var model = ModelService.getModel($routeParams.modelId);
+  if (model) {
+    $scope.model = model;
+  } else {
+    $log.debug('model not found');
+    $location.path('/model/list');
+  }
 }]);

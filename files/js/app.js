@@ -38,7 +38,11 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
       templateUrl: 'partials/model/complete.html',
       controller: 'ModelCompleteCtrl'
     }).
+    when('/model/show/:modelId', {
+      templateUrl: 'partials/model/show.html',
+      controller: 'ModelShowCtrl'
+    }).
     otherwise({
-      redirectTo: '/shooting/create'
+      redirectTo: '/login'
     });
 }]);
