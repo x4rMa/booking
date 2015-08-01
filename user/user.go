@@ -1,15 +1,15 @@
 package user
 
-type user struct {
-	LastName  string `json:"lastName"`
-	FirstName string `json:"firstName"`
-}
-
 type User interface {
 	GetLastName() string
 	SetLastName(name string)
 	GetFirstName() string
 	SetFirstName(name string)
+}
+
+type user struct {
+	LastName  string `json:"lastName"`
+	FirstName string `json:"firstName"`
 }
 
 func New() *user {
