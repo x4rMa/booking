@@ -30,6 +30,7 @@ angular.module('bookingServices').factory('ShootingService', ['$log', function (
     var shooting = {};
     shooting['id'] = ++service.counter;
     shooting['name'] = data.name;
+    shooting['modelId'] = data.modelId;
     service.shootings[shooting.id] = shooting;
     $log.debug('create shooting successful with id: ' + shooting.id);
     return shooting;

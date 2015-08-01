@@ -20,7 +20,8 @@ angular.module('bookingControllers').controller('LoginCtrl', ['$scope', '$log', 
   $scope.reset();
 }]);
 
-angular.module('bookingControllers').controller('ShootingCreateCtrl', ['$scope', '$log', '$location', 'ShootingService', function ($scope, $log, $location, ShootingService) {
+angular.module('bookingControllers').controller('ShootingCreateCtrl', ['$scope', '$log', '$location', 'ShootingService', 'ModelService', function ($scope, $log, $location, ShootingService, ModelService) {
+  $scope.models = ModelService.listModels();
   $scope.reset = function () {
     $log.debug('reset create shooting form');
     $scope.shooting = {};
@@ -49,8 +50,9 @@ angular.module('bookingControllers').controller('ShootingShowCtrl', ['$scope', '
   }
 }]);
 
-angular.module('bookingControllers').controller('ShootingUpdateCtrl', ['$scope', '$routeParams', '$log', '$location', 'ShootingService', function ($scope, $routeParams, $log, $location, ShootingService) {
+angular.module('bookingControllers').controller('ShootingUpdateCtrl', ['$scope', '$routeParams', '$log', '$location', 'ShootingService', 'ModelService', function ($scope, $routeParams, $log, $location, ShootingService, ModelService) {
   $log.debug('show shooting with id: ' + $routeParams.shootingId);
+  $scope.models = ModelService.listModels();
   var shooting = ShootingService.getShooting($routeParams.shootingId);
   if (shooting) {
     $scope.shooting = shooting;
