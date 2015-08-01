@@ -129,3 +129,56 @@ angular.module('bookingServices').factory('ModelService', ['$log', function ($lo
 
   return service;
 }]);
+
+angular.module('bookingServices').factory('DateService', ['$log', function ($log) {
+  var service = {};
+
+  service.counter = 0;
+  service.dates = {};
+
+  service.createDate = function (data) {
+    $log.debug('createDate');
+    var date = {};
+    date['id'] = ++service.counter;
+    date['start'] = data.start;
+    date['end'] = data.end;
+    service.dates[date.id] = date;
+    return service.getDate(date.id);
+  };
+
+  service.updateDate = function (data) {
+    $log.debug('updateDate with id: ' + data.id);
+    var date = service.dates[data.id];
+    if (date) {
+      for (var key in data) {
+        date[key] = data[key];
+      }
+      return service.getDate(date.id);
+    } else {
+      return;
+    }
+  };
+
+  service.deleteDate = function (id) {
+    $log.debug('deleteDate');
+    delete service.dates[id];
+    return;
+  };
+
+  service.getDate = function (id) {
+    $log.debug('getDate with id: ' + id);
+    return angular.copy(service.dates[id]);
+  };
+
+  service.listDates = function () {
+    $log.debug('listDates');
+    var list = [];
+    for (var id in service.dates) {
+      $log.debug('add date with id: ' + id + ' to result');
+      list.push(service.dates[id]);
+    }
+    return list;
+  };
+
+  return service;
+}]);

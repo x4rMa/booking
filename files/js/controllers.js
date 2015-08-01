@@ -148,3 +148,48 @@ angular.module('bookingControllers').controller('ModelCompleteCtrl', ['$scope', 
     }
   };
 }]);
+
+angular.module('bookingControllers').controller('DateCreateCtrl', ['$scope', '$log', '$location', 'DateService', function ($scope, $log, $location, DateService) {
+  $scope.reset = function () {
+    $log.debug('reset create date form');
+    $scope.date = {};
+  }
+  $scope.submit = function () {
+    var date = DateService.createDate($scope.date);
+    if (date) {
+      $log.debug('create date success');
+      $scope.reset();
+      $location.path('/date/list');
+    } else {
+      $log.debug('create date failed');
+    }
+  };
+  $scope.reset();
+}]);
+
+angular.module('bookingControllers').controller('DateUpdateCtrl', ['$scope', '$routeParams', '$log', '$location', 'DateService', function ($scope, $routeParams, $log, $location, DateService) {
+  $log.debug('update date with id: ' + $routeParams.dateId);
+  var date = DateService.getDate($routeParams.dateId);
+  if (date) {
+    $scope.date = date;
+  } else {
+    $log.debug('date not found');
+    $location.path('/date/list');
+  }
+  $scope.submit = function () {
+    var date = DateService.updateDate($scope.date);
+    if (date) {
+      $log.debug('update date success');
+      $location.path('/date/list');
+    } else {
+      $log.debug('update date failed');
+    }
+  };
+}]);
+
+angular.module('bookingControllers').controller('DateListCtrl', ['$scope', 'DateService', function ($scope, DateService) {
+  $scope.dates = DateService.listDates();
+}]);
+
+angular.module('bookingControllers').controller('DateSelectCtrl', ['$scope', function ($scope) {
+}]);

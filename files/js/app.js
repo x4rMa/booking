@@ -14,6 +14,7 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
       templateUrl: 'partials/login.html',
       controller: 'LoginCtrl'
     }).
+    // shooting
     when('/shooting/create', {
       templateUrl: 'partials/shooting/form.html',
       controller: 'ShootingCreateCtrl'
@@ -30,6 +31,7 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
       templateUrl: 'partials/shooting/show.html',
       controller: 'ShootingShowCtrl'
     }).
+    // model
     when('/model/create', {
       templateUrl: 'partials/model/form.html',
       controller: 'ModelCreateCtrl'
@@ -49,6 +51,23 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
     when('/model/show/:modelId', {
       templateUrl: 'partials/model/show.html',
       controller: 'ModelShowCtrl'
+    }).
+    // date
+    when('/date/create', {
+      templateUrl: 'partials/date/form.html',
+      controller: 'DateCreateCtrl'
+    }).
+    when('/date/update/:dateId', {
+      templateUrl: 'partials/date/form.html',
+      controller: 'DateUpdateCtrl'
+    }).
+    when('/date/list', {
+      templateUrl: 'partials/date/list.html',
+      controller: 'DateListCtrl'
+    }).
+    when('/date/select', {
+      templateUrl: 'partials/date/select.html',
+      controller: 'DateSelectCtrl'
     }).
     otherwise({
       redirectTo: '/login'

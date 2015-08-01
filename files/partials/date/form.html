@@ -1,0 +1,41 @@
+<div ng-include src="'partials/navi-admin.html'"></div>
+<div class="container">
+
+  <form name="dateForm" class="form-horizontal" ng-submit="submit()">
+    <fieldset>
+
+      <legend ng-if="!date.id">Create Date</legend>
+      <legend ng-if="date.id">Update Date</legend>
+
+      <div ng-if="dateForm.$error.required">
+        Foo
+      </div>
+
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="start">Start</label>
+
+        <div class="col-md-4">
+          <input type="text" id="start" name="start" ng-model="date.start" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required="" placeholder="start" class="form-control input-md"/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="end">End</label>
+
+        <div class="col-md-4">
+          <input type="text" id="end" name="end" ng-model="date.end" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required="" placeholder="end" class="form-control input-md"/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="singlebutton"></label>
+
+        <div class="col-md-4">
+          <input type="submit" id="singlebutton" name="singlebutton" class="btn btn-primary" value="save"/>
+        </div>
+      </div>
+
+    </fieldset>
+  </form>
+
+</div>
