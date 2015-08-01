@@ -1,26 +1,62 @@
+<div ng-include src="'partials/navi-model.html'"></div>
 <div class="container">
 
-  <div class="starter-template">
-    <h1>Daten vervollst&auml;ndigen</h1>
+  <form name="completeModelForm" class="form-horizontal" ng-submit="submit()">
+    <fieldset>
 
-    <form name="completeDataForm" ng-submit="submit()">
-      <fieldset>
-        <label for="firstname">Vorname</label>
-        <input type="text" id="firstname" name="firstname" ng-model="model.firstname" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required=""/>
-      </fieldset>
-      <fieldset>
-        <label for="lastname">Nachname</label>
-        <input type="text" id="lastname" name="lastname" ng-model="model.lastname" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required=""/>
-      </fieldset>
-      <fieldset>
-        <label for="email">Email</label>
-        <input type="text" id="email" name="email" ng-model="model.email" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required=""/>
-      </fieldset>
-      <fieldset>
-        <label for="mobile">Handy</label>
-        <input type="text" id="mobile" name="mobile" ng-model="model.mobile" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required=""/>
-      </fieldset>
-      <input type="submit" value="weiter"/>
-    </form>
-  </div>
+      <legend>Daten vervollst&auml;ndigen</legend>
+
+      <div ng-if="shootingForm.$error.required">
+        Foo
+      </div>
+
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="firstname">Vorname</label>
+
+        <div class="col-md-4">
+          <input type="text" id="firstname" name="firstname" ng-model="model.firstname" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required=""
+                 placeholder="firstname" class="form-control input-md"/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="lastname">Lastname</label>
+
+        <div class="col-md-4">
+          <input type="text" id="lastname" name="lastname" ng-model="model.lastname" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required=""
+                 placeholder="lastname" class="form-control input-md"/>
+        </div>
+      </div>
+
+
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="email">Email</label>
+
+        <div class="col-md-4">
+          <input type="text" id="email" name="email" ng-model="model.email" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required=""
+                 placeholder="email" class="form-control input-md"/>
+        </div>
+      </div>
+
+
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="phone">Handynummer</label>
+
+        <div class="col-md-4">
+          <input type="text" id="phone" name="phone" ng-model="model.phone" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required=""
+                 placeholder="phone" class="form-control input-md"/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="singlebutton"></label>
+
+        <div class="col-md-4">
+          <input type="submit" id="singlebutton" name="singlebutton" class="btn btn-primary" value="weiter"/>
+        </div>
+      </div>
+
+    </fieldset>
+  </form>
+
 </div>

@@ -101,6 +101,7 @@ angular.module('bookingControllers').controller('ModelShowCtrl', ['$scope', '$ro
   $log.debug('show model with id: ' + $routeParams.modelId);
   var model = ModelService.getModel($routeParams.modelId);
   if (model) {
+    $scope.link = $location.protocol() + '://' + $location.host() + ':' + $location.port() + '/#/model/complete/' + model.id;
     $scope.model = model;
   } else {
     $log.debug('model not found');
@@ -109,7 +110,7 @@ angular.module('bookingControllers').controller('ModelShowCtrl', ['$scope', '$ro
 }]);
 
 angular.module('bookingControllers').controller('ModelUpdateCtrl', ['$scope', '$routeParams', '$log', '$location', 'ModelService', function ($scope, $routeParams, $log, $location, ModelService) {
-  $log.debug('show model with id: ' + $routeParams.modelId);
+  $log.debug('update model with id: ' + $routeParams.modelId);
   var model = ModelService.getModel($routeParams.modelId);
   if (model) {
     $scope.model = model;
@@ -122,6 +123,26 @@ angular.module('bookingControllers').controller('ModelUpdateCtrl', ['$scope', '$
     if (model) {
       $log.debug('update model success');
       $location.path('/model/show/' + model.id);
+    } else {
+      $log.debug('update model failed');
+    }
+  };
+}]);
+
+angular.module('bookingControllers').controller('ModelCompleteCtrl', ['$scope', '$routeParams', '$log', '$location', 'ModelService', function ($scope, $routeParams, $log, $location, ModelService) {
+  $log.debug('complete model with id: ' + $routeParams.modelId);
+  var model = ModelService.getModel($routeParams.modelId);
+  if (model) {
+    $scope.model = model;
+  } else {
+    $log.debug('model not found');
+    $location.path('/');
+  }
+  $scope.submit = function () {
+    var model = ModelService.updateModel($scope.model);
+    if (model) {
+      $log.debug('update model success');
+      $location.path('/model/complete/' + model.id);
     } else {
       $log.debug('update model failed');
     }
