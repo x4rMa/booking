@@ -39,10 +39,11 @@ func (h *handler) serveHTTP(responseWriter http.ResponseWriter, request *http.Re
 	var err error
 	var list *[]booking_date.Date
 	if list, err = h.service.List(); err != nil {
+		logger.Debugf("list dates failed: %v", err)
 		return err
 	}
-
-	j := json_handler.NewJsonHandler(list)
+	logger.Debugf("found %d dates", len(*list))
+	j := json_handler.NewJsonHandler(*list)
 	j.ServeHTTP(responseWriter, request)
 	return nil
 }

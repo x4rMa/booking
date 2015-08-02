@@ -1,9 +1,7 @@
 package date
 
-import "time"
-
 type Date struct {
 	Id    int       `json:"id"`
-	Start time.Time `json:"start"`
-	End   time.Time `json:"end"`
+	Start string `json:"start"`
+	End   string `json:"end"`
 }

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('bookingServices', []);
+angular.module('bookingServices', ['ngResource']);
 
 angular.module('bookingServices').factory('AuthService', ['$log', function ($log) {
   var service = {};
@@ -130,55 +130,86 @@ angular.module('bookingServices').factory('ModelService', ['$log', function ($lo
   return service;
 }]);
 
-angular.module('bookingServices').factory('DateService', ['$log', function ($log) {
+angular.module('bookingServices').factory('DateService', ['$log', 'Date', function ($log, Date) {
   var service = {};
 
-  service.counter = 0;
-  service.dates = {};
-
   service.createDate = function (data) {
-    $log.debug('createDate');
-    var date = {};
-    date['id'] = ++service.counter;
-    date['start'] = data.start;
-    date['end'] = data.end;
-    service.dates[date.id] = date;
-    return service.getDate(date.id);
+    $log.debug('create date');
+    return Date.create(data);
   };
 
   service.updateDate = function (data) {
-    $log.debug('updateDate with id: ' + data.id);
-    var date = service.dates[data.id];
-    if (date) {
-      for (var key in data) {
-        date[key] = data[key];
-      }
-      return service.getDate(date.id);
-    } else {
-      return;
-    }
+    $log.debug('update date with id: ' + data.id);
+    return Date.update(data);
   };
 
   service.deleteDate = function (id) {
-    $log.debug('deleteDate');
-    delete service.dates[id];
+    $log.debug('delete date with id: ' + id);
+    Date.delete({Id: id});
     return;
   };
 
   service.getDate = function (id) {
-    $log.debug('getDate with id: ' + id);
-    return angular.copy(service.dates[id]);
+    $log.debug('get date with id: ' + id);
+    return Date.get({Id: id});
   };
 
   service.listDates = function () {
-    $log.debug('listDates');
-    var list = [];
-    for (var id in service.dates) {
-      $log.debug('add date with id: ' + id + ' to result');
-      list.push(service.dates[id]);
-    }
-    return list;
+    $log.debug('list dates');
+    return Date.query();
   };
 
   return service;
+}]);
+
+angular.module('bookingServices').factory('Model', ['$resource', function ($resource) {
+  return $resource('/model/:Id', {}, {
+    query: {
+      method: 'GET', params: {}, isArray: true
+    },
+    create: {
+      method: 'POST', params: {}
+    },
+    update: {
+      method: 'PUT', params: {}
+    },
+    delete: {
+      method: 'DELETE', params: {}
+    }
+  });
+}]);
+
+angular.module('bookingServices').factory('Shooting', ['$resource', function ($resource) {
+  return $resource('/shooting/:Id', {}, {
+    query: {
+      method: 'GET', params: {}, isArray: true
+    },
+    create: {
+      method: 'POST', params: {}
+    },
+    update: {
+      method: 'PUT', params: {}
+    },
+    delete: {
+      method: 'DELETE', params: {}
+    }
+  });
+}]);
+
+
+angular.module('bookingServices').factory('Date', ['$resource', function ($resource) {
+  return $resource('/date/:Id', {}, {
+    query: {
+      method: 'GET', params: {}, isArray: true
+    },
+    create: {
+      method: 'POST', params: {}
+    },
+    update: {
+      method: 'PUT', params: {}
+    },
+    delete: {
+      method: 'DELETE', params: {}
+    }
+  });
 }]);
