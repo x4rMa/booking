@@ -7,11 +7,11 @@ import (
 )
 
 type Storage interface {
-	FindDates() (*[]date.Date, error)
-	CreateDate(date *date.Date) (*date.Date, error)
-	GetDate(id int) (*date.Date, error)
-	DeleteDate(id int) (*date.Date, error)
-	UpdateDate(date *date.Date) (*date.Date, error)
+	Find() (*[]date.Date, error)
+	Create(date *date.Date) (*date.Date, error)
+	Get(id int) (*date.Date, error)
+	Delete(id int) (*date.Date, error)
+	Update(date *date.Date) (*date.Date, error)
 }
 
 type storage struct {
@@ -40,7 +40,7 @@ func (s *storage) Truncate() error {
 	return nil
 }
 
-func (s *storage) FindDates() (*[]date.Date, error) {
+func (s *storage) Find() (*[]date.Date, error) {
 	db, err := s.database.DB()
 	if err != nil {
 		return nil, err
@@ -50,7 +50,7 @@ func (s *storage) FindDates() (*[]date.Date, error) {
 	return dates, query.Error
 }
 
-func (s *storage) CreateDate(date *date.Date) (*date.Date, error) {
+func (s *storage) Create(date *date.Date) (*date.Date, error) {
 	db, err := s.database.DB()
 	if err != nil {
 		return nil, err
@@ -59,7 +59,7 @@ func (s *storage) CreateDate(date *date.Date) (*date.Date, error) {
 	return date, query.Error
 }
 
-func (s *storage) UpdateDate(date *date.Date) (*date.Date, error) {
+func (s *storage) Update(date *date.Date) (*date.Date, error) {
 	db, err := s.database.DB()
 	if err != nil {
 		return nil, err
@@ -68,7 +68,7 @@ func (s *storage) UpdateDate(date *date.Date) (*date.Date, error) {
 	return date, query.Error
 }
 
-func (s *storage) GetDate(id int) (*date.Date, error) {
+func (s *storage) Get(id int) (*date.Date, error) {
 	db, err := s.database.DB()
 	if err != nil {
 		return nil, err
@@ -81,7 +81,7 @@ func (s *storage) GetDate(id int) (*date.Date, error) {
 	return date, nil
 }
 
-func (s *storage) DeleteDate(id int) (*date.Date, error) {
+func (s *storage) Delete(id int) (*date.Date, error) {
 	db, err := s.database.DB()
 	if err != nil {
 		return nil, err

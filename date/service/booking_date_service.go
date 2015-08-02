@@ -25,29 +25,21 @@ func New(storage storage.Storage) *dateService {
 }
 
 func (s *dateService) Create(d *date.Date) (*date.Date, error) {
-	obj, err := s.storage.CreateDate(d)
-	if err != nil {
-		return nil, err
-	}
-	return obj, nil
+	return s.storage.Create(d)
 }
 
 func (s *dateService) Update(d *date.Date) (*date.Date, error) {
-	obj, err := s.storage.UpdateDate(d)
-	if err != nil {
-		return nil, err
-	}
-	return obj, nil
+	return s.storage.Update(d)
 }
 
 func (s *dateService) List() (*[]date.Date, error) {
-	return s.storage.FindDates()
+	return s.storage.Find()
 }
 
 func (s *dateService) Get(id int) (*date.Date, error) {
-	return s.storage.GetDate(id)
+	return s.storage.Get(id)
 }
 
 func (s *dateService) Delete(id int) (*date.Date, error) {
-	return s.storage.DeleteDate(id)
+	return s.storage.Delete(id)
 }

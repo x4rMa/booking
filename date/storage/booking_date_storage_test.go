@@ -31,7 +31,7 @@ func TestCreateDate(t *testing.T) {
 		End:   time.Now(),
 	}
 
-	dates, err = storage.FindDates()
+	dates, err = storage.Find()
 	if err = AssertThat(err, NilValue()); err != nil {
 		t.Fatal(err)
 	}
@@ -41,11 +41,11 @@ func TestCreateDate(t *testing.T) {
 	if err = AssertThat(len(*dates), Is(0)); err != nil {
 		t.Fatal(err)
 	}
-	_, err = storage.CreateDate(d)
+	_, err = storage.Create(d)
 	if err = AssertThat(err, NilValue()); err != nil {
 		t.Fatal(err)
 	}
-	dates, err = storage.FindDates()
+	dates, err = storage.Find()
 	if err = AssertThat(err, NilValue()); err != nil {
 		t.Fatal(err)
 	}
