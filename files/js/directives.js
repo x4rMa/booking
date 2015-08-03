@@ -2,11 +2,12 @@
 
 angular.module('bookingDirectives', []);
 
-angular.module('bookingDirectives').directive('datetime', ['$http', function ($http) {
+angular.module('bookingDirectives').directive('datetime', ['$log', function ($log) {
   return {
     require: 'ngModel',
-    link: function(scope, elm, attrs, ctrl) {
-      ctrl.$parsers.unshift(function(viewValue) {
+    link: function (scope, elm, attrs, ctrl) {
+      ctrl.$parsers.unshift(function (viewValue) {
+        $log.debug('datetime');
         var INTEGER_REGEXP = /^\d\d\d\d-\d\d-\d\d[\sT]\d\d:\d\d(:\d\d)$/;
         if (INTEGER_REGEXP.test(viewValue)) {
           // it is valid

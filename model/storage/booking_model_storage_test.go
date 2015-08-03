@@ -72,3 +72,28 @@ func TestCreateModel(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestCreateModelHasId(t *testing.T) {
+	var err error
+	s := createStorage()
+	if err = s.Truncate(); err != nil {
+		t.Fatal(err)
+	}
+	d := &model.Model{
+		FirstName: "Hello",
+		LastName:  "World",
+		Email:     "test@example.com",
+		Phone:     "0123456789",
+		Token:     "ABC",
+	}
+	m, err := s.Create(d)
+	if err = AssertThat(err, NilValue()); err != nil {
+		t.Fatal(err)
+	}
+	if err = AssertThat(m, NotNilValue()); err != nil {
+		t.Fatal(err)
+	}
+	if err = AssertThat(m.Id, Gt(0)); err != nil {
+		t.Fatal(err)
+	}
+}

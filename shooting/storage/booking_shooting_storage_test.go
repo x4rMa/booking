@@ -68,3 +68,24 @@ func TestCreateShooting(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestCreateShootingHasId(t *testing.T) {
+	var err error
+	s := createStorage()
+	if err = s.Truncate(); err != nil {
+		t.Fatal(err)
+	}
+	d := &shooting.Shooting{
+		Name: "Hello World",
+	}
+	m, err := s.Create(d)
+	if err = AssertThat(err, NilValue()); err != nil {
+		t.Fatal(err)
+	}
+	if err = AssertThat(m, NotNilValue()); err != nil {
+		t.Fatal(err)
+	}
+	if err = AssertThat(m.Id, Gt(0)); err != nil {
+		t.Fatal(err)
+	}
+}

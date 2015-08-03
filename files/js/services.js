@@ -14,117 +14,64 @@ angular.module('bookingServices').factory('AuthService', ['$log', function ($log
   return service;
 }]);
 
-angular.module('bookingServices').factory('ShootingService', ['$log', function ($log) {
+angular.module('bookingServices').factory('ShootingService', ['$log', 'Shooting', function ($log, Shooting) {
   var service = {};
 
-  service.counter = 0;
-  service.shootings = {};
-
-  service.createShooting = function (data) {
-    $log.debug('create shooting with name: ' + data.name);
-
-    if (!data.name) {
-      $log.debug('create shooting failed without name');
-      return;
-    }
-    var shooting = {};
-    shooting['id'] = ++service.counter;
-    shooting['name'] = data.name;
-    shooting['modelId'] = data.modelId;
-    service.shootings[shooting.id] = shooting;
-    $log.debug('create shooting successful with id: ' + shooting.id);
-    return shooting;
+  service.create = function (data) {
+    $log.debug('create shooting');
+    return Shooting.create(data).$promise;
   };
 
-  service.listShootings = function () {
-    $log.debug('listShootings');
-    var list = [];
-    for (var id in service.shootings) {
-      $log.debug('add shooting with id: ' + id + ' to result');
-      list.push(service.shootings[id]);
-    }
-    return list;
+  service.update = function (data) {
+    $log.debug('update shooting with id: ' + data.id);
+    return Shooting.update(data).$promise;
   };
 
-  service.deleteShooting = function (id) {
-    $log.debug('deleteShooting');
-    delete service.shootings[id];
-    return;
+  service.delete = function (id) {
+    $log.debug('delete shooting with id: ' + id);
+    return Shooting.delete({Id: id}).$promise;
   };
 
-  service.getShooting = function (id) {
-    $log.debug('getShooting with id: ' + id);
-    return angular.copy(service.shootings[id]);
+  service.get = function (id) {
+    $log.debug('get shooting with id: ' + id);
+    return Shooting.get({Id: id}).$promise;
   };
 
-
-  service.updateShooting = function (data) {
-    $log.debug('updateShooting with id: ' + data.id);
-    var shooting = service.shootings[data.id];
-    if (shooting) {
-      for (var key in data) {
-        shooting[key] = data[key];
-      }
-      return service.getShooting(shooting.id);
-    } else {
-      return;
-    }
+  service.list = function () {
+    $log.debug('list shootings');
+    return Shooting.query().$promise;
   };
 
   return service;
 }]);
 
 
-angular.module('bookingServices').factory('ModelService', ['$log', function ($log) {
+angular.module('bookingServices').factory('ModelService', ['$log', 'Model', function ($log, Model) {
   var service = {};
 
-  service.counter = 0;
-  service.models = {};
-
-  service.createModel = function (data) {
-    $log.debug('createModel');
-    var model = {};
-    model['id'] = ++service.counter;
-    model['firstname'] = data.firstname;
-    model['lastname'] = data.lastname;
-    model['email'] = data.email;
-    model['phone'] = data.phone;
-    service.models[model.id] = model;
-    return service.getModel(model.id);
+  service.create = function (data) {
+    $log.debug('create model');
+    return Model.create(data).$promise;
   };
 
-  service.updateModel = function (data) {
-    $log.debug('updateModel with id: ' + data.id);
-    var model = service.models[data.id];
-    if (model) {
-      for (var key in data) {
-        model[key] = data[key];
-      }
-      return service.getModel(model.id);
-    } else {
-      return;
-    }
+  service.update = function (data) {
+    $log.debug('update model with id: ' + data.id);
+    return Model.update(data).$promise;
   };
 
-  service.deleteModel = function (id) {
-    $log.debug('deleteModel');
-    delete service.models[id];
-    return;
+  service.delete = function (id) {
+    $log.debug('delete model with id: ' + id);
+    return Model.delete({Id: id}).$promise;
   };
 
-  service.getModel = function (id) {
-    $log.debug('getModel with id: ' + id);
-    return angular.copy(service.models[id]);
+  service.get = function (id) {
+    $log.debug('get model with id: ' + id);
+    return Model.get({Id: id}).$promise;
   };
 
-  service.listModels = function () {
-    $log.debug('listModels');
-    var list = [];
-    for (var id in service.models) {
-      $log.debug('add model with id: ' + id + ' to result');
-      list.push(service.models[id]);
-    }
-    return list;
+  service.list = function () {
+    $log.debug('list models');
+    return Model.query().$promise;
   };
 
   return service;
@@ -133,30 +80,29 @@ angular.module('bookingServices').factory('ModelService', ['$log', function ($lo
 angular.module('bookingServices').factory('DateService', ['$log', 'Date', function ($log, Date) {
   var service = {};
 
-  service.createDate = function (data) {
+  service.create = function (data) {
     $log.debug('create date');
-    return Date.create(data);
+    return Date.create(data).$promise;
   };
 
-  service.updateDate = function (data) {
+  service.update = function (data) {
     $log.debug('update date with id: ' + data.id);
-    return Date.update(data);
+    return Date.update(data).$promise;
   };
 
-  service.deleteDate = function (id) {
+  service.delete = function (id) {
     $log.debug('delete date with id: ' + id);
-    Date.delete({Id: id});
-    return;
+    return Date.delete({Id: id}).$promise;
   };
 
-  service.getDate = function (id) {
+  service.get = function (id) {
     $log.debug('get date with id: ' + id);
-    return Date.get({Id: id});
+    return Date.get({Id: id}).$promise;
   };
 
-  service.listDates = function () {
+  service.list = function () {
     $log.debug('list dates');
-    return Date.query();
+    return Date.query().$promise;
   };
 
   return service;

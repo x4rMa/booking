@@ -1,5 +1,7 @@
 package shooting
 
 type Shooting struct {
-	Name string `json:"name"`
+	Id      int    `json:"id"`
+	Name    string `json:"name"`
+	ModelId int    `json:"model_id"`
 }

@@ -9,6 +9,7 @@
         <a href="#/date/show/{{date.id}}"><b>Start:</b> {{date.start}}</a>
         <a href="#/date/show/{{date.id}}"><b>End:</b> {{date.end}}</a>
         <a href="#/date/update/{{date.id}}">edit</a>
+        <a href="#/date/delete/{{date.id}}" onclick="confirm('delete?')">delete</a>
       </li>
     </ul>
     <div ng-show="!dates.length">There is no date avaiable.</div>
