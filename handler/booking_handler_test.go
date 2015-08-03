@@ -7,16 +7,14 @@ import (
 	. "github.com/bborbe/assert"
 	"github.com/bborbe/booking/database"
 
-	server_mock "github.com/bborbe/server/mock"
 	io_mock "github.com/bborbe/io/mock"
-
+	server_mock "github.com/bborbe/server/mock"
 
 	booking_date_service "github.com/bborbe/booking/date/service"
 	booking_date_storage "github.com/bborbe/booking/date/storage"
 
 	booking_model_service "github.com/bborbe/booking/model/service"
 	booking_model_storage "github.com/bborbe/booking/model/storage"
-
 
 	booking_shooting_service "github.com/bborbe/booking/shooting/service"
 	booking_shooting_storage "github.com/bborbe/booking/shooting/storage"

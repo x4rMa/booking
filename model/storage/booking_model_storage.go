@@ -110,7 +110,7 @@ func (s *storage) FindByToken(token string) (*model.Model, error) {
 		return nil, err
 	}
 	m := &model.Model{}
-	query := db.Where(model.Model{Token:token}).First(m)
+	query := db.Where(model.Model{Token: token}).First(m)
 	if query.Error != nil {
 		return nil, err
 	}

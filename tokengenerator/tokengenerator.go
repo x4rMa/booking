@@ -1,6 +1,6 @@
 package tokengenerator
 
-type tokengenerator struct {}
+type tokengenerator struct{}
 
 func New() *tokengenerator {
 	return new(tokengenerator)

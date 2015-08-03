@@ -20,7 +20,6 @@ import (
 	booking_date_handler_update "github.com/bborbe/booking/date/handler/update"
 	booking_date_service "github.com/bborbe/booking/date/service"
 
-
 	booking_model_handler_create "github.com/bborbe/booking/model/handler/create"
 	booking_model_handler_delete "github.com/bborbe/booking/model/handler/delete"
 	booking_model_handler_get "github.com/bborbe/booking/model/handler/get"

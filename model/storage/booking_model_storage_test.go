@@ -24,8 +24,12 @@ func TestImplementsStorage(t *testing.T) {
 func TestListEmpty(t *testing.T) {
 	s := createStorage()
 	list, err := s.Find()
-	if err = AssertThat(err, NilValue()); err != nil {t.Fatal(err)};
-	if err = AssertThat(list, NotNilValue()); err != nil {t.Fatal(err)};
+	if err = AssertThat(err, NilValue()); err != nil {
+		t.Fatal(err)
+	}
+	if err = AssertThat(list, NotNilValue()); err != nil {
+		t.Fatal(err)
+	}
 }
 
 func TestCreateModel(t *testing.T) {
@@ -37,10 +41,10 @@ func TestCreateModel(t *testing.T) {
 	}
 	d := &model.Model{
 		FirstName: "Hello",
-		LastName:   "World",
-		Email: "test@example.com",
-		Phone: "0123456789",
-		Token: "ABC",
+		LastName:  "World",
+		Email:     "test@example.com",
+		Phone:     "0123456789",
+		Token:     "ABC",
 	}
 
 	models, err = s.Find()

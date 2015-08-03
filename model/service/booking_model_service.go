@@ -1,11 +1,12 @@
 package service
 
 import (
+	"fmt"
+
 	"github.com/bborbe/booking/model"
 	"github.com/bborbe/booking/model/storage"
 	"github.com/bborbe/log"
 	_ "github.com/lib/pq"
-	"fmt"
 )
 
 var (

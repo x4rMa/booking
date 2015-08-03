@@ -24,8 +24,12 @@ func TestImplementsStorage(t *testing.T) {
 func TestListEmpty(t *testing.T) {
 	s := createStorage()
 	list, err := s.Find()
-	if err = AssertThat(err, NilValue()); err != nil {t.Fatal(err)};
-	if err = AssertThat(list, NotNilValue()); err != nil {t.Fatal(err)};
+	if err = AssertThat(err, NilValue()); err != nil {
+		t.Fatal(err)
+	}
+	if err = AssertThat(list, NotNilValue()); err != nil {
+		t.Fatal(err)
+	}
 }
 
 func TestCreateShooting(t *testing.T) {

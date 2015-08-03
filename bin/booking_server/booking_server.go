@@ -39,7 +39,7 @@ func createServer(address string, documentRoot string) *http.Server {
 	db := database.New("/tmp/booking.db", true)
 	tokengenerator := booking_tokengenerator.New()
 	dateService := booking_date_service.New(booking_date_storage.New(db))
-	modelService := booking_model_service.New(booking_model_storage.New(db),tokengenerator)
+	modelService := booking_model_service.New(booking_model_storage.New(db), tokengenerator)
 	shootingService := booking_shooting_service.New(booking_shooting_storage.New(db))
-	return &http.Server{Addr: address, Handler: handler.NewHandler(documentRoot, dateService, modelService,shootingService)}
+	return &http.Server{Addr: address, Handler: handler.NewHandler(documentRoot, dateService, modelService, shootingService)}
 }
