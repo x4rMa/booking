@@ -5,4 +5,5 @@ type Model struct {
 	LastName  string `json:"lastname"`
 	Email     string `json:"email"`
 	Phone     string `json:"phone"`
+	Token     string `json:"token"`
 }

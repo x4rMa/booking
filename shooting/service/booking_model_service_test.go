@@ -6,8 +6,8 @@ import (
 	. "github.com/bborbe/assert"
 )
 
-func TestImplementsModelService(t *testing.T) {
-	r := New(nil, nil)
+func TestImplementsShootingService(t *testing.T) {
+	r := New(nil)
 	var i *Service
 	err := AssertThat(r, Implements(i))
 	if err != nil {

@@ -1,7 +1,6 @@
 package database
 
 import (
-	"github.com/bborbe/booking/date"
 	"github.com/jinzhu/gorm"
 )
 
@@ -31,7 +30,6 @@ func (s *database) DB() (*gorm.DB, error) {
 		}
 		db.SingularTable(true)
 		db.LogMode(s.logmode)
-		db.AutoMigrate(&date.Date{})
 		s.db = &db
 	}
 	return s.db, nil

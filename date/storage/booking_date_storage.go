@@ -21,6 +21,11 @@ type storage struct {
 func New(database database.Database) *storage {
 	s := new(storage)
 	s.database = database
+	db,err := s.database.DB()
+	if err != nil {
+		panic("auto migrate failed")
+	}
+	db.AutoMigrate(&date.Date{})
 	return s
 }
 

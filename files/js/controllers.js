@@ -101,7 +101,7 @@ angular.module('bookingControllers').controller('ModelShowCtrl', ['$scope', '$ro
   $log.debug('show model with id: ' + $routeParams.modelId);
   var model = ModelService.getModel($routeParams.modelId);
   if (model) {
-    $scope.link = $location.protocol() + '://' + $location.host() + ':' + $location.port() + '/#/model/complete/' + model.id;
+    $scope.link = $location.protocol() + '://' + $location.host() + ':' + $location.port() + '/#/model/complete/' + model.token;
     $scope.model = model;
   } else {
     $log.debug('model not found');
