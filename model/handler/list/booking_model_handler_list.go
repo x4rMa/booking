@@ -38,9 +38,22 @@ func (h *handler) ServeHTTP(responseWriter http.ResponseWriter, request *http.Re
 func (h *handler) serveHTTP(responseWriter http.ResponseWriter, request *http.Request) error {
 	var err error
 	var list *[]booking_model.Model
-	if list, err = h.service.List(); err != nil {
-		logger.Debugf("list models failed: %v", err)
+	logger.Debug("model list")
+	err = request.ParseForm()
+	if err != nil {
 		return err
+	}
+	if len(request.Form["token"]) > 0 {
+		logger.Debugf("token: %s", request.Form["token"][0])
+		if list, err = h.service.FindByToken(request.Form["token"][0]); err != nil {
+			logger.Debugf("find model by token failed: %v", err)
+			return err
+		}
+	} else {
+		if list, err = h.service.List(); err != nil {
+			logger.Debugf("list models failed: %v", err)
+			return err
+		}
 	}
 	logger.Debugf("found %d models", len(*list))
 	j := json_handler.NewJsonHandler(*list)

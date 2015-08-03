@@ -6,9 +6,11 @@
 
       <legend>Create Model</legend>
 
-      <div ng-if="shootingForm.$error.required">
-        Foo
-      </div>
+      <ul class="messages">
+        <li ng-repeat="message in messages">
+          {{message}}
+        </li>
+      </ul>
 
       <div class="form-group">
         <label class="col-md-4 control-label" for="firstname">Firstname</label>

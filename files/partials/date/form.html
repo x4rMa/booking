@@ -7,9 +7,11 @@
       <legend ng-if="!date.id">Create Date</legend>
       <legend ng-if="date.id">Update Date</legend>
 
-      <div ng-if="dateForm.$error.required">
-        Foo
-      </div>
+      <ul class="messages">
+        <li ng-repeat="message in messages">
+          {{message}}
+        </li>
+      </ul>
 
       <div class="form-group">
         <label class="col-md-4 control-label" for="start">Start</label>

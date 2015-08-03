@@ -25,7 +25,7 @@ type Service interface {
 	Create(model *model.Model) (*model.Model, error)
 	Delete(id int) (*model.Model, error)
 	Update(d *model.Model) (*model.Model, error)
-	FindByToken(token string) (*model.Model, error)
+	FindByToken(token string) (*[]model.Model, error)
 }
 
 type modelService struct {
@@ -57,18 +57,18 @@ func (s *modelService) generateToken() (string, error) {
 		if err != nil {
 			return "", err
 		}
-		model, err := s.FindByToken(token)
+		models, err := s.FindByToken(token)
 		if err != nil {
 			return "", err
 		}
-		if model == nil {
+		if len(*models) == 0 {
 			return token, nil
 		}
 	}
 	return "", fmt.Errorf("generate token failed")
 }
 
-func (s *modelService) FindByToken(token string) (*model.Model, error) {
+func (s *modelService) FindByToken(token string) (*[]model.Model, error) {
 	return s.storage.FindByToken(token)
 }
 

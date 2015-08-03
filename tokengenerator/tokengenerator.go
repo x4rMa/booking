@@ -1,5 +1,9 @@
 package tokengenerator
 
+import (
+	uuid "github.com/nu7hatch/gouuid"
+)
+
 type tokengenerator struct{}
 
 func New() *tokengenerator {
@@ -7,5 +11,9 @@ func New() *tokengenerator {
 }
 
 func (t *tokengenerator) GenerateToken() (string, error) {
-	return "abc", nil
+	id, err := uuid.NewV4()
+	if err != nil {
+		return "", err
+	}
+	return id.String(), nil
 }

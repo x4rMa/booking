@@ -74,6 +74,11 @@ angular.module('bookingServices').factory('ModelService', ['$log', 'Model', func
     return Model.query().$promise;
   };
 
+  service.findByToken = function (token) {
+    $log.debug('find model by token: ' + token);
+    return Model.query({token: token}).$promise;
+  };
+
   return service;
 }]);
 

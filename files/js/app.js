@@ -48,7 +48,7 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
       templateUrl: 'partials/model/list.html',
       controller: 'ModelListCtrl'
     }).
-    when('/model/complete/:Id', {
+    when('/model/complete/:Token', {
       templateUrl: 'partials/model/complete.html',
       controller: 'ModelCompleteCtrl'
     }).

@@ -12,7 +12,7 @@ type Storage interface {
 	Get(id int) (*model.Model, error)
 	Delete(id int) (*model.Model, error)
 	Update(model *model.Model) (*model.Model, error)
-	FindByToken(token string) (*model.Model, error)
+	FindByToken(token string) (*[]model.Model, error)
 }
 
 type storage struct {
@@ -104,15 +104,15 @@ func (s *storage) Delete(id int) (*model.Model, error) {
 	return model, nil
 }
 
-func (s *storage) FindByToken(token string) (*model.Model, error) {
+func (s *storage) FindByToken(token string) (*[]model.Model, error) {
 	db, err := s.database.DB()
 	if err != nil {
 		return nil, err
 	}
-	m := &model.Model{}
-	query := db.Where(model.Model{Token: token}).First(m)
+	models := &[]model.Model{}
+	query := db.Where(model.Model{Token: token}).Find(models)
 	if query.Error != nil {
 		return nil, err
 	}
-	return m, nil
+	return models, nil
 }

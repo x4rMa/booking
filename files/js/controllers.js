@@ -6,6 +6,7 @@ angular.module('bookingControllers').controller('LoginCtrl', ['$scope', '$log', 
   $scope.reset = function () {
     $log.debug('reset login form');
     $scope.user = {};
+    $scope.messages = [];
   };
   $scope.submit = function () {
     if (AuthService.verifyLogin($scope.user)) {
@@ -14,7 +15,7 @@ angular.module('bookingControllers').controller('LoginCtrl', ['$scope', '$log', 
       $location.path('/shooting/create');
     } else {
       $log.debug('login failed');
-      //$scope.loginForm.$error = 'login failed';
+      $scope.messages.push(error);
     }
   };
   $scope.reset();
@@ -27,6 +28,7 @@ angular.module('bookingControllers').controller('ShootingCreateCtrl', ['$scope',
   $scope.reset = function () {
     $log.debug('reset create shooting form');
     $scope.shooting = {};
+    $scope.messages = [];
   }
   $scope.submit = function () {
     $scope.shooting.model_id = parseInt($scope.shooting.model_id);
@@ -36,6 +38,7 @@ angular.module('bookingControllers').controller('ShootingCreateCtrl', ['$scope',
       $location.path('/shooting/show/' + shooting.id);
     }, function (error) {
       $log.debug('create shooting failed: ' + error);
+      $scope.messages.push(error);
     });
   };
   $scope.reset();
@@ -108,6 +111,7 @@ angular.module('bookingControllers').controller('ModelCreateCtrl', ['$scope', '$
   $scope.reset = function () {
     $log.debug('reset create model form');
     $scope.model = {};
+    $scope.messages = [];
   }
   $scope.submit = function () {
     ModelService.create($scope.model).then(function (result) {
@@ -116,6 +120,7 @@ angular.module('bookingControllers').controller('ModelCreateCtrl', ['$scope', '$
       $location.path('/model/show/' + result.id);
     }, function (error) {
       $log.debug('create model failed: ' + error);
+      $scope.messages.push(error);
     });
   };
   $scope.reset();
@@ -162,17 +167,17 @@ angular.module('bookingControllers').controller('ModelDeleteCtrl', ['$scope', '$
 }]);
 
 angular.module('bookingControllers').controller('ModelCompleteCtrl', ['$scope', '$routeParams', '$log', '$location', 'ModelService', function ($scope, $routeParams, $log, $location, ModelService) {
-  $log.debug('complete model with id: ' + $routeParams.Id);
-  ModelService.get($routeParams.Id).then(function (result) {
-    $scope.model = result;
+  $log.debug('complete model with token: ' + $routeParams.Token);
+  ModelService.findByToken($routeParams.Token).then(function (result) {
+    $scope.model = result[0];
   }, function (error) {
-    $log.debug('model not found');
+    $log.debug('find model by token failed: ' + error);
     $location.path('/');
   });
   $scope.submit = function () {
     ModelService.update($scope.model).then(function (result) {
       $log.debug('update model success');
-      $location.path('/model/complete/' + result.id);
+      $location.path('/model/complete/' + result.token);
     }, function (error) {
       $log.debug('update model failed: ' + error);
     });
@@ -183,6 +188,7 @@ angular.module('bookingControllers').controller('DateCreateCtrl', ['$scope', '$l
   $scope.reset = function () {
     $log.debug('reset create date form');
     $scope.date = {};
+    $scope.messages = [];
   }
   $scope.submit = function () {
     DateService.create($scope.date).then(function (result) {
@@ -191,6 +197,7 @@ angular.module('bookingControllers').controller('DateCreateCtrl', ['$scope', '$l
       $location.path('/date/list');
     }, function (error) {
       $log.debug('create date failed: ' + error);
+      $scope.messages.push(error);
     });
   };
   $scope.reset();
