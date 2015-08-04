@@ -17,6 +17,10 @@ import (
 
 	booking_shooting_service "github.com/bborbe/booking/shooting/service"
 	booking_shooting_storage "github.com/bborbe/booking/shooting/storage"
+
+	booking_user_service "github.com/bborbe/booking/user/service"
+	booking_user_storage "github.com/bborbe/booking/user/storage"
+
 	booking_tokengenerator "github.com/bborbe/booking/tokengenerator"
 )
 
@@ -41,5 +45,6 @@ func createServer(address string, documentRoot string) *http.Server {
 	dateService := booking_date_service.New(booking_date_storage.New(db))
 	modelService := booking_model_service.New(booking_model_storage.New(db), tokengenerator)
 	shootingService := booking_shooting_service.New(booking_shooting_storage.New(db))
-	return &http.Server{Addr: address, Handler: handler.NewHandler(documentRoot, dateService, modelService, shootingService)}
+	userService := booking_user_service.New(booking_user_storage.New(db))
+	return &http.Server{Addr: address, Handler: handler.NewHandler(documentRoot, dateService, modelService, shootingService, userService)}
 }

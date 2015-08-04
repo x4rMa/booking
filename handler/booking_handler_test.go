@@ -19,6 +19,9 @@ import (
 	booking_shooting_service "github.com/bborbe/booking/shooting/service"
 	booking_shooting_storage "github.com/bborbe/booking/shooting/storage"
 
+	booking_user_service "github.com/bborbe/booking/user/service"
+	booking_user_storage "github.com/bborbe/booking/user/storage"
+
 	booking_tokengenerator "github.com/bborbe/booking/tokengenerator"
 )
 
@@ -33,10 +36,11 @@ func TestNewHandlerImplementsHttpHandler(t *testing.T) {
 func createHandler() http.Handler {
 	db := database.New("/tmp/booking_test.db", true)
 	tokengenerator := booking_tokengenerator.New()
-	dateService := booking_date_service.New(booking_date_storage.New(db))
 	modelService := booking_model_service.New(booking_model_storage.New(db), tokengenerator)
+	dateService := booking_date_service.New(booking_date_storage.New(db))
+	userService := booking_user_service.New(booking_user_storage.New(db))
 	shootingService := booking_shooting_service.New(booking_shooting_storage.New(db))
-	return NewHandler("/tmp", dateService, modelService, shootingService)
+	return NewHandler("/tmp", dateService, modelService, shootingService, userService)
 }
 
 func TestDate(t *testing.T) {
@@ -75,6 +79,21 @@ func TestPutDate(t *testing.T) {
 	}
 	req.Body = io_mock.NewReadCloserString("{}")
 	req.Method = "PUT"
+	handler.ServeHTTP(resp, req)
+	if err = AssertThat(resp.Status(), Is(200)); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestVerifyLoginHandlerFound(t *testing.T) {
+	handler := createHandler()
+	resp := server_mock.NewHttpResponseWriterMock()
+	req, err := server_mock.NewHttpRequestMock("/user/verifyLogin")
+	if err = AssertThat(err, NilValue()); err != nil {
+		t.Fatal(err)
+	}
+	req.Body = io_mock.NewReadCloserString(`{"login":"testuser","password":"testpassword"}`)
+	req.Method = "POST"
 	handler.ServeHTTP(resp, req)
 	if err = AssertThat(resp.Status(), Is(200)); err != nil {
 		t.Fatal(err)

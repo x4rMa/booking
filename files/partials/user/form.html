@@ -1,20 +1,23 @@
 <div ng-include src="'partials/navi.html'"></div>
 <div class="container">
 
-  <form name="loginForm" class="form-horizontal" ng-submit="submit()">
+  <form name="userForm" class="form-horizontal" ng-submit="submit()">
     <fieldset>
 
-      <legend>Login</legend>
+      <legend ng-if="!user.id">Create User</legend>
+      <legend ng-if="user.id">Update User</legend>
 
-      <div ng-if="loginForm.$error.required">
-        Foo
-      </div>
+      <ul class="messages">
+        <li ng-repeat="message in messages">
+          {{message}}
+        </li>
+      </ul>
 
       <div class="form-group">
-        <label class="col-md-4 control-label" for="login">Username</label>
+        <label class="col-md-4 control-label" for="login">Login</label>
 
         <div class="col-md-4">
-          <input type="text" id="login" name="login" ng-model="user.login" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required="" placeholder="username" class="form-control input-md"/>
+          <input type="text" id="login" name="login" ng-model="user.login" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required="" placeholder="login" class="form-control input-md"/>
         </div>
       </div>
 
@@ -30,7 +33,7 @@
         <label class="col-md-4 control-label" for="singlebutton"></label>
 
         <div class="col-md-4">
-          <input type="submit" id="singlebutton" name="singlebutton" class="btn btn-primary" value="login"/>
+            <input type="submit" id="singlebutton" name="singlebutton" class="btn btn-primary" ng-disabled="userForm.$invalid" value="save"/>
         </div>
       </div>
 

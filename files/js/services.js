@@ -1,17 +1,102 @@
 'use strict';
 
-angular.module('bookingServices', ['ngResource']);
+angular.module('bookingServices', ['ngResource', 'ngCookies']);
 
-angular.module('bookingServices').factory('AuthService', ['$log', function ($log) {
+angular.module('bookingServices').factory('AuthenticationService', ['$log', '$cookieStore', '$http', '$q', function ($log, $cookieStore, $http, $q) {
   var service = {};
+  var userkey = 'user';
 
-  service.verifyLogin = function (user) {
-    var result = user.login == 'bborbe' && user.password == 'mazdazx';
-    $log.debug('verifyLogin login: ' + user.login + ' password: ' + user.password + ' => ' + result);
+  service.isLoggedIn = function () {
+    var result = !!service.getCurrent();
+    $log.debug('isLoggedIn: ' + result);
     return result;
   };
 
+  service.getCurrent = function () {
+    $log.debug('getCurrent');
+    return $cookieStore.get(userkey);
+  };
+
+  service.verifyLogin = function (user) {
+    $log.debug('verifyLogin for user: ' + user.login);
+    return $http.post('/user/verifyLogin', user);
+  };
+
+  service.login = function (user) {
+    var deferred = $q.defer();
+    service.verifyLogin(user).then(function (result) {
+      if (result) {
+        $cookieStore.put(userkey, user);
+      }
+      deferred.resolve(result);
+    }, function (error) {
+      deferred.reject(error);
+    });
+    return deferred.promise;
+  };
+
+  service.logout = function () {
+    $cookieStore.remove(userkey);
+  };
+
   return service;
+}]);
+
+angular.module('bookingServices').factory('AuthorizationService', ['$log', '$q', '$location', '$rootScope', 'AuthenticationService', function ($log, $q, $location, $rootScope, AuthenticationService) {
+  var service = {};
+
+  service.hasRole = function (role) {
+    var result = false;
+    if (role == 'administrator' && AuthenticationService.isLoggedIn() && AuthenticationService.getCurrent().login == 'admin') {
+      result = true;
+    }
+    if (role == 'organizer' && AuthenticationService.isLoggedIn()) {
+      result = true;
+    }
+    if (role == 'participant' && AuthenticationService.isLoggedIn()) {
+      result = true;
+    }
+    $log.debug('has role: ' + role + ' => ' + result);
+    return result;
+  };
+
+  service.checkPermission = function (permission_list) {
+    var deferred = $q.defer();
+    $log.debug("hasPermission");
+    if (AuthenticationService.isLoggedIn()) {
+      deferred.resolve();
+    } else {
+      //If user does not have required access,
+      //we will route the user to unauthorized access page
+      $location.path('/login');
+      //As there could be some delay when location change event happens,
+      //we will keep a watch on $locationChangeSuccess event
+      // and would resolve promise when this event occurs.
+      $rootScope.$on('$locationChangeSuccess', function (next, current) {
+        deferred.resolve();
+      });
+    }
+    return deferred.promise;
+  };
+
+  return service;
+}]);
+
+angular.module('bookingServices').factory('Shooting', ['$resource', function ($resource) {
+  return $resource('/shooting/:Id', {}, {
+    query: {
+      method: 'GET', params: {}, isArray: true
+    },
+    create: {
+      method: 'POST', params: {}
+    },
+    update: {
+      method: 'PUT', params: {}
+    },
+    delete: {
+      method: 'DELETE', params: {}
+    }
+  });
 }]);
 
 angular.module('bookingServices').factory('ShootingService', ['$log', 'Shooting', function ($log, Shooting) {
@@ -45,6 +130,22 @@ angular.module('bookingServices').factory('ShootingService', ['$log', 'Shooting'
   return service;
 }]);
 
+angular.module('bookingServices').factory('Model', ['$resource', function ($resource) {
+  return $resource('/model/:Id', {}, {
+    query: {
+      method: 'GET', params: {}, isArray: true
+    },
+    create: {
+      method: 'POST', params: {}
+    },
+    update: {
+      method: 'PUT', params: {}
+    },
+    delete: {
+      method: 'DELETE', params: {}
+    }
+  });
+}]);
 
 angular.module('bookingServices').factory('ModelService', ['$log', 'Model', function ($log, Model) {
   var service = {};
@@ -82,6 +183,23 @@ angular.module('bookingServices').factory('ModelService', ['$log', 'Model', func
   return service;
 }]);
 
+angular.module('bookingServices').factory('Date', ['$resource', function ($resource) {
+  return $resource('/date/:Id', {}, {
+    query: {
+      method: 'GET', params: {}, isArray: true
+    },
+    create: {
+      method: 'POST', params: {}
+    },
+    update: {
+      method: 'PUT', params: {}
+    },
+    delete: {
+      method: 'DELETE', params: {}
+    }
+  });
+}]);
+
 angular.module('bookingServices').factory('DateService', ['$log', 'Date', function ($log, Date) {
   var service = {};
 
@@ -113,8 +231,8 @@ angular.module('bookingServices').factory('DateService', ['$log', 'Date', functi
   return service;
 }]);
 
-angular.module('bookingServices').factory('Model', ['$resource', function ($resource) {
-  return $resource('/model/:Id', {}, {
+angular.module('bookingServices').factory('User', ['$resource', function ($resource) {
+  return $resource('/user/:Id', {}, {
     query: {
       method: 'GET', params: {}, isArray: true
     },
@@ -130,37 +248,33 @@ angular.module('bookingServices').factory('Model', ['$resource', function ($reso
   });
 }]);
 
-angular.module('bookingServices').factory('Shooting', ['$resource', function ($resource) {
-  return $resource('/shooting/:Id', {}, {
-    query: {
-      method: 'GET', params: {}, isArray: true
-    },
-    create: {
-      method: 'POST', params: {}
-    },
-    update: {
-      method: 'PUT', params: {}
-    },
-    delete: {
-      method: 'DELETE', params: {}
-    }
-  });
-}]);
+angular.module('bookingServices').factory('UserService', ['$log', 'User', function ($log, User) {
+  var service = {};
 
+  service.create = function (data) {
+    $log.debug('create user');
+    return User.create(data).$promise;
+  };
 
-angular.module('bookingServices').factory('Date', ['$resource', function ($resource) {
-  return $resource('/date/:Id', {}, {
-    query: {
-      method: 'GET', params: {}, isArray: true
-    },
-    create: {
-      method: 'POST', params: {}
-    },
-    update: {
-      method: 'PUT', params: {}
-    },
-    delete: {
-      method: 'DELETE', params: {}
-    }
-  });
+  service.update = function (data) {
+    $log.debug('update user with id: ' + data.id);
+    return User.update(data).$promise;
+  };
+
+  service.delete = function (id) {
+    $log.debug('delete user with id: ' + id);
+    return User.delete({Id: id}).$promise;
+  };
+
+  service.get = function (id) {
+    $log.debug('get user with id: ' + id);
+    return User.get({Id: id}).$promise;
+  };
+
+  service.list = function () {
+    $log.debug('list users');
+    return User.query().$promise;
+  };
+
+  return service;
 }]);

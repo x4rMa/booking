@@ -1,0 +1,17 @@
+<div ng-include src="'partials/navi.html'"></div>
+<div class="container">
+
+  <div class="starter-template">
+    <h1>Users</h1>
+    <ul ng-show="users.length" class="users">
+      <li ng-repeat="user in users" class="thumbnail user-listing">
+        <a href="#/user/show/{{user.id}}"><b>Id:</b> {{user.id}}</a>
+        <a href="#/user/show/{{user.id}}"><b>Login:</b> {{user.login}}</a>
+        <a href="#/user/update/{{user.id}}">edit</a>
+        <a href="#/user/delete/{{user.id}}" onclick="confirm('delete?')">delete</a>
+      </li>
+    </ul>
+    <div ng-show="!users.length">There is no user avaiable.</div>
+
+  </div>
+</div>
