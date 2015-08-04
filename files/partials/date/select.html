@@ -1,1 +1,14 @@
-<h1>Select Shooting Date</h1>
+<div ng-include src="'partials/navi.html'"></div>
+<div class="container">
+
+  <div class="starter-template">
+    <h1>Termin f&uuml;r "{{shooting.name}}" w&auml;hlen</h1>
+    <ul ng-show="dates.length" class="dates">
+      <li ng-repeat="date in dates" class="thumbnail date-listing">
+        <a ng-click="book(date.id)"><b>Start:</b> {{date.start}} <b>End:</b> {{date.end}}</a>
+      </li>
+    </ul>
+    <div ng-show="!dates.length">Aktuell sind keine freien Termine verf&uuml;gbar.</div>
+
+  </div>
+</div>

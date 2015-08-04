@@ -110,6 +110,15 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
         },
       }
     }).
+    when('/shooting/select', {
+      templateUrl: 'partials/shooting/select.html',
+      controller: 'ShootingSelectCtrl',
+      resolve: {
+        permission: function (AuthorizationService, $route) {
+          return AuthorizationService.checkPermission(['participant']);
+        },
+      }
+    }).
     // model
     when('/model/create', {
       templateUrl: 'partials/model/form.html',
@@ -208,6 +217,15 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
       resolve: {
         permission: function (AuthorizationService, $route) {
           return AuthorizationService.checkPermission(['organizer']);
+        },
+      }
+    }).
+    when('/date/select/:ShootingId', {
+      templateUrl: 'partials/date/select.html',
+      controller: 'DateSelectCtrl',
+      resolve: {
+        permission: function (AuthorizationService, $route) {
+          return AuthorizationService.checkPermission(['participant']);
         },
       }
     }).

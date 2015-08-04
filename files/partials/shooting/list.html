@@ -5,9 +5,9 @@
     <h1>Shootings</h1>
     <ul ng-show="shootings.length" class="shootings">
       <li ng-repeat="shooting in shootings" class="thumbnail shooting-listing">
-        <a href="#/shooting/show/{{shooting.id}}"><b>Id:</b> {{shooting.id}}</a>
         <a href="#/shooting/show/{{shooting.id}}"><b>Name:</b> {{shooting.name}}</a>
         <a href="#/shooting/update/{{shooting.id}}">edit</a>
+        <a href="#/shooting/delete/{{shooting.id}}" onclick="confirm('sicher?')">delete</a>
       </li>
     </ul>
     <div ng-show="!shootings.length">There is no shooting avaiable.</div>

@@ -1,0 +1,14 @@
+<div ng-include src="'partials/navi.html'"></div>
+<div class="container">
+
+  <div class="starter-template">
+    <h1>Shooting w&auml;hlen</h1>
+    <ul ng-show="shootings.length" class="shootings">
+      <li ng-repeat="shooting in shootings" class="thumbnail shooting-listing">
+        <a href="#/shooting/select/{{shooting.id}}">{{shooting.name}}</a>
+      </li>
+    </ul>
+    <div ng-show="!shootings.length">Aktuell sind keine Shooting verf&uuml;gbar.</div>
+
+  </div>
+</div>

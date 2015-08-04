@@ -5,9 +5,7 @@
     <h1>Dates</h1>
     <ul ng-show="dates.length" class="dates">
       <li ng-repeat="date in dates" class="thumbnail date-listing">
-        <a href="#/date/show/{{date.id}}"><b>Id:</b> {{date.id}}</a>
-        <a href="#/date/show/{{date.id}}"><b>Start:</b> {{date.start}}</a>
-        <a href="#/date/show/{{date.id}}"><b>End:</b> {{date.end}}</a>
+        <a href="#/date/show/{{date.id}}"><b>Start:</b> {{date.start}} <b>End:</b> {{date.end}}</a>
         <a href="#/date/update/{{date.id}}">edit</a>
         <a href="#/date/delete/{{date.id}}" onclick="confirm('delete?')">delete</a>
       </li>

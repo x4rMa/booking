@@ -127,6 +127,11 @@ angular.module('bookingServices').factory('ShootingService', ['$log', 'Shooting'
     return Shooting.query().$promise;
   };
 
+  service.book = function (date_id, shooting_id) {
+    $log.debug('book shooting with id: ' + shooting_id);
+    return Shooting.update({id: shooting_id, date_id: date_id}).$promise;
+  };
+
   return service;
 }]);
 

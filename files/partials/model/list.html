@@ -6,11 +6,7 @@
     <ul ng-show="models.length" class="models">
       <li ng-repeat="model in models" class="thumbnail model-listing">
         <p>
-          <a href="#/model/show/{{model.id}}"><b>Id:</b> {{model.id}}</a>
-          <a href="#/model/show/{{model.id}}"><b>Firstname:</b> {{model.firstname}}</a>
-          <a href="#/model/show/{{model.id}}"><b>Lastname:</b> {{model.lastname}}</a>
-          <a href="#/model/show/{{model.id}}"><b>Email:</b> {{model.email}}</a>
-          <a href="#/model/show/{{model.id}}"><b>Phone:</b> {{model.phone}}</a>
+          <a href="#/model/show/{{model.id}}"><b>Firstname:</b> {{model.firstname}} <b>Lastname:</b> {{model.lastname}} <b>Email:</b> {{model.email}} <b>Phone:</b> {{model.phone}}</a>
           <a href="#/model/update/{{model.id}}">edit</a>
           <a href="#/model/delete/{{model.id}}" onclick="confirm('delete?')">delete</a>
         </p>
