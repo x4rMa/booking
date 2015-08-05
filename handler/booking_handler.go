@@ -32,6 +32,7 @@ import (
 	booking_shooting_handler_get "github.com/bborbe/booking/shooting/handler/get"
 	booking_shooting_handler_list "github.com/bborbe/booking/shooting/handler/list"
 	booking_shooting_handler_update "github.com/bborbe/booking/shooting/handler/update"
+	booking_shooting_handler_book "github.com/bborbe/booking/shooting/handler/book"
 	booking_shooting_service "github.com/bborbe/booking/shooting/service"
 
 	booking_user_handler_create "github.com/bborbe/booking/user/handler/create"
@@ -90,6 +91,7 @@ func createShootingHandlerFinder(prefix string, shootingService booking_shooting
 	hf.RegisterGetHandler(booking_shooting_handler_get.New(shootingService))
 	hf.RegisterUpdateHandler(booking_shooting_handler_update.New(shootingService))
 	hf.RegisterPatchHandler(booking_shooting_handler_update.New(shootingService))
+	hf.RegisterHandler("POST", "/book", booking_shooting_handler_book.New(shootingService))
 	return hf
 }
 

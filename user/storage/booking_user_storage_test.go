@@ -4,12 +4,12 @@ import (
 	"testing"
 
 	. "github.com/bborbe/assert"
-	"github.com/bborbe/booking/database"
+	"github.com/bborbe/booking/database/sqlite"
 	"github.com/bborbe/booking/user"
 )
 
 func createStorage() *storage {
-	return New(database.New("/tmp/booking_test.db", true))
+	return New(sqlite.New("/tmp/booking_test.db", true))
 }
 
 func TestImplementsStorage(t *testing.T) {

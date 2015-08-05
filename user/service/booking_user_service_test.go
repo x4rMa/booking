@@ -4,13 +4,13 @@ import (
 	"testing"
 
 	. "github.com/bborbe/assert"
-	"github.com/bborbe/booking/database"
+	"github.com/bborbe/booking/database/sqlite"
 	"github.com/bborbe/booking/user"
 	"github.com/bborbe/booking/user/storage"
 )
 
 func createService() *userService {
-	return New(storage.New(database.New("/tmp/booking_test.db", true)))
+	return New(storage.New(sqlite.New("/tmp/booking_test.db", true)))
 }
 
 func TestImplementsUserService(t *testing.T) {

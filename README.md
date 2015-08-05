@@ -35,6 +35,22 @@ Make your own changes
 
     sublime $GO/src/github.com/bborbe/booking
 
+Install Database
+----------------
+```
+aptitude install postgresql
+```
+
+```
+sudo su postgres -c 'psql'
+```
+
+```
+CREATE USER booking WITH PASSWORD 'myPassword';
+CREATE DATABASE booking WITH ENCODING 'utf8';
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO booking;
+GRANT ALL PRIVILEGES ON DATABASE booking to booking;
+```
 
 Documentation
 -------------
