@@ -42,6 +42,7 @@ func (h *handler) serveHTTP(responseWriter http.ResponseWriter, request *http.Re
 	if err != nil {
 		return err
 	}
+	logger.Debugf("date create: %s", string(content))
 	var f booking_date.Date
 	err = json.Unmarshal(content, &f)
 	if err != nil {

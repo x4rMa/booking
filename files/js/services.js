@@ -99,11 +99,13 @@ angular.module('bookingServices').factory('Shooting', ['$resource', function ($r
   });
 }]);
 
-angular.module('bookingServices').factory('ShootingService', ['$log', 'Shooting', function ($log, Shooting) {
+angular.module('bookingServices').factory('ShootingService', ['$log', '$http', 'Shooting', function ($log, $http, Shooting) {
   var service = {};
 
   service.create = function (data) {
     $log.debug('create shooting');
+    data.model_id = parseInt(data.model_id);
+    data.date_id = parseInt(data.date_id);
     return Shooting.create(data).$promise;
   };
 
@@ -129,7 +131,7 @@ angular.module('bookingServices').factory('ShootingService', ['$log', 'Shooting'
 
   service.book = function (date_id, shooting_id) {
     $log.debug('book shooting with id: ' + shooting_id);
-    return $http.post('/shooting/book', {'id': shooting_id, 'date_id': date_id});
+    return $http.post('/shooting/book', {'id': parseInt(shooting_id), 'date_id': parseInt(date_id)});
   };
 
   return service;

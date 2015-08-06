@@ -42,7 +42,7 @@ func (h *handler) serveHTTP(responseWriter http.ResponseWriter, request *http.Re
 	if err != nil {
 		return err
 	}
-	logger.Debugf("create user: %v", string(content))
+	logger.Debugf("user create: %s", string(content))
 	var f booking_user.User
 	err = json.Unmarshal(content, &f)
 	if err != nil {

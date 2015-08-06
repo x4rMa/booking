@@ -74,7 +74,7 @@ angular.module('bookingControllers').controller('ShootingShowCtrl', ['$scope', '
   });
 }]);
 
-angular.module('bookingControllers').controller('ShootingUpdateCtrl', ['$scope', '$routeParams', '$log', '$location', 'ShootingService', 'ModelService', function ($scope, $routeParams, $log, $location, ShootingService, ModelService) {
+angular.module('bookingControllers').controller('ShootingUpdateCtrl', ['$scope', '$routeParams', '$log', '$location', 'ShootingService', 'ModelService', 'DateService', function ($scope, $routeParams, $log, $location, ShootingService, ModelService, DateService) {
   $log.debug('show shooting with id: ' + $routeParams.Id);
   ModelService.list().then(function (result) {
     $scope.models = result;
@@ -89,7 +89,6 @@ angular.module('bookingControllers').controller('ShootingUpdateCtrl', ['$scope',
     $location.path('/shooting/list');
   });
   $scope.submit = function () {
-    $scope.shooting.model_id = parseInt($scope.shooting.model_id);
     ShootingService.update($scope.shooting).then(function (result) {
       $log.debug('update shooting success');
       $location.path('/shooting/show/' + shooting.id);
@@ -281,7 +280,7 @@ angular.module('bookingControllers').controller('DateSelectCtrl', ['$scope', '$r
   $scope.book = function (date_id) {
     $log.debug('book ' + date_id + ' for shooting ' + $routeParams.ShootingId);
     ShootingService.book(date_id, $routeParams.ShootingId).then(function (result) {
-      $log.debug('book date for shooting success: ' + error);
+      $log.debug('book date for shooting success');
     }, function (error) {
       $log.debug('book date for shooting failed: ' + error);
     });

@@ -42,6 +42,7 @@ func (h *handler) serveHTTP(responseWriter http.ResponseWriter, request *http.Re
 	if err != nil {
 		return err
 	}
+	logger.Debugf("user update: %s", string(content))
 	var f booking_user.User
 	err = json.Unmarshal(content, &f)
 	if err != nil {
