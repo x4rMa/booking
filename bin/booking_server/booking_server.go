@@ -20,8 +20,8 @@ import (
 	booking_user_service "github.com/bborbe/booking/user/service"
 	booking_user_storage "github.com/bborbe/booking/user/storage"
 
-	booking_tokengenerator "github.com/bborbe/booking/tokengenerator"
 	"github.com/bborbe/booking/database/postgres"
+	booking_tokengenerator "github.com/bborbe/booking/tokengenerator"
 	"github.com/bborbe/eventbus"
 )
 

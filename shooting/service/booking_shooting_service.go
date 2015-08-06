@@ -1,12 +1,12 @@
 package service
 
 import (
+	"github.com/bborbe/booking/booked_event"
 	"github.com/bborbe/booking/shooting"
 	"github.com/bborbe/booking/shooting/storage"
+	"github.com/bborbe/eventbus"
 	"github.com/bborbe/log"
 	_ "github.com/lib/pq"
-	"github.com/bborbe/eventbus"
-	"github.com/bborbe/booking/booked_event"
 )
 
 var (

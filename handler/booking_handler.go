@@ -27,12 +27,12 @@ import (
 	booking_model_handler_update "github.com/bborbe/booking/model/handler/update"
 	booking_model_service "github.com/bborbe/booking/model/service"
 
+	booking_shooting_handler_book "github.com/bborbe/booking/shooting/handler/book"
 	booking_shooting_handler_create "github.com/bborbe/booking/shooting/handler/create"
 	booking_shooting_handler_delete "github.com/bborbe/booking/shooting/handler/delete"
 	booking_shooting_handler_get "github.com/bborbe/booking/shooting/handler/get"
 	booking_shooting_handler_list "github.com/bborbe/booking/shooting/handler/list"
 	booking_shooting_handler_update "github.com/bborbe/booking/shooting/handler/update"
-	booking_shooting_handler_book "github.com/bborbe/booking/shooting/handler/book"
 	booking_shooting_service "github.com/bborbe/booking/shooting/service"
 
 	booking_user_handler_create "github.com/bborbe/booking/user/handler/create"

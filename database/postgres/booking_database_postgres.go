@@ -1,22 +1,23 @@
 package postgres
 
 import (
-	"github.com/jinzhu/gorm"
 	"fmt"
+
 	"github.com/bborbe/log"
+	"github.com/jinzhu/gorm"
 )
 
 var logger = log.DefaultLogger
 
 type postgres struct {
-	dbname      string
-	dbuser      string
-	dbpassword  string
-	logmode     bool
-	db      *gorm.DB
+	dbname     string
+	dbuser     string
+	dbpassword string
+	logmode    bool
+	db         *gorm.DB
 }
 
-func New(dbname string, dbuser string, dbpassword string , logmode bool) *postgres {
+func New(dbname string, dbuser string, dbpassword string, logmode bool) *postgres {
 	s := new(postgres)
 	s.dbuser = dbuser
 	s.dbpassword = dbpassword
