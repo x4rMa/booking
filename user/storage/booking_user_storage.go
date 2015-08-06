@@ -1,8 +1,6 @@
 package storage
 
 import (
-	"fmt"
-
 	"github.com/bborbe/booking/database"
 	"github.com/bborbe/booking/user"
 	_ "github.com/mattn/go-sqlite3"
@@ -24,11 +22,6 @@ type storage struct {
 func New(database database.Database) *storage {
 	s := new(storage)
 	s.database = database
-	db, err := s.database.DB()
-	if err != nil {
-		panic(fmt.Sprintf("auto migrate failed: %v", err))
-	}
-	db.AutoMigrate(&user.User{})
 	s.createDefaultUser()
 	return s
 }
