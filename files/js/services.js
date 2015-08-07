@@ -18,14 +18,23 @@ angular.module('bookingServices').factory('AuthenticationService', ['$log', '$co
   };
 
   service.verifyLogin = function (user) {
-    $log.debug('verifyLogin for user: ' + user.login);
-    return $http.post('/user/verifyLogin', user);
+    $log.debug('verifyLogin for user: ' + user.login + ' token: ' + user.token);
+    var deferred = $q.defer();
+    $http.post('/authentication/verifyLogin', user).then(function (response) {
+      $log.debug('verifylogin call success');
+      deferred.resolve(response.data);
+    }, function (response) {
+      $log.debug('verifylogin call failed');
+      deferred.reject(response.data);
+    });
+    return deferred.promise;
   };
 
   service.login = function (user) {
     var deferred = $q.defer();
     service.verifyLogin(user).then(function (result) {
-      if (result) {
+      $log.debug('verifyLogin = ' + result);
+      if (result === 'true') {
         $cookieStore.put(userkey, user);
       }
       deferred.resolve(result);
@@ -47,23 +56,25 @@ angular.module('bookingServices').factory('AuthorizationService', ['$log', '$q',
 
   service.hasRole = function (role) {
     var result = false;
-    if (role == 'administrator' && AuthenticationService.isLoggedIn() && AuthenticationService.getCurrent().login == 'admin') {
-      result = true;
-    }
-    if (role == 'organizer' && AuthenticationService.isLoggedIn()) {
-      result = true;
-    }
-    if (role == 'participant' && AuthenticationService.isLoggedIn()) {
-      result = true;
+    if (AuthenticationService.isLoggedIn()) {
+      if (role == 'administrator' && AuthenticationService.getCurrent().login == 'admin') {
+        result = true;
+      }
+      if (role == 'organizer' && AuthenticationService.getCurrent().login && AuthenticationService.getCurrent().password) {
+        result = true;
+      }
+      if (role == 'participant' && AuthenticationService.getCurrent().token) {
+        result = true;
+      }
     }
     $log.debug('has role: ' + role + ' => ' + result);
     return result;
   };
 
-  service.checkPermission = function (permission_list) {
+  service.checkPermission = function (role) {
     var deferred = $q.defer();
-    $log.debug("hasPermission");
-    if (AuthenticationService.isLoggedIn()) {
+    $log.debug("checkPermission: " + role);
+    if (service.hasRole(role)) {
       deferred.resolve();
     } else {
       //If user does not have required access,

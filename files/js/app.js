@@ -24,7 +24,7 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
       controller: 'UserCreateCtrl',
       resolve: {
         permission: function (AuthorizationService, $route) {
-          return AuthorizationService.checkPermission(['administrator']);
+          return AuthorizationService.checkPermission('administrator');
         },
       }
     }).
@@ -33,7 +33,7 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
       controller: 'UserUpdateCtrl',
       resolve: {
         permission: function (AuthorizationService, $route) {
-          return AuthorizationService.checkPermission(['administrator']);
+          return AuthorizationService.checkPermission('administrator');
         },
       }
     }).
@@ -42,7 +42,7 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
       controller: 'UserListCtrl',
       resolve: {
         permission: function (AuthorizationService, $route) {
-          return AuthorizationService.checkPermission(['administrator']);
+          return AuthorizationService.checkPermission('administrator');
         },
       }
     }).
@@ -51,7 +51,7 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
       controller: 'UserShowCtrl',
       resolve: {
         permission: function (AuthorizationService, $route) {
-          return AuthorizationService.checkPermission(['administrator']);
+          return AuthorizationService.checkPermission('administrator');
         },
       }
     }).
@@ -60,7 +60,7 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
       controller: 'UserDeleteCtrl',
       resolve: {
         permission: function (AuthorizationService, $route) {
-          return AuthorizationService.checkPermission(['administrator']);
+          return AuthorizationService.checkPermission('administrator');
         },
       }
     }).
@@ -70,7 +70,7 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
       controller: 'ShootingCreateCtrl',
       resolve: {
         permission: function (AuthorizationService, $route) {
-          return AuthorizationService.checkPermission(['organizer']);
+          return AuthorizationService.checkPermission('organizer');
         },
       }
     }).
@@ -79,7 +79,7 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
       controller: 'ShootingUpdateCtrl',
       resolve: {
         permission: function (AuthorizationService, $route) {
-          return AuthorizationService.checkPermission(['organizer']);
+          return AuthorizationService.checkPermission('organizer');
         },
       }
     }).
@@ -88,7 +88,7 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
       controller: 'ShootingListCtrl',
       resolve: {
         permission: function (AuthorizationService, $route) {
-          return AuthorizationService.checkPermission(['organizer']);
+          return AuthorizationService.checkPermission('organizer');
         },
       }
     }).
@@ -97,7 +97,7 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
       controller: 'ShootingShowCtrl',
       resolve: {
         permission: function (AuthorizationService, $route) {
-          return AuthorizationService.checkPermission(['organizer']);
+          return AuthorizationService.checkPermission('organizer');
         },
       }
     }).
@@ -106,7 +106,7 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
       controller: 'ShootingDeleteCtrl',
       resolve: {
         permission: function (AuthorizationService, $route) {
-          return AuthorizationService.checkPermission(['organizer']);
+          return AuthorizationService.checkPermission('organizer');
         },
       }
     }).
@@ -115,7 +115,7 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
       controller: 'ShootingSelectCtrl',
       resolve: {
         permission: function (AuthorizationService, $route) {
-          return AuthorizationService.checkPermission(['participant']);
+          return AuthorizationService.checkPermission('participant');
         },
       }
     }).
@@ -125,7 +125,7 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
       controller: 'ModelCreateCtrl',
       resolve: {
         permission: function (AuthorizationService, $route) {
-          return AuthorizationService.checkPermission(['organizer']);
+          return AuthorizationService.checkPermission('organizer');
         },
       }
     }).
@@ -134,7 +134,7 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
       controller: 'ModelUpdateCtrl',
       resolve: {
         permission: function (AuthorizationService, $route) {
-          return AuthorizationService.checkPermission(['organizer']);
+          return AuthorizationService.checkPermission('organizer');
         },
       }
     }).
@@ -143,16 +143,16 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
       controller: 'ModelListCtrl',
       resolve: {
         permission: function (AuthorizationService, $route) {
-          return AuthorizationService.checkPermission(['organizer']);
+          return AuthorizationService.checkPermission('organizer');
         },
       }
     }).
-    when('/model/complete/:Token', {
+    when('/model/complete', {
       templateUrl: 'partials/model/complete.html',
       controller: 'ModelCompleteCtrl',
       resolve: {
         permission: function (AuthorizationService, $route) {
-          return AuthorizationService.checkPermission(['participant']);
+          return AuthorizationService.checkPermission('participant');
         },
       }
     }).
@@ -161,7 +161,7 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
       controller: 'ModelShowCtrl',
       resolve: {
         permission: function (AuthorizationService, $route) {
-          return AuthorizationService.checkPermission(['organizer']);
+          return AuthorizationService.checkPermission('organizer');
         },
       }
     }).
@@ -170,9 +170,13 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
       controller: 'ModelDeleteCtrl',
       resolve: {
         permission: function (AuthorizationService, $route) {
-          return AuthorizationService.checkPermission(['organizer']);
+          return AuthorizationService.checkPermission('organizer');
         },
       }
+    }).
+    when('/model/auth/:Token', {
+      template: '',
+      controller: 'ModelAuthCtrl'
     }).
     // date
     when('/date/create', {
@@ -180,7 +184,7 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
       controller: 'DateCreateCtrl',
       resolve: {
         permission: function (AuthorizationService, $route) {
-          return AuthorizationService.checkPermission(['organizer']);
+          return AuthorizationService.checkPermission('organizer');
         },
       }
     }).
@@ -189,7 +193,7 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
       controller: 'DateUpdateCtrl',
       resolve: {
         permission: function (AuthorizationService, $route) {
-          return AuthorizationService.checkPermission(['organizer']);
+          return AuthorizationService.checkPermission('organizer');
         },
       }
     }).
@@ -198,7 +202,7 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
       controller: 'DateListCtrl',
       resolve: {
         permission: function (AuthorizationService, $route) {
-          return AuthorizationService.checkPermission(['organizer']);
+          return AuthorizationService.checkPermission('organizer');
         },
       }
     }).
@@ -207,7 +211,7 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
       controller: 'DateSelectCtrl',
       resolve: {
         permission: function (AuthorizationService, $route) {
-          return AuthorizationService.checkPermission(['participant']);
+          return AuthorizationService.checkPermission('participant');
         },
       }
     }).
@@ -216,7 +220,7 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
       controller: 'DateDeleteCtrl',
       resolve: {
         permission: function (AuthorizationService, $route) {
-          return AuthorizationService.checkPermission(['organizer']);
+          return AuthorizationService.checkPermission('organizer');
         },
       }
     }).
@@ -225,7 +229,7 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
       controller: 'DateSelectCtrl',
       resolve: {
         permission: function (AuthorizationService, $route) {
-          return AuthorizationService.checkPermission(['participant']);
+          return AuthorizationService.checkPermission('participant');
         },
       }
     }).

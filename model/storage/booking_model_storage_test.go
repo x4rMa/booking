@@ -9,7 +9,7 @@ import (
 )
 
 func createStorage() *storage {
-	return New(sqlite.New("/tmp/booking_test.db", true))
+	return New(sqlite.New("/tmp/booking_test.db", false))
 }
 
 func TestImplementsStorage(t *testing.T) {

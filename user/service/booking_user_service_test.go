@@ -10,7 +10,7 @@ import (
 )
 
 func createService() *userService {
-	return New(storage.New(sqlite.New("/tmp/booking_test.db", true)))
+	return New(storage.New(sqlite.New("/tmp/booking_test.db", false)))
 }
 
 func TestImplementsUserService(t *testing.T) {

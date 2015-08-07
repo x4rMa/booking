@@ -10,8 +10,9 @@ angular.module('bookingControllers').controller('LoginCtrl', ['$scope', '$log', 
   };
   $scope.submit = function () {
     AuthenticationService.login($scope.user).then(function (result) {
+      $log.debug('login = ' + result);
       if (result) {
-        $log.debug('login success => redirect to create booking');
+        $log.debug('login success => redirect');
         $scope.reset();
         $location.path('/shooting/list');
       } else {
@@ -162,7 +163,7 @@ angular.module('bookingControllers').controller('ModelCreateCtrl', ['$scope', '$
 angular.module('bookingControllers').controller('ModelShowCtrl', ['$scope', '$routeParams', '$log', '$location', 'ModelService', function ($scope, $routeParams, $log, $location, ModelService) {
   $log.debug('show model with id: ' + $routeParams.Id);
   ModelService.get($routeParams.Id).then(function (result) {
-    $scope.link = $location.protocol() + '://' + $location.host() + ':' + $location.port() + '/#/model/complete/' + result.token;
+    $scope.link = $location.protocol() + '://' + $location.host() + ':' + $location.port() + '/#/model/auth/' + result.token;
     $scope.model = result;
   }, function (error) {
     $log.debug('model not found: ' + error);
@@ -215,6 +216,22 @@ angular.module('bookingControllers').controller('ModelCompleteCtrl', ['$scope', 
       $log.debug('update model failed: ' + error);
     });
   };
+}]);
+
+angular.module('bookingControllers').controller('ModelAuthCtrl', ['$scope', '$routeParams', '$log', '$location', 'AuthenticationService', function ($scope, $routeParams, $log, $location, AuthenticationService) {
+  $log.debug('auth model with token: ' + $routeParams.Token);
+  AuthenticationService.login({'token': $routeParams.Token}).then(function (result) {
+    if (result) {
+      $log.debug('auth model success');
+      $location.path('/model/complete');
+    } else {
+      $log.debug('auth model failed');
+      $location.path('/');
+    }
+  }, function (error) {
+    $log.debug('auth model failed: ' + error);
+    $location.path('/');
+  });
 }]);
 
 angular.module('bookingControllers').controller('DateCreateCtrl', ['$scope', '$log', '$location', 'DateService', function ($scope, $log, $location, DateService) {

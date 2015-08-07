@@ -4,6 +4,10 @@ import (
 	uuid "github.com/nu7hatch/gouuid"
 )
 
+type TokenGenerator interface {
+	GenerateToken() (string, error)
+}
+
 type tokengenerator struct{}
 
 func New() *tokengenerator {

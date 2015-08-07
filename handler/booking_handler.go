@@ -40,13 +40,15 @@ import (
 	booking_user_handler_get "github.com/bborbe/booking/user/handler/get"
 	booking_user_handler_list "github.com/bborbe/booking/user/handler/list"
 	booking_user_handler_update "github.com/bborbe/booking/user/handler/update"
-	booking_user_handler_verifylogin "github.com/bborbe/booking/user/handler/verifylogin"
 	booking_user_service "github.com/bborbe/booking/user/service"
+
+	booking_authentication_handler_verifylogin "github.com/bborbe/booking/authentication/handler/verifylogin"
+	booking_authentication_service "github.com/bborbe/booking/authentication/service"
 )
 
 var logger = log.DefaultLogger
 
-func NewHandler(documentRoot string, dateService booking_date_service.Service, modelService booking_model_service.Service, shootingService booking_shooting_service.Service, userService booking_user_service.Service) http.Handler {
+func NewHandler(documentRoot string, dateService booking_date_service.Service, modelService booking_model_service.Service, shootingService booking_shooting_service.Service, userService booking_user_service.Service, authenticationService booking_authentication_service.Service) http.Handler {
 	logger.Debugf("root: %s", documentRoot)
 	fileServer := cachingheader.NewCachingHeaderHandler(contenttype.NewContentTypeHandler(http.FileServer(http.Dir(documentRoot))))
 	handlerFinder := part.New("")
@@ -58,7 +60,14 @@ func NewHandler(documentRoot string, dateService booking_date_service.Service, m
 	handlerFinder.RegisterHandlerFinder("/model", createModelHandlerFinder("/model", modelService))
 	handlerFinder.RegisterHandlerFinder("/shooting", createShootingHandlerFinder("/shooting", shootingService))
 	handlerFinder.RegisterHandlerFinder("/user", createUserHandlerFinder("/user", userService))
+	handlerFinder.RegisterHandlerFinder("/authentication", createAuthenticationHandlerFinder("/authentication", authenticationService))
 	return log_handler.NewLogHandler(fallback.NewFallback(handlerFinder, static.NewHandlerStaticContentReturnCode("not found", 404)))
+}
+
+func createAuthenticationHandlerFinder(prefix string, authenticationService booking_authentication_service.Service) handler_finder.HandlerFinder {
+	hf := part.New(prefix)
+	hf.RegisterHandler("/verifyLogin", booking_authentication_handler_verifylogin.New(authenticationService))
+	return hf
 }
 
 func createDateHandlerFinder(prefix string, dateService booking_date_service.Service) handler_finder.HandlerFinder {
@@ -103,6 +112,5 @@ func createUserHandlerFinder(prefix string, userService booking_user_service.Ser
 	hf.RegisterGetHandler(booking_user_handler_get.New(userService))
 	hf.RegisterUpdateHandler(booking_user_handler_update.New(userService))
 	hf.RegisterPatchHandler(booking_user_handler_update.New(userService))
-	hf.RegisterHandler("POST", "/verifyLogin", booking_user_handler_verifylogin.New(userService))
 	return hf
 }

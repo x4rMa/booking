@@ -24,6 +24,8 @@ import (
 
 	booking_tokengenerator "github.com/bborbe/booking/tokengenerator"
 	"github.com/bborbe/eventbus"
+	booking_authentication_service "github.com/bborbe/booking/authentication/service"
+
 )
 
 func TestNewHandlerImplementsHttpHandler(t *testing.T) {
@@ -35,13 +37,14 @@ func TestNewHandlerImplementsHttpHandler(t *testing.T) {
 	}
 }
 func createHandler() http.Handler {
-	db := sqlite.New("/tmp/booking_test.db", true)
+	db := sqlite.New("/tmp/booking_test.db", false)
 	tokengenerator := booking_tokengenerator.New()
 	modelService := booking_model_service.New(booking_model_storage.New(db), tokengenerator)
 	dateService := booking_date_service.New(booking_date_storage.New(db))
 	userService := booking_user_service.New(booking_user_storage.New(db))
+	authenticationService := booking_authentication_service.New(userService, modelService)
 	shootingService := booking_shooting_service.New(booking_shooting_storage.New(db), eventbus.New())
-	return NewHandler("/tmp", dateService, modelService, shootingService, userService)
+	return NewHandler("/tmp", dateService, modelService, shootingService, userService, authenticationService)
 }
 
 func TestDate(t *testing.T) {

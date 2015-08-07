@@ -1,8 +1,8 @@
 package verifylogin
 
 import (
-	booking_user "github.com/bborbe/booking/user"
-	booking_user_service "github.com/bborbe/booking/user/service"
+	booking_authentication "github.com/bborbe/booking/authentication"
+	booking_authentication_service "github.com/bborbe/booking/authentication/service"
 
 	"encoding/json"
 	"io/ioutil"
@@ -18,10 +18,10 @@ var (
 )
 
 type handler struct {
-	service booking_user_service.Service
+	service booking_authentication_service.Service
 }
 
-func New(service booking_user_service.Service) *handler {
+func New(service booking_authentication_service.Service) *handler {
 	h := new(handler)
 	h.service = service
 	return h
@@ -42,8 +42,8 @@ func (h *handler) serveHTTP(responseWriter http.ResponseWriter, request *http.Re
 	if err != nil {
 		return err
 	}
-	logger.Debugf("verifylogin user: %v", string(content))
-	var f booking_user.User
+	logger.Debugf("verifylogin authentication: %v", string(content))
+	var f booking_authentication.Authentication
 	err = json.Unmarshal(content, &f)
 	if err != nil {
 		return err

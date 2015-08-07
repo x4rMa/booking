@@ -20,6 +20,8 @@ import (
 	booking_user_service "github.com/bborbe/booking/user/service"
 	booking_user_storage "github.com/bborbe/booking/user/storage"
 
+	booking_authentication_service "github.com/bborbe/booking/authentication/service"
+
 	"github.com/bborbe/booking/database/postgres"
 	booking_tokengenerator "github.com/bborbe/booking/tokengenerator"
 	"github.com/bborbe/eventbus"
@@ -52,5 +54,6 @@ func createServer(address string, documentRoot string, databaseName string, data
 	eventbus := eventbus.New()
 	shootingService := booking_shooting_service.New(booking_shooting_storage.New(db), eventbus)
 	userService := booking_user_service.New(booking_user_storage.New(db))
-	return &http.Server{Addr: address, Handler: handler.NewHandler(documentRoot, dateService, modelService, shootingService, userService)}
+	authenticationService := booking_authentication_service.New(userService, modelService)
+	return &http.Server{Addr: address, Handler: handler.NewHandler(documentRoot, dateService, modelService, shootingService, userService, authenticationService)}
 }
