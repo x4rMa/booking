@@ -8,6 +8,7 @@ import (
 
 type Storage interface {
 	Find() (*[]date.Date, error)
+	FindWithoutShooting() (*[]date.Date, error)
 	Create(date *date.Date) (*date.Date, error)
 	Get(id int) (*date.Date, error)
 	Delete(id int) (*date.Date, error)
@@ -47,6 +48,17 @@ func (s *storage) Find() (*[]date.Date, error) {
 	}
 	dates := &[]date.Date{}
 	query := db.Find(dates)
+	return dates, query.Error
+}
+
+func (s *storage) FindWithoutShooting() (*[]date.Date, error) {
+	db, err := s.database.DB()
+	if err != nil {
+		return nil, err
+	}
+	dates := &[]date.Date{}
+	query := db.Find(dates)
+	db.Joins("LEFT JOIN shooting ON shooting.date_id = date.id").Where("shooting.id IS NULL").Find(dates)
 	return dates, query.Error
 }
 

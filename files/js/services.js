@@ -203,6 +203,9 @@ angular.module('bookingServices').factory('ModelService', ['$log', 'Model', func
 
 angular.module('bookingServices').factory('Date', ['$resource', function ($resource) {
   return $resource('/date/:Id', {}, {
+    listFree: {
+      url: '/date/free',  method: 'GET', params: {}, isArray: true
+    },
     query: {
       method: 'GET', params: {}, isArray: true
     },
@@ -244,6 +247,11 @@ angular.module('bookingServices').factory('DateService', ['$log', 'Date', functi
   service.list = function () {
     $log.debug('list dates');
     return Date.query().$promise;
+  };
+
+  service.listFree = function () {
+    $log.debug('list free dates');
+    return Date.listFree().$promise;
   };
 
   return service;

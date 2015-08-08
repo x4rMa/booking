@@ -78,6 +78,7 @@ func createDateHandlerFinder(prefix string, dateService booking_date_service.Ser
 	hf.RegisterGetHandler(booking_date_handler_get.New(dateService.Get))
 	hf.RegisterUpdateHandler(booking_date_handler_update.New(dateService.Update))
 	hf.RegisterPatchHandler(booking_date_handler_update.New(dateService.Update))
+	hf.RegisterHandler("GET", "/free", booking_date_handler_list.New(dateService.ListFree))
 	return hf
 }
 

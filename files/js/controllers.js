@@ -131,12 +131,18 @@ angular.module('bookingControllers').controller('ShootingDeleteCtrl', ['$scope',
 
 angular.module('bookingControllers').controller('ShootingSelectCtrl', ['$scope', '$log', '$location', 'ShootingService', function ($scope, $log, $location, ShootingService) {
   ShootingService.list().then(function (result) {
-    $log.debug('list shootings for select success');
-    $scope.shootings = result;
-    if (result.length == 1) {
-      $log.debug('auto select shooting with id: ' + result[0].id);
-      $location.path('/date/select/' + result[0].id);
-    }
+    $log.debug('list ' + result.lenght + ' shootings for select success');
+    $scope.shootingsWithoutDate = [];
+    $scope.shootingsWithDate = [];
+    angular.forEach(result, function (shooting) {
+      if (shooting.date_id && shooting.date_id > 0) {
+        $log.debug('push to shootingsWithDate');
+        $scope.shootingsWithDate.push(shooting);
+      } else {
+        $log.debug('push to shootingsWithoutDate');
+        $scope.shootingsWithoutDate.push(shooting);
+      }
+    });
   }, function (error) {
     $log.debug('list shootings for select failed: ' + error);
   });
@@ -298,11 +304,11 @@ angular.module('bookingControllers').controller('DateSelectCtrl', ['$scope', '$r
   }, function (error) {
     $log.debug('get shooting failed: ' + error);
   });
-  DateService.list().then(function (result) {
-    $log.debug('list dates success');
+  DateService.listFree().then(function (result) {
+    $log.debug('list free dates success');
     $scope.dates = result;
   }, function (error) {
-    $log.debug('list dates failed: ' + error);
+    $log.debug('list free dates failed: ' + error);
   });
   $scope.book = function (date_id) {
     $log.debug('book ' + date_id + ' for shooting ' + $routeParams.ShootingId);

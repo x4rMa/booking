@@ -2,13 +2,22 @@
 <div class="container">
 
   <div class="starter-template">
-    <h1>Shooting w&auml;hlen</h1>
-    <ul ng-show="shootings.length" class="shootings">
-      <li ng-repeat="shooting in shootings" class="thumbnail shooting-listing">
-        <a href="#/shooting/select/{{shooting.id}}">{{shooting.name}}</a>
+    <h1>Shooting mit Termin</h1>
+    <ul ng-show="shootingsWithDate.length" class="shootings">
+      <li ng-repeat="shooting in shootingsWithDate" class="thumbnail shooting-listing">
+        {{shooting.name}} {{shooting.date_id}}
       </li>
     </ul>
-    <div ng-show="!shootings.length">Aktuell sind keine Shooting verf&uuml;gbar.</div>
+    <div ng-show="!shootingsWithDate.length">There is no shooting avaiable.</div>
+
+    <h1>Shooting ohne Termin</h1>
+    <ul ng-show="shootingsWithoutDate.length" class="shootings">
+      <li ng-repeat="shooting in shootingsWithoutDate" class="thumbnail shooting-listing">
+        <a href="#/date/select/{{shooting.id}}">{{shooting.name}}</a>
+      </li>
+    </ul>
+    <div ng-show="!shootingsWithoutDate.length">There is no shooting avaiable.</div>
+
 
   </div>
 </div>
