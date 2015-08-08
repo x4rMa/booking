@@ -2,8 +2,6 @@ package list
 
 import (
 	booking_user "github.com/bborbe/booking/user"
-	booking_user_service "github.com/bborbe/booking/user/service"
-
 	"net/http"
 
 	"github.com/bborbe/log"
@@ -15,13 +13,15 @@ var (
 	logger = log.DefaultLogger
 )
 
+type List func() (*[]booking_user.User, error)
+
 type handler struct {
-	service booking_user_service.Service
+	list List
 }
 
-func New(service booking_user_service.Service) *handler {
+func New(list List) *handler {
 	h := new(handler)
-	h.service = service
+	h.list = list
 	return h
 }
 
@@ -38,7 +38,7 @@ func (h *handler) ServeHTTP(responseWriter http.ResponseWriter, request *http.Re
 func (h *handler) serveHTTP(responseWriter http.ResponseWriter, request *http.Request) error {
 	var err error
 	var list *[]booking_user.User
-	if list, err = h.service.List(); err != nil {
+	if list, err = h.list(); err != nil {
 		logger.Debugf("list users failed: %v", err)
 		return err
 	}

@@ -107,7 +107,7 @@ func createShootingHandlerFinder(prefix string, shootingService booking_shooting
 
 func createUserHandlerFinder(prefix string, userService booking_user_service.Service) handler_finder.HandlerFinder {
 	hf := rest.New(prefix)
-	hf.RegisterListHandler(booking_user_handler_list.New(userService))
+	hf.RegisterListHandler(booking_user_handler_list.New(userService.List))
 	hf.RegisterCreateHandler(booking_user_handler_create.New(userService))
 	hf.RegisterDeleteHandler(booking_user_handler_delete.New(userService))
 	hf.RegisterGetHandler(booking_user_handler_get.New(userService))

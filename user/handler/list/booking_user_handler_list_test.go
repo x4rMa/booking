@@ -2,6 +2,8 @@ package list
 
 import (
 	"testing"
+	booking_user "github.com/bborbe/booking/user"
+
 
 	"net/http"
 
@@ -9,7 +11,9 @@ import (
 )
 
 func TestImplementsHttpHandler(t *testing.T) {
-	r := New(nil)
+	r := New(func() (*[]booking_user.User, error) {
+		return nil, nil
+	})
 	var i *http.Handler
 	err := AssertThat(r, Implements(i))
 	if err != nil {
