@@ -101,8 +101,18 @@ angular.module('bookingControllers').controller('ShootingUpdateCtrl', ['$scope',
 
 angular.module('bookingControllers').controller('ShootingListCtrl', ['$scope', '$log', 'ShootingService', function ($scope, $log, ShootingService) {
   ShootingService.list().then(function (result) {
-    $log.debug('list shootings success');
-    $scope.shootings = result;
+    $log.debug('list ' + result.length + ' shootings');
+    $scope.shootingsWithoutDate = [];
+    $scope.shootingsWithDate = [];
+    angular.forEach(result, function (shooting) {
+      if (shooting.date_id && shooting.date_id > 0) {
+        $log.debug('push to shootingsWithDate');
+        $scope.shootingsWithDate.push(shooting);
+      } else {
+        $log.debug('push to shootingsWithoutDate');
+        $scope.shootingsWithoutDate.push(shooting);
+      }
+    });
   }, function (error) {
     $log.debug('list shootings failed: ' + error);
   });
