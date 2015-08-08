@@ -22,10 +22,9 @@ import (
 	booking_user_service "github.com/bborbe/booking/user/service"
 	booking_user_storage "github.com/bborbe/booking/user/storage"
 
+	booking_authentication_service "github.com/bborbe/booking/authentication/service"
 	booking_tokengenerator "github.com/bborbe/booking/tokengenerator"
 	"github.com/bborbe/eventbus"
-	booking_authentication_service "github.com/bborbe/booking/authentication/service"
-
 )
 
 func TestNewHandlerImplementsHttpHandler(t *testing.T) {

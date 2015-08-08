@@ -5,8 +5,8 @@ import (
 
 	. "github.com/bborbe/assert"
 	"github.com/bborbe/booking/authentication"
-	"github.com/bborbe/booking/user"
 	"github.com/bborbe/booking/database/sqlite"
+	"github.com/bborbe/booking/user"
 
 	user_service "github.com/bborbe/booking/user/service"
 	user_storage "github.com/bborbe/booking/user/storage"
@@ -33,19 +33,19 @@ func TestVerifyLoginUser(t *testing.T) {
 	password := "testpassword"
 	database := sqlite.New("/tmp/booking_test.db", false)
 
-	userStorage := user_storage.New(database);
+	userStorage := user_storage.New(database)
 	userService := user_service.New(userStorage)
 
-	modelStorage := model_storage.New(database);
+	modelStorage := model_storage.New(database)
 	modelService := model_service.New(modelStorage, tokengenerator.New())
 
-	_, err = userService.Create(&user.User{Login:name, Password: password})
+	_, err = userService.Create(&user.User{Login: name, Password: password})
 	if err = AssertThat(err, NilValue()); err != nil {
 		t.Fatal(err)
 	}
 	authenticationService := New(userService, modelService)
 
-	valid, err = authenticationService.VerifyLogin(&authentication.Authentication{Login:name, Password:password})
+	valid, err = authenticationService.VerifyLogin(&authentication.Authentication{Login: name, Password: password})
 	if err = AssertThat(err, NilValue()); err != nil {
 		t.Fatal(err)
 	}
@@ -53,7 +53,7 @@ func TestVerifyLoginUser(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	valid, err = authenticationService.VerifyLogin(&authentication.Authentication{Login:name, Password:"wrong"})
+	valid, err = authenticationService.VerifyLogin(&authentication.Authentication{Login: name, Password: "wrong"})
 	if err = AssertThat(err, NilValue()); err != nil {
 		t.Fatal(err)
 	}
@@ -61,7 +61,7 @@ func TestVerifyLoginUser(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	valid, err = authenticationService.VerifyLogin(&authentication.Authentication{Login:"wrong", Password:password})
+	valid, err = authenticationService.VerifyLogin(&authentication.Authentication{Login: "wrong", Password: password})
 	if err = AssertThat(err, NilValue()); err != nil {
 		t.Fatal(err)
 	}

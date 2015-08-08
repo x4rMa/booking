@@ -1,11 +1,9 @@
 package list
 
 import (
-	booking_date "github.com/bborbe/booking/date"
-	booking_date_service "github.com/bborbe/booking/date/service"
-
 	"net/http"
 
+	booking_date "github.com/bborbe/booking/date"
 	"github.com/bborbe/log"
 	error_handler "github.com/bborbe/server/handler/error"
 	json_handler "github.com/bborbe/server/handler/json"
@@ -15,13 +13,15 @@ var (
 	logger = log.DefaultLogger
 )
 
+type List func() (*[]booking_date.Date, error)
+
 type handler struct {
-	service booking_date_service.Service
+	list List
 }
 
-func New(service booking_date_service.Service) *handler {
+func New(list List) *handler {
 	h := new(handler)
-	h.service = service
+	h.list = list
 	return h
 }
 
@@ -38,7 +38,7 @@ func (h *handler) ServeHTTP(responseWriter http.ResponseWriter, request *http.Re
 func (h *handler) serveHTTP(responseWriter http.ResponseWriter, request *http.Request) error {
 	var err error
 	var list *[]booking_date.Date
-	if list, err = h.service.List(); err != nil {
+	if list, err = h.list(); err != nil {
 		logger.Debugf("list dates failed: %v", err)
 		return err
 	}

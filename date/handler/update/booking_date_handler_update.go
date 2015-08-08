@@ -2,7 +2,6 @@ package update
 
 import (
 	booking_date "github.com/bborbe/booking/date"
-	booking_date_service "github.com/bborbe/booking/date/service"
 
 	"encoding/json"
 	"io/ioutil"
@@ -17,13 +16,15 @@ var (
 	logger = log.DefaultLogger
 )
 
+type Update func(*booking_date.Date) (*booking_date.Date, error)
+
 type handler struct {
-	service booking_date_service.Service
+	update Update
 }
 
-func New(service booking_date_service.Service) *handler {
+func New(update Update) *handler {
 	h := new(handler)
-	h.service = service
+	h.update = update
 	return h
 }
 
@@ -48,7 +49,7 @@ func (h *handler) serveHTTP(responseWriter http.ResponseWriter, request *http.Re
 	if err != nil {
 		return err
 	}
-	obj, err := h.service.Update(&f)
+	obj, err := h.update(&f)
 	if err != nil {
 		return err
 	}

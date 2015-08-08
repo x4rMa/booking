@@ -5,10 +5,10 @@ import (
 
 	. "github.com/bborbe/assert"
 
-	"github.com/bborbe/booking/model/storage"
 	"github.com/bborbe/booking/database/sqlite"
-	"github.com/bborbe/booking/tokengenerator"
 	"github.com/bborbe/booking/model"
+	"github.com/bborbe/booking/model/storage"
+	"github.com/bborbe/booking/tokengenerator"
 )
 
 func TestImplementsModelService(t *testing.T) {
@@ -25,7 +25,7 @@ func TestVerifyLogin(t *testing.T) {
 	var m *model.Model
 	var err error
 	database := sqlite.New("/tmp/booking_test.db", true)
-	modelStorage := storage.New(database);
+	modelStorage := storage.New(database)
 	modelService := New(modelStorage, tokengenerator.New())
 
 	m, err = modelService.Create(&model.Model{})
@@ -34,7 +34,7 @@ func TestVerifyLogin(t *testing.T) {
 	}
 	token := m.Token
 
-	valid, err = modelService.VerifyLogin(&model.Model{Token:token})
+	valid, err = modelService.VerifyLogin(&model.Model{Token: token})
 	if err = AssertThat(err, NilValue()); err != nil {
 		t.Fatal(err)
 	}
@@ -42,7 +42,7 @@ func TestVerifyLogin(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	valid, err = modelService.VerifyLogin(&model.Model{Token:"wrong"})
+	valid, err = modelService.VerifyLogin(&model.Model{Token: "wrong"})
 	if err = AssertThat(err, NilValue()); err != nil {
 		t.Fatal(err)
 	}
