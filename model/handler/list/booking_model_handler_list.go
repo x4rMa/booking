@@ -2,7 +2,6 @@ package list
 
 import (
 	booking_model "github.com/bborbe/booking/model"
-	booking_model_service "github.com/bborbe/booking/model/service"
 
 	"net/http"
 
@@ -15,13 +14,19 @@ var (
 	logger = log.DefaultLogger
 )
 
+type List func() (*[]booking_model.Model, error)
+
+type FindByToken func(string) (*[]booking_model.Model, error)
+
 type handler struct {
-	service booking_model_service.Service
+	list        List
+	findByToken FindByToken
 }
 
-func New(service booking_model_service.Service) *handler {
+func New(list List, findByToken FindByToken) *handler {
 	h := new(handler)
-	h.service = service
+	h.list = list
+	h.findByToken = findByToken
 	return h
 }
 
@@ -45,12 +50,12 @@ func (h *handler) serveHTTP(responseWriter http.ResponseWriter, request *http.Re
 	}
 	if len(request.Form["token"]) > 0 {
 		logger.Debugf("token: %s", request.Form["token"][0])
-		if list, err = h.service.FindByToken(request.Form["token"][0]); err != nil {
+		if list, err = h.findByToken(request.Form["token"][0]); err != nil {
 			logger.Debugf("find model by token failed: %v", err)
 			return err
 		}
 	} else {
-		if list, err = h.service.List(); err != nil {
+		if list, err = h.list(); err != nil {
 			logger.Debugf("list models failed: %v", err)
 			return err
 		}

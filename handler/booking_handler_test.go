@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	. "github.com/bborbe/assert"
-	"github.com/bborbe/booking/database/sqlite"
+	booking_database_sqlite "github.com/bborbe/booking/database/sqlite"
 
 	io_mock "github.com/bborbe/io/mock"
 	server_mock "github.com/bborbe/server/mock"
@@ -36,7 +36,7 @@ func TestNewHandlerImplementsHttpHandler(t *testing.T) {
 	}
 }
 func createHandler() http.Handler {
-	db := sqlite.New("/tmp/booking_test.db", false)
+	db := booking_database_sqlite.New("/tmp/booking_test.db", false)
 	tokengenerator := booking_tokengenerator.New()
 	modelService := booking_model_service.New(booking_model_storage.New(db), tokengenerator)
 	dateService := booking_date_service.New(booking_date_storage.New(db))

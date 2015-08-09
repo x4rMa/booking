@@ -4,18 +4,18 @@ import (
 	"testing"
 
 	. "github.com/bborbe/assert"
-	"github.com/bborbe/booking/database"
-	"github.com/bborbe/booking/database/sqlite"
-	"github.com/bborbe/booking/date"
-	"github.com/bborbe/booking/shooting"
+	booking_database "github.com/bborbe/booking/database"
+	booking_database_sqlite "github.com/bborbe/booking/database/sqlite"
+	booking_date "github.com/bborbe/booking/date"
+	booking_shooting "github.com/bborbe/booking/shooting"
 	shooting_storage "github.com/bborbe/booking/shooting/storage"
 )
 
-func createDatabase() database.Database {
-	return sqlite.New("/tmp/booking_test.db", false)
+func createDatabase() booking_database.Database {
+	return booking_database_sqlite.New("/tmp/booking_test.db", false)
 }
 
-func createStorage(db database.Database) *storage {
+func createStorage(db booking_database.Database) *storage {
 	return New(db)
 }
 
@@ -41,12 +41,12 @@ func TestListEmpty(t *testing.T) {
 
 func TestCreateDate(t *testing.T) {
 	var err error
-	var dates *[]date.Date
+	var dates *[]booking_date.Date
 	s := createStorage(createDatabase())
 	if err = s.Truncate(); err != nil {
 		t.Fatal(err)
 	}
-	d := &date.Date{
+	d := &booking_date.Date{
 		Start: "1",
 		End:   "2",
 	}
@@ -83,7 +83,7 @@ func TestCreateDateHasId(t *testing.T) {
 	if err = s.Truncate(); err != nil {
 		t.Fatal(err)
 	}
-	d := &date.Date{
+	d := &booking_date.Date{
 		Start: "1",
 		End:   "2",
 	}
@@ -101,7 +101,7 @@ func TestCreateDateHasId(t *testing.T) {
 
 func TestFindWithoutShooting(t *testing.T) {
 	var err error
-	var dates *[]date.Date
+	var dates *[]booking_date.Date
 	db := createDatabase()
 	s := createStorage(db)
 	shootingStorage := shooting_storage.New(db)
@@ -120,7 +120,7 @@ func TestFindWithoutShooting(t *testing.T) {
 	}
 	// one date without shooting
 	{
-		d := &date.Date{
+		d := &booking_date.Date{
 			Start: "1",
 			End:   "2",
 		}
@@ -139,7 +139,7 @@ func TestFindWithoutShooting(t *testing.T) {
 	// two dates one with shooting
 	{
 
-		d := &date.Date{
+		d := &booking_date.Date{
 			Start: "1",
 			End:   "2",
 		}
@@ -147,7 +147,7 @@ func TestFindWithoutShooting(t *testing.T) {
 		if err = AssertThat(err, NilValue()); err != nil {
 			t.Fatal(err)
 		}
-		_, err = shootingStorage.Create(&shooting.Shooting{Name: "test", DateId: d.Id})
+		_, err = shootingStorage.Create(&booking_shooting.Shooting{Name: "test", DateId: d.Id})
 		if err = AssertThat(err, NilValue()); err != nil {
 			t.Fatal(err)
 		}

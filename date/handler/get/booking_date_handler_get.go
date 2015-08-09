@@ -3,7 +3,7 @@ package get
 import (
 	"net/http"
 
-	"github.com/bborbe/booking/date"
+	booking_date "github.com/bborbe/booking/date"
 	"github.com/bborbe/log"
 	error_handler "github.com/bborbe/server/handler/error"
 	json_handler "github.com/bborbe/server/handler/json"
@@ -14,7 +14,7 @@ var (
 	logger = log.DefaultLogger
 )
 
-type Get func(int) (*date.Date, error)
+type Get func(int) (*booking_date.Date, error)
 
 type handler struct {
 	get Get

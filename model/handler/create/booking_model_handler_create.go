@@ -2,7 +2,6 @@ package create
 
 import (
 	booking_model "github.com/bborbe/booking/model"
-	booking_model_service "github.com/bborbe/booking/model/service"
 
 	"encoding/json"
 	"io/ioutil"
@@ -17,13 +16,15 @@ var (
 	logger = log.DefaultLogger
 )
 
+type Create func(*booking_model.Model) (*booking_model.Model, error)
+
 type handler struct {
-	service booking_model_service.Service
+	create Create
 }
 
-func New(service booking_model_service.Service) *handler {
+func New(create Create) *handler {
 	h := new(handler)
-	h.service = service
+	h.create = create
 	return h
 }
 
@@ -48,7 +49,7 @@ func (h *handler) serveHTTP(responseWriter http.ResponseWriter, request *http.Re
 	if err != nil {
 		return err
 	}
-	obj, err := h.service.Create(&f)
+	obj, err := h.create(&f)
 	if err != nil {
 		return err
 	}

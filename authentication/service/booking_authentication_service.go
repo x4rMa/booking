@@ -1,11 +1,11 @@
 package service
 
 import (
-	"github.com/bborbe/booking/authentication"
-	"github.com/bborbe/booking/user"
+	booking_authentication "github.com/bborbe/booking/authentication"
+	booking_user "github.com/bborbe/booking/user"
 	"github.com/bborbe/log"
 
-	"github.com/bborbe/booking/model"
+	booking_model "github.com/bborbe/booking/model"
 	model_service "github.com/bborbe/booking/model/service"
 	user_service "github.com/bborbe/booking/user/service"
 )
@@ -15,7 +15,7 @@ var (
 )
 
 type Service interface {
-	VerifyLogin(d *authentication.Authentication) (bool, error)
+	VerifyLogin(d *booking_authentication.Authentication) (bool, error)
 }
 
 type authenticationService struct {
@@ -30,10 +30,10 @@ func New(userService user_service.Service, modelService model_service.Service) *
 	return d
 }
 
-func (s *authenticationService) VerifyLogin(auth *authentication.Authentication) (bool, error) {
+func (s *authenticationService) VerifyLogin(auth *booking_authentication.Authentication) (bool, error) {
 	logger.Debugf("verify login for authentication: %s", auth.Login)
 	if len(auth.Login) > 0 && len(auth.Password) > 0 {
-		valid, err := s.userService.VerifyLogin(&user.User{Login: auth.Login, Password: auth.Password})
+		valid, err := s.userService.VerifyLogin(&booking_user.User{Login: auth.Login, Password: auth.Password})
 		if err != nil {
 			return false, err
 		}
@@ -43,7 +43,7 @@ func (s *authenticationService) VerifyLogin(auth *authentication.Authentication)
 		}
 	}
 	if len(auth.Token) > 0 {
-		valid, err := s.modelService.VerifyLogin(&model.Model{Token: auth.Token})
+		valid, err := s.modelService.VerifyLogin(&booking_model.Model{Token: auth.Token})
 		if err != nil {
 			return false, err
 		}

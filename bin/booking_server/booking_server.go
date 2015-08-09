@@ -4,7 +4,7 @@ import (
 	"flag"
 	"net/http"
 
-	"github.com/bborbe/booking/handler"
+	booking_handler "github.com/bborbe/booking/handler"
 	"github.com/bborbe/log"
 	"github.com/facebookgo/grace/gracehttp"
 
@@ -22,7 +22,7 @@ import (
 
 	booking_authentication_service "github.com/bborbe/booking/authentication/service"
 
-	"github.com/bborbe/booking/database/postgres"
+	booking_database_postgres "github.com/bborbe/booking/database/postgres"
 	booking_tokengenerator "github.com/bborbe/booking/tokengenerator"
 	"github.com/bborbe/eventbus"
 )
@@ -47,7 +47,7 @@ func main() {
 func createServer(address string, documentRoot string, databaseName string, databaseUser string, databasePassword string, databaseLogging bool) *http.Server {
 	logger.SetLevelThreshold(log.LogStringToLevel(*logLevelPtr))
 	logger.Debugf("set log level to %s", *logLevelPtr)
-	db := postgres.New(databaseName, databaseUser, databasePassword, databaseLogging)
+	db := booking_database_postgres.New(databaseName, databaseUser, databasePassword, databaseLogging)
 	dateService := booking_date_service.New(booking_date_storage.New(db))
 	tokengenerator := booking_tokengenerator.New()
 	modelService := booking_model_service.New(booking_model_storage.New(db), tokengenerator)
@@ -55,5 +55,5 @@ func createServer(address string, documentRoot string, databaseName string, data
 	shootingService := booking_shooting_service.New(booking_shooting_storage.New(db), eventbus)
 	userService := booking_user_service.New(booking_user_storage.New(db))
 	authenticationService := booking_authentication_service.New(userService, modelService)
-	return &http.Server{Addr: address, Handler: handler.NewHandler(documentRoot, dateService, modelService, shootingService, userService, authenticationService)}
+	return &http.Server{Addr: address, Handler: booking_handler.NewHandler(documentRoot, dateService, modelService, shootingService, userService, authenticationService)}
 }

@@ -1,25 +1,25 @@
 package storage
 
 import (
-	"github.com/bborbe/booking/database"
-	"github.com/bborbe/booking/date"
+	booking_database "github.com/bborbe/booking/database"
+	booking_date "github.com/bborbe/booking/date"
 	_ "github.com/mattn/go-sqlite3"
 )
 
 type Storage interface {
-	Find() (*[]date.Date, error)
-	FindWithoutShooting() (*[]date.Date, error)
-	Create(date *date.Date) (*date.Date, error)
-	Get(id int) (*date.Date, error)
-	Delete(id int) (*date.Date, error)
-	Update(date *date.Date) (*date.Date, error)
+	Find() (*[]booking_date.Date, error)
+	FindWithoutShooting() (*[]booking_date.Date, error)
+	Create(date *booking_date.Date) (*booking_date.Date, error)
+	Get(id int) (*booking_date.Date, error)
+	Delete(id int) (*booking_date.Date, error)
+	Update(date *booking_date.Date) (*booking_date.Date, error)
 }
 
 type storage struct {
-	database database.Database
+	database booking_database.Database
 }
 
-func New(database database.Database) *storage {
+func New(database booking_database.Database) *storage {
 	s := new(storage)
 	s.database = database
 	return s
@@ -30,39 +30,39 @@ func (s *storage) Truncate() error {
 	if err != nil {
 		return err
 	}
-	err = db.DropTableIfExists(&date.Date{}).Error
+	err = db.DropTableIfExists(&booking_date.Date{}).Error
 	if err != nil {
 		return err
 	}
-	err = db.CreateTable(&date.Date{}).Error
+	err = db.CreateTable(&booking_date.Date{}).Error
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (s *storage) Find() (*[]date.Date, error) {
+func (s *storage) Find() (*[]booking_date.Date, error) {
 	db, err := s.database.DB()
 	if err != nil {
 		return nil, err
 	}
-	dates := &[]date.Date{}
+	dates := &[]booking_date.Date{}
 	query := db.Find(dates)
 	return dates, query.Error
 }
 
-func (s *storage) FindWithoutShooting() (*[]date.Date, error) {
+func (s *storage) FindWithoutShooting() (*[]booking_date.Date, error) {
 	db, err := s.database.DB()
 	if err != nil {
 		return nil, err
 	}
-	dates := &[]date.Date{}
+	dates := &[]booking_date.Date{}
 	query := db.Find(dates)
 	db.Joins("LEFT JOIN shooting ON shooting.date_id = date.id").Where("shooting.id IS NULL").Find(dates)
 	return dates, query.Error
 }
 
-func (s *storage) Create(date *date.Date) (*date.Date, error) {
+func (s *storage) Create(date *booking_date.Date) (*booking_date.Date, error) {
 	db, err := s.database.DB()
 	if err != nil {
 		return nil, err
@@ -71,7 +71,7 @@ func (s *storage) Create(date *date.Date) (*date.Date, error) {
 	return date, query.Error
 }
 
-func (s *storage) Update(date *date.Date) (*date.Date, error) {
+func (s *storage) Update(date *booking_date.Date) (*booking_date.Date, error) {
 	db, err := s.database.DB()
 	if err != nil {
 		return nil, err
@@ -80,12 +80,12 @@ func (s *storage) Update(date *date.Date) (*date.Date, error) {
 	return date, query.Error
 }
 
-func (s *storage) Get(id int) (*date.Date, error) {
+func (s *storage) Get(id int) (*booking_date.Date, error) {
 	db, err := s.database.DB()
 	if err != nil {
 		return nil, err
 	}
-	date := &date.Date{}
+	date := &booking_date.Date{}
 	query := db.First(date, id)
 	if query.Error != nil {
 		return nil, err
@@ -93,12 +93,12 @@ func (s *storage) Get(id int) (*date.Date, error) {
 	return date, nil
 }
 
-func (s *storage) Delete(id int) (*date.Date, error) {
+func (s *storage) Delete(id int) (*booking_date.Date, error) {
 	db, err := s.database.DB()
 	if err != nil {
 		return nil, err
 	}
-	date := &date.Date{}
+	date := &booking_date.Date{}
 	query := db.First(date, id)
 	if query.Error != nil {
 		return nil, err

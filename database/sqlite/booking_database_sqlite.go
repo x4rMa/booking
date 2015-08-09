@@ -1,10 +1,10 @@
 package sqlite
 
 import (
-	"github.com/bborbe/booking/date"
-	"github.com/bborbe/booking/model"
-	"github.com/bborbe/booking/shooting"
-	"github.com/bborbe/booking/user"
+	booking_date "github.com/bborbe/booking/date"
+	booking_model "github.com/bborbe/booking/model"
+	booking_shooting "github.com/bborbe/booking/shooting"
+	booking_user "github.com/bborbe/booking/user"
 	"github.com/jinzhu/gorm"
 )
 
@@ -30,7 +30,7 @@ func (s *sqlite) DB() (*gorm.DB, error) {
 		}
 		db.SingularTable(true)
 		db.LogMode(s.logmode)
-		db.AutoMigrate(&user.User{}, &date.Date{}, &shooting.Shooting{}, &model.Model{})
+		db.AutoMigrate(&booking_user.User{}, &booking_date.Date{}, &booking_shooting.Shooting{}, &booking_model.Model{})
 		s.db = &db
 	}
 	return s.db, nil

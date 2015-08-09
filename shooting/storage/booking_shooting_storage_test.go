@@ -4,12 +4,12 @@ import (
 	"testing"
 
 	. "github.com/bborbe/assert"
-	"github.com/bborbe/booking/database/sqlite"
-	"github.com/bborbe/booking/shooting"
+	booking_database_sqlite "github.com/bborbe/booking/database/sqlite"
+	booking_shooting "github.com/bborbe/booking/shooting"
 )
 
 func createStorage() *storage {
-	return New(sqlite.New("/tmp/booking_test.db", false))
+	return New(booking_database_sqlite.New("/tmp/booking_test.db", false))
 }
 
 func TestImplementsStorage(t *testing.T) {
@@ -34,12 +34,12 @@ func TestListEmpty(t *testing.T) {
 
 func TestCreateShooting(t *testing.T) {
 	var err error
-	var shootings *[]shooting.Shooting
+	var shootings *[]booking_shooting.Shooting
 	s := createStorage()
 	if err = s.Truncate(); err != nil {
 		t.Fatal(err)
 	}
-	d := &shooting.Shooting{
+	d := &booking_shooting.Shooting{
 		Name: "Hello World",
 	}
 
@@ -75,7 +75,7 @@ func TestCreateShootingHasId(t *testing.T) {
 	if err = s.Truncate(); err != nil {
 		t.Fatal(err)
 	}
-	d := &shooting.Shooting{
+	d := &booking_shooting.Shooting{
 		Name: "Hello World",
 	}
 	m, err := s.Create(d)

@@ -3,7 +3,7 @@ package delete
 import (
 	"net/http"
 
-	"github.com/bborbe/booking/shooting"
+	booking_shooting "github.com/bborbe/booking/shooting"
 	"github.com/bborbe/log"
 	error_handler "github.com/bborbe/server/handler/error"
 	json_handler "github.com/bborbe/server/handler/json"
@@ -14,7 +14,7 @@ var (
 	logger = log.DefaultLogger
 )
 
-type Delete func(int) (*shooting.Shooting, error)
+type Delete func(int) (*booking_shooting.Shooting, error)
 
 type handler struct {
 	delete Delete

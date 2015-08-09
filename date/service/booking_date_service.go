@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/bborbe/booking/date"
-	"github.com/bborbe/booking/date/storage"
+	booking_date "github.com/bborbe/booking/date"
+	booking_date_storage "github.com/bborbe/booking/date/storage"
 	"github.com/bborbe/log"
 	_ "github.com/lib/pq"
 )
@@ -12,50 +12,50 @@ var (
 )
 
 type Service interface {
-	List() (*[]date.Date, error)
-	ListFree() (*[]date.Date, error)
-	Get(id int) (*date.Date, error)
-	Create(date *date.Date) (*date.Date, error)
-	Delete(id int) (*date.Date, error)
-	Update(d *date.Date) (*date.Date, error)
+	List() (*[]booking_date.Date, error)
+	ListFree() (*[]booking_date.Date, error)
+	Get(id int) (*booking_date.Date, error)
+	Create(date *booking_date.Date) (*booking_date.Date, error)
+	Delete(id int) (*booking_date.Date, error)
+	Update(d *booking_date.Date) (*booking_date.Date, error)
 }
 
 type dateService struct {
-	storage storage.Storage
+	storage booking_date_storage.Storage
 }
 
-func New(storage storage.Storage) *dateService {
+func New(storage booking_date_storage.Storage) *dateService {
 	d := new(dateService)
 	d.storage = storage
 	return d
 }
 
-func (s *dateService) Create(d *date.Date) (*date.Date, error) {
+func (s *dateService) Create(d *booking_date.Date) (*booking_date.Date, error) {
 	logger.Debug("create date")
 	return s.storage.Create(d)
 }
 
-func (s *dateService) Update(d *date.Date) (*date.Date, error) {
+func (s *dateService) Update(d *booking_date.Date) (*booking_date.Date, error) {
 	logger.Debug("update date")
 	return s.storage.Update(d)
 }
 
-func (s *dateService) List() (*[]date.Date, error) {
+func (s *dateService) List() (*[]booking_date.Date, error) {
 	logger.Debug("list dates")
 	return s.storage.Find()
 }
 
-func (s *dateService) ListFree() (*[]date.Date, error) {
+func (s *dateService) ListFree() (*[]booking_date.Date, error) {
 	logger.Debug("list free dates")
 	return s.storage.FindWithoutShooting()
 }
 
-func (s *dateService) Get(id int) (*date.Date, error) {
+func (s *dateService) Get(id int) (*booking_date.Date, error) {
 	logger.Debugf("get date with id %d", id)
 	return s.storage.Get(id)
 }
 
-func (s *dateService) Delete(id int) (*date.Date, error) {
+func (s *dateService) Delete(id int) (*booking_date.Date, error) {
 	logger.Debugf("delete date with id %d", id)
 	return s.storage.Delete(id)
 }

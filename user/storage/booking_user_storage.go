@@ -1,25 +1,25 @@
 package storage
 
 import (
-	"github.com/bborbe/booking/database"
-	"github.com/bborbe/booking/user"
+	booking_database "github.com/bborbe/booking/database"
+	booking_user "github.com/bborbe/booking/user"
 	_ "github.com/mattn/go-sqlite3"
 )
 
 type Storage interface {
-	Find() (*[]user.User, error)
-	Create(user *user.User) (*user.User, error)
-	Get(id int) (*user.User, error)
-	Delete(id int) (*user.User, error)
-	Update(user *user.User) (*user.User, error)
-	FindByLogin(login string) (*[]user.User, error)
+	Find() (*[]booking_user.User, error)
+	Create(user *booking_user.User) (*booking_user.User, error)
+	Get(id int) (*booking_user.User, error)
+	Delete(id int) (*booking_user.User, error)
+	Update(user *booking_user.User) (*booking_user.User, error)
+	FindByLogin(login string) (*[]booking_user.User, error)
 }
 
 type storage struct {
-	database database.Database
+	database booking_database.Database
 }
 
-func New(database database.Database) *storage {
+func New(database booking_database.Database) *storage {
 	s := new(storage)
 	s.database = database
 	s.createDefaultUser()
@@ -32,7 +32,7 @@ func (s *storage) createDefaultUser() error {
 		return err
 	}
 	if len(*users) == 0 {
-		_, err = s.Create(&user.User{Login: "admin", Password: "test123"})
+		_, err = s.Create(&booking_user.User{Login: "admin", Password: "test123"})
 		if err != nil {
 			return err
 		}
@@ -45,28 +45,28 @@ func (s *storage) Truncate() error {
 	if err != nil {
 		return err
 	}
-	err = db.DropTableIfExists(&user.User{}).Error
+	err = db.DropTableIfExists(&booking_user.User{}).Error
 	if err != nil {
 		return err
 	}
-	err = db.CreateTable(&user.User{}).Error
+	err = db.CreateTable(&booking_user.User{}).Error
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (s *storage) Find() (*[]user.User, error) {
+func (s *storage) Find() (*[]booking_user.User, error) {
 	db, err := s.database.DB()
 	if err != nil {
 		return nil, err
 	}
-	users := &[]user.User{}
+	users := &[]booking_user.User{}
 	query := db.Find(users)
 	return users, query.Error
 }
 
-func (s *storage) Create(user *user.User) (*user.User, error) {
+func (s *storage) Create(user *booking_user.User) (*booking_user.User, error) {
 	db, err := s.database.DB()
 	if err != nil {
 		return nil, err
@@ -75,7 +75,7 @@ func (s *storage) Create(user *user.User) (*user.User, error) {
 	return user, query.Error
 }
 
-func (s *storage) Update(user *user.User) (*user.User, error) {
+func (s *storage) Update(user *booking_user.User) (*booking_user.User, error) {
 	db, err := s.database.DB()
 	if err != nil {
 		return nil, err
@@ -84,12 +84,12 @@ func (s *storage) Update(user *user.User) (*user.User, error) {
 	return user, query.Error
 }
 
-func (s *storage) Get(id int) (*user.User, error) {
+func (s *storage) Get(id int) (*booking_user.User, error) {
 	db, err := s.database.DB()
 	if err != nil {
 		return nil, err
 	}
-	user := &user.User{}
+	user := &booking_user.User{}
 	query := db.First(user, id)
 	if query.Error != nil {
 		return nil, err
@@ -97,12 +97,12 @@ func (s *storage) Get(id int) (*user.User, error) {
 	return user, nil
 }
 
-func (s *storage) Delete(id int) (*user.User, error) {
+func (s *storage) Delete(id int) (*booking_user.User, error) {
 	db, err := s.database.DB()
 	if err != nil {
 		return nil, err
 	}
-	user := &user.User{}
+	user := &booking_user.User{}
 	query := db.First(user, id)
 	if query.Error != nil {
 		return nil, err
@@ -114,13 +114,13 @@ func (s *storage) Delete(id int) (*user.User, error) {
 	return user, nil
 }
 
-func (s *storage) FindByLogin(login string) (*[]user.User, error) {
+func (s *storage) FindByLogin(login string) (*[]booking_user.User, error) {
 	db, err := s.database.DB()
 	if err != nil {
 		return nil, err
 	}
-	users := &[]user.User{}
-	query := db.Where(user.User{Login: login}).Find(users)
+	users := &[]booking_user.User{}
+	query := db.Where(booking_user.User{Login: login}).Find(users)
 	if query.Error != nil {
 		return nil, err
 	}

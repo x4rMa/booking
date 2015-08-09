@@ -3,8 +3,8 @@ package service
 import (
 	"fmt"
 
-	"github.com/bborbe/booking/model"
-	"github.com/bborbe/booking/model/storage"
+	booking_model "github.com/bborbe/booking/model"
+	booking_model_storage "github.com/bborbe/booking/model/storage"
 	"github.com/bborbe/log"
 	_ "github.com/lib/pq"
 )
@@ -20,21 +20,21 @@ type TokenGenerator interface {
 }
 
 type Service interface {
-	List() (*[]model.Model, error)
-	Get(id int) (*model.Model, error)
-	Create(model *model.Model) (*model.Model, error)
-	Delete(id int) (*model.Model, error)
-	Update(model *model.Model) (*model.Model, error)
-	FindByToken(token string) (*[]model.Model, error)
-	VerifyLogin(model *model.Model) (bool, error)
+	List() (*[]booking_model.Model, error)
+	Get(id int) (*booking_model.Model, error)
+	Create(model *booking_model.Model) (*booking_model.Model, error)
+	Delete(id int) (*booking_model.Model, error)
+	Update(model *booking_model.Model) (*booking_model.Model, error)
+	FindByToken(token string) (*[]booking_model.Model, error)
+	VerifyLogin(model *booking_model.Model) (bool, error)
 }
 
 type modelService struct {
-	storage        storage.Storage
+	storage        booking_model_storage.Storage
 	tokenGenerator TokenGenerator
 }
 
-func New(storage storage.Storage, tokenGenerator TokenGenerator) *modelService {
+func New(storage booking_model_storage.Storage, tokenGenerator TokenGenerator) *modelService {
 	d := new(modelService)
 	d.storage = storage
 	d.tokenGenerator = tokenGenerator
@@ -42,7 +42,7 @@ func New(storage storage.Storage, tokenGenerator TokenGenerator) *modelService {
 	return d
 }
 
-func (s *modelService) Create(d *model.Model) (*model.Model, error) {
+func (s *modelService) Create(d *booking_model.Model) (*booking_model.Model, error) {
 	logger.Debug("create")
 	token, err := s.generateToken()
 	if err != nil {
@@ -69,7 +69,7 @@ func (s *modelService) generateToken() (string, error) {
 	return "", fmt.Errorf("generate token failed")
 }
 
-func (s *modelService) VerifyLogin(m *model.Model) (bool, error) {
+func (s *modelService) VerifyLogin(m *booking_model.Model) (bool, error) {
 	list, err := s.FindByToken(m.Token)
 	if err != nil {
 		return false, err
@@ -77,26 +77,26 @@ func (s *modelService) VerifyLogin(m *model.Model) (bool, error) {
 	return len(*list) > 0, nil
 }
 
-func (s *modelService) FindByToken(token string) (*[]model.Model, error) {
+func (s *modelService) FindByToken(token string) (*[]booking_model.Model, error) {
 	return s.storage.FindByToken(token)
 }
 
-func (s *modelService) Update(d *model.Model) (*model.Model, error) {
+func (s *modelService) Update(d *booking_model.Model) (*booking_model.Model, error) {
 	logger.Debug("update")
 	return s.storage.Update(d)
 }
 
-func (s *modelService) List() (*[]model.Model, error) {
+func (s *modelService) List() (*[]booking_model.Model, error) {
 	logger.Debug("list")
 	return s.storage.Find()
 }
 
-func (s *modelService) Get(id int) (*model.Model, error) {
+func (s *modelService) Get(id int) (*booking_model.Model, error) {
 	logger.Debug("get")
 	return s.storage.Get(id)
 }
 
-func (s *modelService) Delete(id int) (*model.Model, error) {
+func (s *modelService) Delete(id int) (*booking_model.Model, error) {
 	logger.Debug("delete")
 	return s.storage.Delete(id)
 }

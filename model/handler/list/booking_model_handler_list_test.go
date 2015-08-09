@@ -9,7 +9,7 @@ import (
 )
 
 func TestImplementsHttpHandler(t *testing.T) {
-	r := New(nil)
+	r := New(nil, nil)
 	var i *http.Handler
 	err := AssertThat(r, Implements(i))
 	if err != nil {

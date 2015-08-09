@@ -1,25 +1,25 @@
 package storage
 
 import (
-	"github.com/bborbe/booking/database"
-	"github.com/bborbe/booking/model"
+	booking_database "github.com/bborbe/booking/database"
+	booking_model "github.com/bborbe/booking/model"
 	_ "github.com/mattn/go-sqlite3"
 )
 
 type Storage interface {
-	Find() (*[]model.Model, error)
-	Create(model *model.Model) (*model.Model, error)
-	Get(id int) (*model.Model, error)
-	Delete(id int) (*model.Model, error)
-	Update(model *model.Model) (*model.Model, error)
-	FindByToken(token string) (*[]model.Model, error)
+	Find() (*[]booking_model.Model, error)
+	Create(model *booking_model.Model) (*booking_model.Model, error)
+	Get(id int) (*booking_model.Model, error)
+	Delete(id int) (*booking_model.Model, error)
+	Update(model *booking_model.Model) (*booking_model.Model, error)
+	FindByToken(token string) (*[]booking_model.Model, error)
 }
 
 type storage struct {
-	database database.Database
+	database booking_database.Database
 }
 
-func New(database database.Database) *storage {
+func New(database booking_database.Database) *storage {
 	s := new(storage)
 	s.database = database
 	return s
@@ -30,28 +30,28 @@ func (s *storage) Truncate() error {
 	if err != nil {
 		return err
 	}
-	err = db.DropTableIfExists(&model.Model{}).Error
+	err = db.DropTableIfExists(&booking_model.Model{}).Error
 	if err != nil {
 		return err
 	}
-	err = db.CreateTable(&model.Model{}).Error
+	err = db.CreateTable(&booking_model.Model{}).Error
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (s *storage) Find() (*[]model.Model, error) {
+func (s *storage) Find() (*[]booking_model.Model, error) {
 	db, err := s.database.DB()
 	if err != nil {
 		return nil, err
 	}
-	models := &[]model.Model{}
+	models := &[]booking_model.Model{}
 	query := db.Find(models)
 	return models, query.Error
 }
 
-func (s *storage) Create(model *model.Model) (*model.Model, error) {
+func (s *storage) Create(model *booking_model.Model) (*booking_model.Model, error) {
 	db, err := s.database.DB()
 	if err != nil {
 		return nil, err
@@ -60,7 +60,7 @@ func (s *storage) Create(model *model.Model) (*model.Model, error) {
 	return model, query.Error
 }
 
-func (s *storage) Update(model *model.Model) (*model.Model, error) {
+func (s *storage) Update(model *booking_model.Model) (*booking_model.Model, error) {
 	db, err := s.database.DB()
 	if err != nil {
 		return nil, err
@@ -69,12 +69,12 @@ func (s *storage) Update(model *model.Model) (*model.Model, error) {
 	return model, query.Error
 }
 
-func (s *storage) Get(id int) (*model.Model, error) {
+func (s *storage) Get(id int) (*booking_model.Model, error) {
 	db, err := s.database.DB()
 	if err != nil {
 		return nil, err
 	}
-	model := &model.Model{}
+	model := &booking_model.Model{}
 	query := db.First(model, id)
 	if query.Error != nil {
 		return nil, err
@@ -82,12 +82,12 @@ func (s *storage) Get(id int) (*model.Model, error) {
 	return model, nil
 }
 
-func (s *storage) Delete(id int) (*model.Model, error) {
+func (s *storage) Delete(id int) (*booking_model.Model, error) {
 	db, err := s.database.DB()
 	if err != nil {
 		return nil, err
 	}
-	model := &model.Model{}
+	model := &booking_model.Model{}
 	query := db.First(model, id)
 	if query.Error != nil {
 		return nil, err
@@ -99,13 +99,13 @@ func (s *storage) Delete(id int) (*model.Model, error) {
 	return model, nil
 }
 
-func (s *storage) FindByToken(token string) (*[]model.Model, error) {
+func (s *storage) FindByToken(token string) (*[]booking_model.Model, error) {
 	db, err := s.database.DB()
 	if err != nil {
 		return nil, err
 	}
-	models := &[]model.Model{}
-	query := db.Where(model.Model{Token: token}).Find(models)
+	models := &[]booking_model.Model{}
+	query := db.Where(booking_model.Model{Token: token}).Find(models)
 	if query.Error != nil {
 		return nil, err
 	}

@@ -4,9 +4,9 @@ import (
 	"testing"
 
 	. "github.com/bborbe/assert"
-	"github.com/bborbe/booking/authentication"
-	"github.com/bborbe/booking/database/sqlite"
-	"github.com/bborbe/booking/user"
+	booking_authentication "github.com/bborbe/booking/authentication"
+	booking_database_sqlite "github.com/bborbe/booking/database/sqlite"
+	booking_user "github.com/bborbe/booking/user"
 
 	user_service "github.com/bborbe/booking/user/service"
 	user_storage "github.com/bborbe/booking/user/storage"
@@ -14,7 +14,7 @@ import (
 	model_service "github.com/bborbe/booking/model/service"
 	model_storage "github.com/bborbe/booking/model/storage"
 
-	"github.com/bborbe/booking/tokengenerator"
+	booking_tokengenerator "github.com/bborbe/booking/tokengenerator"
 )
 
 func TestImplementsAuthenticationService(t *testing.T) {
@@ -31,21 +31,21 @@ func TestVerifyLoginUser(t *testing.T) {
 	var valid bool
 	name := "testuser"
 	password := "testpassword"
-	database := sqlite.New("/tmp/booking_test.db", false)
+	database := booking_database_sqlite.New("/tmp/booking_test.db", false)
 
 	userStorage := user_storage.New(database)
 	userService := user_service.New(userStorage)
 
 	modelStorage := model_storage.New(database)
-	modelService := model_service.New(modelStorage, tokengenerator.New())
+	modelService := model_service.New(modelStorage, booking_tokengenerator.New())
 
-	_, err = userService.Create(&user.User{Login: name, Password: password})
+	_, err = userService.Create(&booking_user.User{Login: name, Password: password})
 	if err = AssertThat(err, NilValue()); err != nil {
 		t.Fatal(err)
 	}
 	authenticationService := New(userService, modelService)
 
-	valid, err = authenticationService.VerifyLogin(&authentication.Authentication{Login: name, Password: password})
+	valid, err = authenticationService.VerifyLogin(&booking_authentication.Authentication{Login: name, Password: password})
 	if err = AssertThat(err, NilValue()); err != nil {
 		t.Fatal(err)
 	}
@@ -53,7 +53,7 @@ func TestVerifyLoginUser(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	valid, err = authenticationService.VerifyLogin(&authentication.Authentication{Login: name, Password: "wrong"})
+	valid, err = authenticationService.VerifyLogin(&booking_authentication.Authentication{Login: name, Password: "wrong"})
 	if err = AssertThat(err, NilValue()); err != nil {
 		t.Fatal(err)
 	}
@@ -61,7 +61,7 @@ func TestVerifyLoginUser(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	valid, err = authenticationService.VerifyLogin(&authentication.Authentication{Login: "wrong", Password: password})
+	valid, err = authenticationService.VerifyLogin(&booking_authentication.Authentication{Login: "wrong", Password: password})
 	if err = AssertThat(err, NilValue()); err != nil {
 		t.Fatal(err)
 	}

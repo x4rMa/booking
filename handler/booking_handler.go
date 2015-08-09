@@ -84,12 +84,12 @@ func createDateHandlerFinder(prefix string, dateService booking_date_service.Ser
 
 func createModelHandlerFinder(prefix string, modelService booking_model_service.Service) handler_finder.HandlerFinder {
 	hf := rest.New(prefix)
-	hf.RegisterListHandler(booking_model_handler_list.New(modelService))
-	hf.RegisterCreateHandler(booking_model_handler_create.New(modelService))
-	hf.RegisterDeleteHandler(booking_model_handler_delete.New(modelService))
-	hf.RegisterGetHandler(booking_model_handler_get.New(modelService))
-	hf.RegisterUpdateHandler(booking_model_handler_update.New(modelService))
-	hf.RegisterPatchHandler(booking_model_handler_update.New(modelService))
+	hf.RegisterListHandler(booking_model_handler_list.New(modelService.List, modelService.FindByToken))
+	hf.RegisterCreateHandler(booking_model_handler_create.New(modelService.Create))
+	hf.RegisterDeleteHandler(booking_model_handler_delete.New(modelService.Delete))
+	hf.RegisterGetHandler(booking_model_handler_get.New(modelService.Get))
+	hf.RegisterUpdateHandler(booking_model_handler_update.New(modelService.Update))
+	hf.RegisterPatchHandler(booking_model_handler_update.New(modelService.Update))
 	return hf
 }
 
