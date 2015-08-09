@@ -66,7 +66,7 @@ func NewHandler(documentRoot string, dateService booking_date_service.Service, m
 
 func createAuthenticationHandlerFinder(prefix string, authenticationService booking_authentication_service.Service) handler_finder.HandlerFinder {
 	hf := part.New(prefix)
-	hf.RegisterHandler("/verifyLogin", booking_authentication_handler_verifylogin.New(authenticationService))
+	hf.RegisterHandler("/verifyLogin", booking_authentication_handler_verifylogin.New(authenticationService.VerifyLogin))
 	return hf
 }
 
@@ -108,7 +108,7 @@ func createShootingHandlerFinder(prefix string, shootingService booking_shooting
 func createUserHandlerFinder(prefix string, userService booking_user_service.Service) handler_finder.HandlerFinder {
 	hf := rest.New(prefix)
 	hf.RegisterListHandler(booking_user_handler_list.New(userService.List))
-	hf.RegisterCreateHandler(booking_user_handler_create.New(userService))
+	hf.RegisterCreateHandler(booking_user_handler_create.New(userService.Create))
 	hf.RegisterDeleteHandler(booking_user_handler_delete.New(userService))
 	hf.RegisterGetHandler(booking_user_handler_get.New(userService))
 	hf.RegisterUpdateHandler(booking_user_handler_update.New(userService))
