@@ -3,7 +3,7 @@ package delete
 import (
 	"net/http"
 
-	user_service "github.com/bborbe/booking/user/service"
+	booking_user "github.com/bborbe/booking/user"
 	"github.com/bborbe/log"
 	error_handler "github.com/bborbe/server/handler/error"
 	json_handler "github.com/bborbe/server/handler/json"
@@ -14,13 +14,15 @@ var (
 	logger = log.DefaultLogger
 )
 
+type Delete func( int) (*booking_user.User, error)
+
 type handler struct {
-	service user_service.Service
+	delete Delete
 }
 
-func New(service user_service.Service) http.Handler {
+func New(delete Delete) http.Handler {
 	h := new(handler)
-	h.service = service
+	h.delete = delete
 	return h
 }
 
@@ -39,7 +41,7 @@ func (h *handler) serveHTTP(responseWriter http.ResponseWriter, request *http.Re
 	if err != nil {
 		return err
 	}
-	obj, err := h.service.Delete(id)
+	obj, err := h.delete(id)
 	if err != nil {
 		return err
 	}

@@ -109,7 +109,7 @@ func createUserHandlerFinder(prefix string, userService booking_user_service.Ser
 	hf := rest.New(prefix)
 	hf.RegisterListHandler(booking_user_handler_list.New(userService.List))
 	hf.RegisterCreateHandler(booking_user_handler_create.New(userService.Create))
-	hf.RegisterDeleteHandler(booking_user_handler_delete.New(userService))
+	hf.RegisterDeleteHandler(booking_user_handler_delete.New(userService.Delete))
 	hf.RegisterGetHandler(booking_user_handler_get.New(userService))
 	hf.RegisterUpdateHandler(booking_user_handler_update.New(userService))
 	hf.RegisterPatchHandler(booking_user_handler_update.New(userService))
