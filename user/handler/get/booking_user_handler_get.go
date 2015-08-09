@@ -3,11 +3,11 @@ package get
 import (
 	"net/http"
 
+	"github.com/bborbe/booking/user"
 	"github.com/bborbe/log"
 	error_handler "github.com/bborbe/server/handler/error"
 	json_handler "github.com/bborbe/server/handler/json"
 	"github.com/bborbe/server/idparser"
-	"github.com/bborbe/booking/user"
 )
 
 var (

@@ -14,7 +14,7 @@ var (
 	logger = log.DefaultLogger
 )
 
-type Delete func( int) (*booking_user.User, error)
+type Delete func(int) (*booking_user.User, error)
 
 type handler struct {
 	delete Delete

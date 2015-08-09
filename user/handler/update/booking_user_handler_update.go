@@ -1,10 +1,11 @@
 package update
 
 import (
-	booking_user "github.com/bborbe/booking/user"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+
+	booking_user "github.com/bborbe/booking/user"
 
 	"github.com/bborbe/log"
 	error_handler "github.com/bborbe/server/handler/error"
@@ -15,7 +16,7 @@ var (
 	logger = log.DefaultLogger
 )
 
-type Update func( *booking_user.User) (*booking_user.User, error)
+type Update func(*booking_user.User) (*booking_user.User, error)
 
 type handler struct {
 	update Update

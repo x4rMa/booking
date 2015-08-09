@@ -2,8 +2,8 @@ package list
 
 import (
 	"testing"
-	booking_user "github.com/bborbe/booking/user"
 
+	booking_user "github.com/bborbe/booking/user"
 
 	"net/http"
 

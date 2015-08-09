@@ -1,8 +1,9 @@
 package list
 
 import (
-	booking_user "github.com/bborbe/booking/user"
 	"net/http"
+
+	booking_user "github.com/bborbe/booking/user"
 
 	"github.com/bborbe/log"
 	error_handler "github.com/bborbe/server/handler/error"

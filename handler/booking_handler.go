@@ -95,13 +95,13 @@ func createModelHandlerFinder(prefix string, modelService booking_model_service.
 
 func createShootingHandlerFinder(prefix string, shootingService booking_shooting_service.Service) handler_finder.HandlerFinder {
 	hf := rest.New(prefix)
-	hf.RegisterListHandler(booking_shooting_handler_list.New(shootingService))
-	hf.RegisterCreateHandler(booking_shooting_handler_create.New(shootingService))
-	hf.RegisterDeleteHandler(booking_shooting_handler_delete.New(shootingService))
-	hf.RegisterGetHandler(booking_shooting_handler_get.New(shootingService))
-	hf.RegisterUpdateHandler(booking_shooting_handler_update.New(shootingService))
-	hf.RegisterPatchHandler(booking_shooting_handler_update.New(shootingService))
-	hf.RegisterHandler("POST", "/book", booking_shooting_handler_book.New(shootingService))
+	hf.RegisterListHandler(booking_shooting_handler_list.New(shootingService.List))
+	hf.RegisterCreateHandler(booking_shooting_handler_create.New(shootingService.Create))
+	hf.RegisterDeleteHandler(booking_shooting_handler_delete.New(shootingService.Delete))
+	hf.RegisterGetHandler(booking_shooting_handler_get.New(shootingService.Get))
+	hf.RegisterUpdateHandler(booking_shooting_handler_update.New(shootingService.Update))
+	hf.RegisterPatchHandler(booking_shooting_handler_update.New(shootingService.Update))
+	hf.RegisterHandler("POST", "/book", booking_shooting_handler_book.New(shootingService.Book))
 	return hf
 }
 

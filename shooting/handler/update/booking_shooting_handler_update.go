@@ -1,12 +1,11 @@
 package update
 
 import (
-	booking_shooting "github.com/bborbe/booking/shooting"
-	booking_shooting_service "github.com/bborbe/booking/shooting/service"
-
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+
+	booking_shooting "github.com/bborbe/booking/shooting"
 
 	"github.com/bborbe/log"
 	error_handler "github.com/bborbe/server/handler/error"
@@ -17,13 +16,15 @@ var (
 	logger = log.DefaultLogger
 )
 
+type Update func(*booking_shooting.Shooting) (*booking_shooting.Shooting, error)
+
 type handler struct {
-	service booking_shooting_service.Service
+	update Update
 }
 
-func New(service booking_shooting_service.Service) *handler {
+func New(update Update) *handler {
 	h := new(handler)
-	h.service = service
+	h.update = update
 	return h
 }
 
@@ -48,7 +49,7 @@ func (h *handler) serveHTTP(responseWriter http.ResponseWriter, request *http.Re
 	if err != nil {
 		return err
 	}
-	obj, err := h.service.Update(&f)
+	obj, err := h.update(&f)
 	if err != nil {
 		return err
 	}

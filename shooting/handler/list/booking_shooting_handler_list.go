@@ -1,10 +1,9 @@
 package list
 
 import (
-	booking_shooting "github.com/bborbe/booking/shooting"
-	booking_shooting_service "github.com/bborbe/booking/shooting/service"
-
 	"net/http"
+
+	booking_shooting "github.com/bborbe/booking/shooting"
 
 	"github.com/bborbe/log"
 	error_handler "github.com/bborbe/server/handler/error"
@@ -15,13 +14,15 @@ var (
 	logger = log.DefaultLogger
 )
 
+type List func() (*[]booking_shooting.Shooting, error)
+
 type handler struct {
-	service booking_shooting_service.Service
+	list List
 }
 
-func New(service booking_shooting_service.Service) *handler {
+func New(list List) *handler {
 	h := new(handler)
-	h.service = service
+	h.list = list
 	return h
 }
 
@@ -38,7 +39,7 @@ func (h *handler) ServeHTTP(responseWriter http.ResponseWriter, request *http.Re
 func (h *handler) serveHTTP(responseWriter http.ResponseWriter, request *http.Request) error {
 	var err error
 	var list *[]booking_shooting.Shooting
-	if list, err = h.service.List(); err != nil {
+	if list, err = h.list(); err != nil {
 		logger.Debugf("list shootings failed: %v", err)
 		return err
 	}

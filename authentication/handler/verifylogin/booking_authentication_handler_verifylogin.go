@@ -16,7 +16,7 @@ var (
 	logger = log.DefaultLogger
 )
 
-type VerifyLogin func (*booking_authentication.Authentication) (bool, error)
+type VerifyLogin func(*booking_authentication.Authentication) (bool, error)
 
 type handler struct {
 	verifyLogin VerifyLogin
