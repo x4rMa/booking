@@ -2,8 +2,6 @@ package update
 
 import (
 	booking_user "github.com/bborbe/booking/user"
-	booking_user_service "github.com/bborbe/booking/user/service"
-
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
@@ -17,13 +15,15 @@ var (
 	logger = log.DefaultLogger
 )
 
+type Update func( *booking_user.User) (*booking_user.User, error)
+
 type handler struct {
-	service booking_user_service.Service
+	update Update
 }
 
-func New(service booking_user_service.Service) *handler {
+func New(update Update) *handler {
 	h := new(handler)
-	h.service = service
+	h.update = update
 	return h
 }
 
@@ -48,7 +48,7 @@ func (h *handler) serveHTTP(responseWriter http.ResponseWriter, request *http.Re
 	if err != nil {
 		return err
 	}
-	obj, err := h.service.Update(&f)
+	obj, err := h.update(&f)
 	if err != nil {
 		return err
 	}

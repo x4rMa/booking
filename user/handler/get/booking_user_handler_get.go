@@ -3,24 +3,26 @@ package get
 import (
 	"net/http"
 
-	user_service "github.com/bborbe/booking/user/service"
 	"github.com/bborbe/log"
 	error_handler "github.com/bborbe/server/handler/error"
 	json_handler "github.com/bborbe/server/handler/json"
 	"github.com/bborbe/server/idparser"
+	"github.com/bborbe/booking/user"
 )
 
 var (
 	logger = log.DefaultLogger
 )
 
+type Get func(int) (*user.User, error)
+
 type handler struct {
-	service user_service.Service
+	get Get
 }
 
-func New(service user_service.Service) http.Handler {
+func New(get Get) http.Handler {
 	h := new(handler)
-	h.service = service
+	h.get = get
 	return h
 }
 
@@ -39,7 +41,7 @@ func (h *handler) serveHTTP(responseWriter http.ResponseWriter, request *http.Re
 	if err != nil {
 		return err
 	}
-	obj, err := h.service.Get(value)
+	obj, err := h.get(value)
 	if err != nil {
 		return err
 	}
