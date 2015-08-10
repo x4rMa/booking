@@ -95,7 +95,7 @@ func (h *handlerConfiguration) GetHandler() http.Handler {
 
 func (h *handlerConfiguration) createAuthenticationHandlerFinder(prefix string) handler_finder.HandlerFinder {
 	hf := part.New(prefix)
-	hf.RegisterHandler("/verifyLogin", h.handle_errors(booking_authentication_handler_verifylogin.New(h.authenticationService.VerifyLogin)))
+	hf.RegisterHandler("/verifyLogin", h.handle_errors(h.check_permission(booking_authentication_handler_verifylogin.New(h.authenticationService.VerifyLogin), booking_authorization.None)))
 	return hf
 }
 
