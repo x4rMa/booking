@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	. "github.com/bborbe/assert"
+	"github.com/bborbe/booking/authentication"
 )
 
 func TestImplementsAuthenticationService(t *testing.T) {
@@ -15,13 +16,13 @@ func TestImplementsAuthenticationService(t *testing.T) {
 	}
 }
 
-func TestHasPermission(t *testing.T) {
+func TestHasRole(t *testing.T) {
 	r := New()
-	hasPermission, err := r.HasPermission("asdf")
+	hasRole, err := r.HasRole(&authentication.Authentication{}, "role")
 	if err = AssertThat(err, NilValue()); err != nil {
 		t.Fatal(err)
 	}
-	if err = AssertThat(hasPermission, Is(true)); err != nil {
+	if err = AssertThat(hasRole, Is(true)); err != nil {
 		t.Fatal(err)
 	}
 }
