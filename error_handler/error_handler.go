@@ -3,6 +3,7 @@ package error_handler
 import (
 	"net/http"
 
+	booking_handler "github.com/bborbe/booking/handler"
 	"github.com/bborbe/log"
 	error_handler "github.com/bborbe/server/handler/error"
 )
@@ -11,15 +12,11 @@ var (
 	logger = log.DefaultLogger
 )
 
-type Handler interface {
-	ServeHTTP(http.ResponseWriter, *http.Request) error
-}
-
 type handler struct {
-	handler Handler
+	handler booking_handler.Handler
 }
 
-func New(ha Handler) *handler {
+func New(ha booking_handler.Handler) *handler {
 	h := new(handler)
 	h.handler = ha
 	return h

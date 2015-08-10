@@ -4,7 +4,7 @@ import (
 	"flag"
 	"net/http"
 
-	booking_handler "github.com/bborbe/booking/handler"
+	booking_handler_configuration "github.com/bborbe/booking/handler_configuration"
 	"github.com/bborbe/log"
 	"github.com/facebookgo/grace/gracehttp"
 
@@ -55,5 +55,5 @@ func createServer(address string, documentRoot string, databaseName string, data
 	shootingService := booking_shooting_service.New(booking_shooting_storage.New(db), eventbus)
 	userService := booking_user_service.New(booking_user_storage.New(db))
 	authenticationService := booking_authentication_service.New(userService, modelService)
-	return &http.Server{Addr: address, Handler: booking_handler.NewHandler(documentRoot, dateService, modelService, shootingService, userService, authenticationService)}
+	return &http.Server{Addr: address, Handler: booking_handler_configuration.NewHandler(documentRoot, dateService, modelService, shootingService, userService, authenticationService)}
 }
