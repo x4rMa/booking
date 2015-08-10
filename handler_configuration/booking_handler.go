@@ -45,75 +45,111 @@ import (
 	booking_authentication_handler_verifylogin "github.com/bborbe/booking/authentication/handler/verifylogin"
 	booking_authentication_service "github.com/bborbe/booking/authentication/service"
 
+	"github.com/bborbe/booking/authentication/converter"
+	booking_authorization "github.com/bborbe/booking/authorization"
+	booking_authorization_service "github.com/bborbe/booking/authorization/service"
 	booking_error_handler "github.com/bborbe/booking/error_handler"
+	booking_handler "github.com/bborbe/booking/handler"
+	"github.com/bborbe/booking/permission_check_handler"
 )
 
 var logger = log.DefaultLogger
 
-func NewHandler(documentRoot string, dateService booking_date_service.Service, modelService booking_model_service.Service, shootingService booking_shooting_service.Service, userService booking_user_service.Service, authenticationService booking_authentication_service.Service) http.Handler {
-	logger.Debugf("root: %s", documentRoot)
-	fileServer := cachingheader.NewCachingHeaderHandler(contenttype.NewContentTypeHandler(http.FileServer(http.Dir(documentRoot))))
+type handlerConfiguration struct {
+	documentRoot          string
+	dateService           booking_date_service.Service
+	modelService          booking_model_service.Service
+	shootingService       booking_shooting_service.Service
+	userService           booking_user_service.Service
+	authenticationService booking_authentication_service.Service
+	authorizationService  booking_authorization_service.Service
+}
+
+func New(documentRoot string, dateService booking_date_service.Service, modelService booking_model_service.Service, shootingService booking_shooting_service.Service, userService booking_user_service.Service, authenticationService booking_authentication_service.Service, authorizationService booking_authorization_service.Service) *handlerConfiguration {
+	h := new(handlerConfiguration)
+	h.documentRoot = documentRoot
+	h.dateService = dateService
+	h.modelService = modelService
+	h.shootingService = shootingService
+	h.userService = userService
+	h.authenticationService = authenticationService
+	h.authorizationService = authorizationService
+	return h
+}
+
+func (h *handlerConfiguration) GetHandler() http.Handler {
+	logger.Debugf("root: %s", h.documentRoot)
+	fileServer := cachingheader.NewCachingHeaderHandler(contenttype.NewContentTypeHandler(http.FileServer(http.Dir(h.documentRoot))))
 	handlerFinder := part.New("")
 	handlerFinder.RegisterHandler("/", fileServer)
 	handlerFinder.RegisterHandler("/css", fileServer)
 	handlerFinder.RegisterHandler("/js", fileServer)
 	handlerFinder.RegisterHandler("/images", fileServer)
-	handlerFinder.RegisterHandlerFinder("/date", createDateHandlerFinder("/date", dateService))
-	handlerFinder.RegisterHandlerFinder("/model", createModelHandlerFinder("/model", modelService))
-	handlerFinder.RegisterHandlerFinder("/shooting", createShootingHandlerFinder("/shooting", shootingService))
-	handlerFinder.RegisterHandlerFinder("/user", createUserHandlerFinder("/user", userService))
-	handlerFinder.RegisterHandlerFinder("/authentication", createAuthenticationHandlerFinder("/authentication", authenticationService))
+	handlerFinder.RegisterHandlerFinder("/date", h.createDateHandlerFinder("/date"))
+	handlerFinder.RegisterHandlerFinder("/model", h.createModelHandlerFinder("/model"))
+	handlerFinder.RegisterHandlerFinder("/shooting", h.createShootingHandlerFinder("/shooting"))
+	handlerFinder.RegisterHandlerFinder("/user", h.createUserHandlerFinder("/user"))
+	handlerFinder.RegisterHandlerFinder("/authentication", h.createAuthenticationHandlerFinder("/authentication"))
 	return log_handler.NewLogHandler(fallback.NewFallback(handlerFinder, static.NewHandlerStaticContentReturnCode("not found", 404)))
 }
 
-func createAuthenticationHandlerFinder(prefix string, authenticationService booking_authentication_service.Service) handler_finder.HandlerFinder {
+func (h *handlerConfiguration) createAuthenticationHandlerFinder(prefix string) handler_finder.HandlerFinder {
 	hf := part.New(prefix)
-	hf.RegisterHandler("/verifyLogin", booking_error_handler.New(booking_authentication_handler_verifylogin.New(authenticationService.VerifyLogin)))
+	hf.RegisterHandler("/verifyLogin", h.handle_errors(booking_authentication_handler_verifylogin.New(h.authenticationService.VerifyLogin)))
 	return hf
 }
 
-func createDateHandlerFinder(prefix string, dateService booking_date_service.Service) handler_finder.HandlerFinder {
+func (h *handlerConfiguration) createDateHandlerFinder(prefix string) handler_finder.HandlerFinder {
 	hf := rest.New(prefix)
-	hf.RegisterListHandler(booking_error_handler.New(booking_date_handler_list.New(dateService.List)))
-	hf.RegisterCreateHandler(booking_error_handler.New(booking_date_handler_create.New(dateService.Create)))
-	hf.RegisterDeleteHandler(booking_error_handler.New(booking_date_handler_delete.New(dateService.Delete)))
-	hf.RegisterGetHandler(booking_error_handler.New(booking_date_handler_get.New(dateService.Get)))
-	hf.RegisterUpdateHandler(booking_error_handler.New(booking_date_handler_update.New(dateService.Update)))
-	hf.RegisterPatchHandler(booking_error_handler.New(booking_date_handler_update.New(dateService.Update)))
-	hf.RegisterHandler("GET", "/free", booking_error_handler.New(booking_date_handler_list.New(dateService.ListFree)))
+	hf.RegisterListHandler(h.handle_errors(booking_date_handler_list.New(h.dateService.List)))
+	hf.RegisterCreateHandler(h.handle_errors(booking_date_handler_create.New(h.dateService.Create)))
+	hf.RegisterDeleteHandler(h.handle_errors(booking_date_handler_delete.New(h.dateService.Delete)))
+	hf.RegisterGetHandler(h.handle_errors(booking_date_handler_get.New(h.dateService.Get)))
+	hf.RegisterUpdateHandler(h.handle_errors(booking_date_handler_update.New(h.dateService.Update)))
+	hf.RegisterPatchHandler(h.handle_errors(booking_date_handler_update.New(h.dateService.Update)))
+	hf.RegisterHandler("GET", "/free", h.handle_errors(booking_date_handler_list.New(h.dateService.ListFree)))
 	return hf
 }
 
-func createModelHandlerFinder(prefix string, modelService booking_model_service.Service) handler_finder.HandlerFinder {
+func (h *handlerConfiguration) createModelHandlerFinder(prefix string) handler_finder.HandlerFinder {
 	hf := rest.New(prefix)
-	hf.RegisterListHandler(booking_error_handler.New(booking_model_handler_list.New(modelService.List, modelService.FindByToken)))
-	hf.RegisterCreateHandler(booking_error_handler.New(booking_model_handler_create.New(modelService.Create)))
-	hf.RegisterDeleteHandler(booking_error_handler.New(booking_model_handler_delete.New(modelService.Delete)))
-	hf.RegisterGetHandler(booking_error_handler.New(booking_model_handler_get.New(modelService.Get)))
-	hf.RegisterUpdateHandler(booking_error_handler.New(booking_model_handler_update.New(modelService.Update)))
-	hf.RegisterPatchHandler(booking_error_handler.New(booking_model_handler_update.New(modelService.Update)))
+	hf.RegisterListHandler(h.handle_errors(booking_model_handler_list.New(h.modelService.List, h.modelService.FindByToken)))
+	hf.RegisterCreateHandler(h.handle_errors(booking_model_handler_create.New(h.modelService.Create)))
+	hf.RegisterDeleteHandler(h.handle_errors(booking_model_handler_delete.New(h.modelService.Delete)))
+	hf.RegisterGetHandler(h.handle_errors(booking_model_handler_get.New(h.modelService.Get)))
+	hf.RegisterUpdateHandler(h.handle_errors(booking_model_handler_update.New(h.modelService.Update)))
+	hf.RegisterPatchHandler(h.handle_errors(booking_model_handler_update.New(h.modelService.Update)))
 	return hf
 }
 
-func createShootingHandlerFinder(prefix string, shootingService booking_shooting_service.Service) handler_finder.HandlerFinder {
+func (h *handlerConfiguration) createShootingHandlerFinder(prefix string) handler_finder.HandlerFinder {
 	hf := rest.New(prefix)
-	hf.RegisterListHandler(booking_error_handler.New(booking_shooting_handler_list.New(shootingService.List)))
-	hf.RegisterCreateHandler(booking_error_handler.New(booking_shooting_handler_create.New(shootingService.Create)))
-	hf.RegisterDeleteHandler(booking_error_handler.New(booking_shooting_handler_delete.New(shootingService.Delete)))
-	hf.RegisterGetHandler(booking_error_handler.New(booking_shooting_handler_get.New(shootingService.Get)))
-	hf.RegisterUpdateHandler(booking_error_handler.New(booking_shooting_handler_update.New(shootingService.Update)))
-	hf.RegisterPatchHandler(booking_error_handler.New(booking_shooting_handler_update.New(shootingService.Update)))
-	hf.RegisterHandler("POST", "/book", booking_error_handler.New(booking_shooting_handler_book.New(shootingService.Book)))
+	hf.RegisterListHandler(h.handle_errors(booking_shooting_handler_list.New(h.shootingService.List)))
+	hf.RegisterCreateHandler(h.handle_errors(booking_shooting_handler_create.New(h.shootingService.Create)))
+	hf.RegisterDeleteHandler(h.handle_errors(booking_shooting_handler_delete.New(h.shootingService.Delete)))
+	hf.RegisterGetHandler(h.handle_errors(booking_shooting_handler_get.New(h.shootingService.Get)))
+	hf.RegisterUpdateHandler(h.handle_errors(booking_shooting_handler_update.New(h.shootingService.Update)))
+	hf.RegisterPatchHandler(h.handle_errors(booking_shooting_handler_update.New(h.shootingService.Update)))
+	hf.RegisterHandler("POST", "/book", h.handle_errors(booking_shooting_handler_book.New(h.shootingService.Book)))
 	return hf
 }
 
-func createUserHandlerFinder(prefix string, userService booking_user_service.Service) handler_finder.HandlerFinder {
+func (h *handlerConfiguration) createUserHandlerFinder(prefix string) handler_finder.HandlerFinder {
 	hf := rest.New(prefix)
-	hf.RegisterListHandler(booking_error_handler.New(booking_user_handler_list.New(userService.List)))
-	hf.RegisterCreateHandler(booking_error_handler.New(booking_user_handler_create.New(userService.Create)))
-	hf.RegisterDeleteHandler(booking_error_handler.New(booking_user_handler_delete.New(userService.Delete)))
-	hf.RegisterGetHandler(booking_error_handler.New(booking_user_handler_get.New(userService.Get)))
-	hf.RegisterUpdateHandler(booking_error_handler.New(booking_user_handler_update.New(userService.Update)))
-	hf.RegisterPatchHandler(booking_error_handler.New(booking_user_handler_update.New(userService.Update)))
+	hf.RegisterListHandler(h.handle_errors(h.check_permission(booking_user_handler_list.New(h.userService.List), booking_authorization.Administrator)))
+	hf.RegisterCreateHandler(h.handle_errors(h.check_permission(booking_user_handler_create.New(h.userService.Create), booking_authorization.Administrator)))
+	hf.RegisterDeleteHandler(h.handle_errors(h.check_permission(booking_user_handler_delete.New(h.userService.Delete), booking_authorization.Administrator)))
+	hf.RegisterGetHandler(h.handle_errors(h.check_permission(booking_user_handler_get.New(h.userService.Get), booking_authorization.Administrator)))
+	hf.RegisterUpdateHandler(h.handle_errors(h.check_permission(booking_user_handler_update.New(h.userService.Update), booking_authorization.Administrator)))
+	hf.RegisterPatchHandler(h.handle_errors(h.check_permission(booking_user_handler_update.New(h.userService.Update), booking_authorization.Administrator)))
 	return hf
+}
+
+func (h *handlerConfiguration) check_permission(handler booking_handler.Handler, role booking_authorization.Role) booking_handler.Handler {
+	c := converter.New()
+	return permission_check_handler.New(h.authorizationService.HasRole, c.HttpRequestToAuthentication, role, handler)
+}
+
+func (h *handlerConfiguration) handle_errors(handler booking_handler.Handler) http.Handler {
+	return booking_error_handler.New(handler)
 }

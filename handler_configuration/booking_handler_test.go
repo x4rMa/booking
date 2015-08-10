@@ -23,6 +23,7 @@ import (
 	booking_user_storage "github.com/bborbe/booking/user/storage"
 
 	booking_authentication_service "github.com/bborbe/booking/authentication/service"
+	booking_authorization_service "github.com/bborbe/booking/authorization/service"
 	booking_tokengenerator "github.com/bborbe/booking/tokengenerator"
 	"github.com/bborbe/eventbus"
 )
@@ -43,7 +44,9 @@ func createHandler() http.Handler {
 	userService := booking_user_service.New(booking_user_storage.New(db))
 	authenticationService := booking_authentication_service.New(userService, modelService)
 	shootingService := booking_shooting_service.New(booking_shooting_storage.New(db), eventbus.New())
-	return NewHandler("/tmp", dateService, modelService, shootingService, userService, authenticationService)
+	authorizationService := booking_authorization_service.New(authenticationService.VerifyLogin)
+	handlerConfiguration := New("/tmp", dateService, modelService, shootingService, userService, authenticationService, authorizationService)
+	return handlerConfiguration.GetHandler()
 }
 
 func TestDate(t *testing.T) {
@@ -91,7 +94,7 @@ func TestPutDate(t *testing.T) {
 func TestVerifyLoginHandlerFound(t *testing.T) {
 	handler := createHandler()
 	resp := server_mock.NewHttpResponseWriterMock()
-	req, err := server_mock.NewHttpRequestMock("/user/verifyLogin")
+	req, err := server_mock.NewHttpRequestMock("/authentication/verifyLogin")
 	if err = AssertThat(err, NilValue()); err != nil {
 		t.Fatal(err)
 	}
