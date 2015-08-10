@@ -59,6 +59,6 @@ func createServer(address string, documentRoot string, databaseName string, data
 	authenticationService := booking_authentication_service.New(userService, modelService)
 	authorizationService := booking_authorization_service.New(authenticationService.VerifyLogin)
 	authenticationConverter := booking_authentication_converter.New()
-	handlerConfiguration := booking_handler_configuration.New(documentRoot, dateService, modelService, shootingService, userService, authenticationService, authorizationService, authenticationConverter)
+	handlerConfiguration := booking_handler_configuration.New(documentRoot, dateService, modelService, shootingService, userService, authenticationService, authorizationService.HasRole, authenticationConverter.HttpRequestToAuthentication)
 	return &http.Server{Addr: address, Handler: handlerConfiguration.GetHandler()}
 }
