@@ -36,6 +36,7 @@ angular.module('bookingServices').factory('AuthenticationService', ['$log', '$co
       $log.debug('verifyLogin = ' + result);
       if (result === 'true') {
         $cookieStore.put(userkey, user);
+        $http.defaults.headers.common["X-Auth-Token"] = window.btoa(JSON.stringify(user));
       }
       deferred.resolve(result);
     }, function (error) {
@@ -46,6 +47,7 @@ angular.module('bookingServices').factory('AuthenticationService', ['$log', '$co
 
   service.logout = function () {
     $cookieStore.remove(userkey);
+    delete $http.defaults.headers.common["X-Auth-Token"]
   };
 
   return service;
