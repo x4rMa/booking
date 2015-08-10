@@ -9,12 +9,12 @@ const (
 	None          Role = "none"
 )
 
-func RoleByName(roleName string) *Role {
+func RoleByName(roleName string) Role {
 	roles := []Role{Administrator, Organizer, Participant}
 	for _, r := range roles {
 		if string(r) == roleName {
-			return &r
+			return r
 		}
 	}
-	return nil
+	return None
 }

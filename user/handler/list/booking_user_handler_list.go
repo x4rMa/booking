@@ -26,6 +26,9 @@ func New(list List) *handler {
 }
 
 func (h *handler) ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) error {
+	// request -> auth
+	// has role admin
+
 	var err error
 	var list *[]booking_user.User
 	if list, err = h.list(); err != nil {

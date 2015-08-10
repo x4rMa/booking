@@ -15,7 +15,7 @@ var (
 )
 
 type Service interface {
-	VerifyLogin(d *booking_authentication.Authentication) (bool, error)
+	VerifyLogin(authentication *booking_authentication.Authentication) (bool, error)
 }
 
 type authenticationService struct {

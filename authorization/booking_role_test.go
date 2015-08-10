@@ -25,32 +25,29 @@ func TestRoleParticipant(t *testing.T) {
 }
 
 func TestRoleByNameIllegal(t *testing.T) {
-	role := RoleByName("asdf")
-	if err := AssertThat(role == nil, Is(true)); err != nil {
+	role := RoleByName("adfadf")
+	if err := AssertThat(role, Is(None)); err != nil {
 		t.Fatal(err)
 	}
 }
 
 func TestRoleByNameAdministrator(t *testing.T) {
-	var role *Role
-	role = RoleByName("administrator")
-	if err := AssertThat(*role, Is(Administrator)); err != nil {
+	role := RoleByName("administrator")
+	if err := AssertThat(role, Is(Administrator)); err != nil {
 		t.Fatal(err)
 	}
 }
 
 func TestRoleByNameOrganizer(t *testing.T) {
-	var role *Role
-	role = RoleByName("organizer")
-	if err := AssertThat(*role, Is(Organizer)); err != nil {
+	role := RoleByName("organizer")
+	if err := AssertThat(role, Is(Organizer)); err != nil {
 		t.Fatal(err)
 	}
 }
 
 func TestRoleByNameParticipant(t *testing.T) {
-	var role *Role
-	role = RoleByName("participant")
-	if err := AssertThat(*role, Is(Participant)); err != nil {
+	role := RoleByName("participant")
+	if err := AssertThat(role, Is(Participant)); err != nil {
 		t.Fatal(err)
 	}
 }
