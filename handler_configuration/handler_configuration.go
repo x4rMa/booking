@@ -45,27 +45,28 @@ import (
 	booking_authentication_handler_verifylogin "github.com/bborbe/booking/authentication/handler/verifylogin"
 	booking_authentication_service "github.com/bborbe/booking/authentication/service"
 
-	"github.com/bborbe/booking/authentication/converter"
+	booking_authentication_converter "github.com/bborbe/booking/authentication/converter"
 	booking_authorization "github.com/bborbe/booking/authorization"
 	booking_authorization_service "github.com/bborbe/booking/authorization/service"
 	booking_error_handler "github.com/bborbe/booking/error_handler"
 	booking_handler "github.com/bborbe/booking/handler"
-	"github.com/bborbe/booking/permission_check_handler"
+	booking_permission_check_handler "github.com/bborbe/booking/permission_check_handler"
 )
 
 var logger = log.DefaultLogger
 
 type handlerConfiguration struct {
-	documentRoot          string
-	dateService           booking_date_service.Service
-	modelService          booking_model_service.Service
-	shootingService       booking_shooting_service.Service
-	userService           booking_user_service.Service
-	authenticationService booking_authentication_service.Service
-	authorizationService  booking_authorization_service.Service
+	documentRoot            string
+	dateService             booking_date_service.Service
+	modelService            booking_model_service.Service
+	shootingService         booking_shooting_service.Service
+	userService             booking_user_service.Service
+	authenticationService   booking_authentication_service.Service
+	authorizationService    booking_authorization_service.Service
+	authenticationConverter booking_authentication_converter.Converter
 }
 
-func New(documentRoot string, dateService booking_date_service.Service, modelService booking_model_service.Service, shootingService booking_shooting_service.Service, userService booking_user_service.Service, authenticationService booking_authentication_service.Service, authorizationService booking_authorization_service.Service) *handlerConfiguration {
+func New(documentRoot string, dateService booking_date_service.Service, modelService booking_model_service.Service, shootingService booking_shooting_service.Service, userService booking_user_service.Service, authenticationService booking_authentication_service.Service, authorizationService booking_authorization_service.Service, authenticationConverter booking_authentication_converter.Converter) *handlerConfiguration {
 	h := new(handlerConfiguration)
 	h.documentRoot = documentRoot
 	h.dateService = dateService
@@ -74,6 +75,7 @@ func New(documentRoot string, dateService booking_date_service.Service, modelSer
 	h.userService = userService
 	h.authenticationService = authenticationService
 	h.authorizationService = authorizationService
+	h.authenticationConverter = authenticationConverter
 	return h
 }
 
@@ -146,8 +148,7 @@ func (h *handlerConfiguration) createUserHandlerFinder(prefix string) handler_fi
 }
 
 func (h *handlerConfiguration) check_permission(handler booking_handler.Handler, role booking_authorization.Role) booking_handler.Handler {
-	c := converter.New()
-	return permission_check_handler.New(h.authorizationService.HasRole, c.HttpRequestToAuthentication, role, handler)
+	return booking_permission_check_handler.New(h.authorizationService.HasRole, h.authenticationConverter.HttpRequestToAuthentication, role, handler)
 }
 
 func (h *handlerConfiguration) handle_errors(handler booking_handler.Handler) http.Handler {

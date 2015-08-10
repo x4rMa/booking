@@ -11,6 +11,12 @@ import (
 
 const AUTH_HEADER_FIELD = "X-Auth-Token"
 
+type Converter interface {
+	HttpRequestToAuthentication(request *http.Request) (*booking_authentication.Authentication, error)
+	TokenToAuthentication(token string) (*booking_authentication.Authentication, error)
+	AuthenticationToToken(authentication *booking_authentication.Authentication) (string, error)
+}
+
 type converter struct{}
 
 func New() *converter {

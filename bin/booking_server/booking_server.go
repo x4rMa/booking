@@ -20,6 +20,7 @@ import (
 	booking_user_service "github.com/bborbe/booking/user/service"
 	booking_user_storage "github.com/bborbe/booking/user/storage"
 
+	booking_authentication_converter "github.com/bborbe/booking/authentication/converter"
 	booking_authentication_service "github.com/bborbe/booking/authentication/service"
 
 	booking_authorization_service "github.com/bborbe/booking/authorization/service"
@@ -57,6 +58,7 @@ func createServer(address string, documentRoot string, databaseName string, data
 	userService := booking_user_service.New(booking_user_storage.New(db))
 	authenticationService := booking_authentication_service.New(userService, modelService)
 	authorizationService := booking_authorization_service.New(authenticationService.VerifyLogin)
-	handlerConfiguration := booking_handler_configuration.New(documentRoot, dateService, modelService, shootingService, userService, authenticationService, authorizationService)
+	authenticationConverter := booking_authentication_converter.New()
+	handlerConfiguration := booking_handler_configuration.New(documentRoot, dateService, modelService, shootingService, userService, authenticationService, authorizationService, authenticationConverter)
 	return &http.Server{Addr: address, Handler: handlerConfiguration.GetHandler()}
 }

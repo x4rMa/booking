@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/bborbe/eventbus"
+
 	. "github.com/bborbe/assert"
 	booking_database_sqlite "github.com/bborbe/booking/database/sqlite"
 
@@ -22,10 +24,10 @@ import (
 	booking_user_service "github.com/bborbe/booking/user/service"
 	booking_user_storage "github.com/bborbe/booking/user/storage"
 
+	booking_authentication_converter "github.com/bborbe/booking/authentication/converter"
 	booking_authentication_service "github.com/bborbe/booking/authentication/service"
 	booking_authorization_service "github.com/bborbe/booking/authorization/service"
 	booking_tokengenerator "github.com/bborbe/booking/tokengenerator"
-	"github.com/bborbe/eventbus"
 )
 
 func TestNewHandlerImplementsHttpHandler(t *testing.T) {
@@ -45,7 +47,8 @@ func createHandler() http.Handler {
 	authenticationService := booking_authentication_service.New(userService, modelService)
 	shootingService := booking_shooting_service.New(booking_shooting_storage.New(db), eventbus.New())
 	authorizationService := booking_authorization_service.New(authenticationService.VerifyLogin)
-	handlerConfiguration := New("/tmp", dateService, modelService, shootingService, userService, authenticationService, authorizationService)
+	authenticationConverter := booking_authentication_converter.New()
+	handlerConfiguration := New("/tmp", dateService, modelService, shootingService, userService, authenticationService, authorizationService, authenticationConverter)
 	return handlerConfiguration.GetHandler()
 }
 
