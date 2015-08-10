@@ -34,6 +34,15 @@ func TestImplementsHandler(t *testing.T) {
 	}
 }
 
+func TestAllwaysAllowNone(t *testing.T) {
+	e := fmt.Errorf("myError")
+	handler := booking_handler_mock.New()
+	r := New(createHasRole(false, e), createHttpRequestToAuthentication(nil, e), booking_authorization.None, handler)
+	if err := AssertThat(r.checkPermission(&http.Request{}), NilValue()); err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestHttpRequestToAuthenticationFailed(t *testing.T) {
 	e := fmt.Errorf("myError")
 	handler := booking_handler_mock.New()

@@ -29,6 +29,16 @@ func New(hasRole HasRole, httpRequestToAuthentication HttpRequestToAuthenticatio
 }
 
 func (h *handler) ServeHTTP(resp http.ResponseWriter, req *http.Request) error {
+	if err := h.checkPermission(req); err != nil {
+		return err
+	}
+	return h.subHandler.ServeHTTP(resp, req)
+}
+
+func (h *handler) checkPermission(req *http.Request) error {
+	if h.requiredRole == booking_authorization.None {
+		return nil
+	}
 	authentication, err := h.httpRequestToAuthentication(req)
 	if err != nil {
 		return err
@@ -40,5 +50,5 @@ func (h *handler) ServeHTTP(resp http.ResponseWriter, req *http.Request) error {
 	if !hasRole {
 		return fmt.Errorf("permission denied")
 	}
-	return h.subHandler.ServeHTTP(resp, req)
+	return nil
 }

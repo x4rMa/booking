@@ -7,9 +7,14 @@ import (
 	"net/http"
 
 	booking_authentication "github.com/bborbe/booking/authentication"
+	"github.com/bborbe/log"
 )
 
 const AUTH_HEADER_FIELD = "X-Auth-Token"
+
+var (
+	logger = log.DefaultLogger
+)
 
 type Converter interface {
 	HttpRequestToAuthentication(request *http.Request) (*booking_authentication.Authentication, error)
@@ -24,6 +29,7 @@ func New() *converter {
 }
 
 func (c *converter) HttpRequestToAuthentication(request *http.Request) (*booking_authentication.Authentication, error) {
+	logger.Debug("HttpRequestToAuthentication")
 	values := request.Header[AUTH_HEADER_FIELD]
 	if values == nil {
 		return nil, fmt.Errorf("header field %s missing", AUTH_HEADER_FIELD)
@@ -35,6 +41,7 @@ func (c *converter) HttpRequestToAuthentication(request *http.Request) (*booking
 }
 
 func (c *converter) TokenToAuthentication(token string) (*booking_authentication.Authentication, error) {
+	logger.Debug("TokenToAuthentication")
 	content, err := base64.StdEncoding.DecodeString(token)
 	if err != nil {
 		return nil, err
@@ -48,6 +55,7 @@ func (c *converter) TokenToAuthentication(token string) (*booking_authentication
 }
 
 func (c *converter) AuthenticationToToken(authentication *booking_authentication.Authentication) (string, error) {
+	logger.Debug("AuthenticationToToken")
 	b, err := json.Marshal(authentication)
 	if err != nil {
 		return "", err
