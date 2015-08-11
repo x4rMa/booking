@@ -7,7 +7,10 @@ import (
 	booking_authentication "github.com/bborbe/booking/authentication"
 	booking_authorization "github.com/bborbe/booking/authorization"
 	booking_handler "github.com/bborbe/booking/handler"
+	"github.com/bborbe/log"
 )
+
+var logger = log.DefaultLogger
 
 type HasRole func(authentication *booking_authentication.Authentication, role booking_authorization.Role) (bool, error)
 type HttpRequestToAuthentication func(request *http.Request) (*booking_authentication.Authentication, error)
@@ -32,6 +35,7 @@ func (h *handler) ServeHTTP(resp http.ResponseWriter, req *http.Request) error {
 	if err := h.checkPermission(req); err != nil {
 		return err
 	}
+	logger.Debug("permission granted")
 	return h.subHandler.ServeHTTP(resp, req)
 }
 
@@ -41,13 +45,16 @@ func (h *handler) checkPermission(req *http.Request) error {
 	}
 	authentication, err := h.httpRequestToAuthentication(req)
 	if err != nil {
+		logger.Debugf("httpRequestToAuthentication failed: %v", err)
 		return err
 	}
 	hasRole, err := h.hasRole(authentication, h.requiredRole)
 	if err != nil {
+		logger.Debugf("hasRole failed: %v", err)
 		return err
 	}
 	if !hasRole {
+		logger.Debugf("hasRole false")
 		return fmt.Errorf("permission denied")
 	}
 	return nil

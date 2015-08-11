@@ -23,6 +23,8 @@ import (
 	booking_model_handler_create "github.com/bborbe/booking/model/handler/create"
 	booking_model_handler_delete "github.com/bborbe/booking/model/handler/delete"
 	booking_model_handler_get "github.com/bborbe/booking/model/handler/get"
+	booking_model_handler_current "github.com/bborbe/booking/model/handler/current"
+	booking_model_handler_complete "github.com/bborbe/booking/model/handler/complete"
 	booking_model_handler_list "github.com/bborbe/booking/model/handler/list"
 	booking_model_handler_update "github.com/bborbe/booking/model/handler/update"
 	booking_model_service "github.com/bborbe/booking/model/service"
@@ -31,6 +33,7 @@ import (
 	booking_shooting_handler_create "github.com/bborbe/booking/shooting/handler/create"
 	booking_shooting_handler_delete "github.com/bborbe/booking/shooting/handler/delete"
 	booking_shooting_handler_get "github.com/bborbe/booking/shooting/handler/get"
+	booking_shooting_handler_current "github.com/bborbe/booking/shooting/handler/current"
 	booking_shooting_handler_list "github.com/bborbe/booking/shooting/handler/list"
 	booking_shooting_handler_update "github.com/bborbe/booking/shooting/handler/update"
 	booking_shooting_service "github.com/bborbe/booking/shooting/service"
@@ -44,8 +47,10 @@ import (
 
 	booking_authentication_handler_verifylogin "github.com/bborbe/booking/authentication/handler/verifylogin"
 	booking_authentication_service "github.com/bborbe/booking/authentication/service"
+	booking_authentication_converter "github.com/bborbe/booking/authentication/converter"
 
 	booking_authorization "github.com/bborbe/booking/authorization"
+	booking_authorization_service "github.com/bborbe/booking/authorization/service"
 	booking_error_handler "github.com/bborbe/booking/error_handler"
 	booking_handler "github.com/bborbe/booking/handler"
 	booking_permission_check_handler "github.com/bborbe/booking/permission_check_handler"
@@ -60,11 +65,11 @@ type handlerConfiguration struct {
 	shootingService             booking_shooting_service.Service
 	userService                 booking_user_service.Service
 	authenticationService       booking_authentication_service.Service
-	hasRole                     booking_permission_check_handler.HasRole
-	httpRequestToAuthentication booking_permission_check_handler.HttpRequestToAuthentication
+	authorizationService        booking_authorization_service.Service
+	authenticationConverter     booking_authentication_converter.Converter
 }
 
-func New(documentRoot string, dateService booking_date_service.Service, modelService booking_model_service.Service, shootingService booking_shooting_service.Service, userService booking_user_service.Service, authenticationService booking_authentication_service.Service, hasRole booking_permission_check_handler.HasRole, httpRequestToAuthentication booking_permission_check_handler.HttpRequestToAuthentication) *handlerConfiguration {
+func New(documentRoot string, dateService booking_date_service.Service, modelService booking_model_service.Service, shootingService booking_shooting_service.Service, userService booking_user_service.Service, authenticationService booking_authentication_service.Service, authorizationService       booking_authorization_service.Service, authenticationConverter booking_authentication_converter.Converter) *handlerConfiguration {
 	h := new(handlerConfiguration)
 	h.documentRoot = documentRoot
 	h.dateService = dateService
@@ -72,8 +77,8 @@ func New(documentRoot string, dateService booking_date_service.Service, modelSer
 	h.shootingService = shootingService
 	h.userService = userService
 	h.authenticationService = authenticationService
-	h.hasRole = hasRole
-	h.httpRequestToAuthentication = httpRequestToAuthentication
+	h.authorizationService = authorizationService
+	h.authenticationConverter = authenticationConverter
 	return h
 }
 
@@ -107,18 +112,20 @@ func (h *handlerConfiguration) createDateHandlerFinder(prefix string) handler_fi
 	hf.RegisterGetHandler(h.handle_errors(h.check_permission(booking_date_handler_get.New(h.dateService.Get), booking_authorization.Organizer)))
 	hf.RegisterUpdateHandler(h.handle_errors(h.check_permission(booking_date_handler_update.New(h.dateService.Update), booking_authorization.Organizer)))
 	hf.RegisterPatchHandler(h.handle_errors(h.check_permission(booking_date_handler_update.New(h.dateService.Update), booking_authorization.Organizer)))
-	hf.RegisterHandler("GET", "/free", h.handle_errors(h.check_permission(booking_date_handler_list.New(h.dateService.ListFree), booking_authorization.Organizer)))
+	hf.RegisterHandler("GET", "/free", h.handle_errors(h.check_permission(booking_date_handler_list.New(h.dateService.ListFree), booking_authorization.Participant)))
 	return hf
 }
 
 func (h *handlerConfiguration) createModelHandlerFinder(prefix string) handler_finder.HandlerFinder {
 	hf := rest.New(prefix)
-	hf.RegisterListHandler(h.handle_errors(h.check_permission(booking_model_handler_list.New(h.modelService.List, h.modelService.FindByToken), booking_authorization.Organizer)))
+	hf.RegisterListHandler(h.handle_errors(h.check_permission(booking_model_handler_list.New(h.modelService.List), booking_authorization.Organizer)))
 	hf.RegisterCreateHandler(h.handle_errors(h.check_permission(booking_model_handler_create.New(h.modelService.Create), booking_authorization.Organizer)))
 	hf.RegisterDeleteHandler(h.handle_errors(h.check_permission(booking_model_handler_delete.New(h.modelService.Delete), booking_authorization.Organizer)))
 	hf.RegisterGetHandler(h.handle_errors(h.check_permission(booking_model_handler_get.New(h.modelService.Get), booking_authorization.Organizer)))
 	hf.RegisterUpdateHandler(h.handle_errors(h.check_permission(booking_model_handler_update.New(h.modelService.Update), booking_authorization.Organizer)))
 	hf.RegisterPatchHandler(h.handle_errors(h.check_permission(booking_model_handler_update.New(h.modelService.Update), booking_authorization.Organizer)))
+	hf.RegisterHandler("GET", "/current", h.handle_errors(h.check_permission(booking_model_handler_current.New(h.authenticationConverter.HttpRequestToAuthentication, h.modelService.GetByToken), booking_authorization.Participant)))
+	hf.RegisterHandler("PUT", "/complete", h.handle_errors(h.check_permission(booking_model_handler_complete.New(h.modelService.Update), booking_authorization.Participant)))
 	return hf
 }
 
@@ -130,7 +137,8 @@ func (h *handlerConfiguration) createShootingHandlerFinder(prefix string) handle
 	hf.RegisterGetHandler(h.handle_errors(h.check_permission(booking_shooting_handler_get.New(h.shootingService.Get), booking_authorization.Organizer)))
 	hf.RegisterUpdateHandler(h.handle_errors(h.check_permission(booking_shooting_handler_update.New(h.shootingService.Update), booking_authorization.Organizer)))
 	hf.RegisterPatchHandler(h.handle_errors(h.check_permission(booking_shooting_handler_update.New(h.shootingService.Update), booking_authorization.Organizer)))
-	hf.RegisterHandler("POST", "/book", h.handle_errors(h.check_permission(booking_shooting_handler_book.New(h.shootingService.Book), booking_authorization.Participant)))
+	hf.RegisterHandler("POST", "/book", h.handle_errors(h.check_permission(booking_shooting_handler_book.New(h.authenticationConverter.HttpRequestToAuthentication, h.modelService.GetByToken,h.shootingService.Book), booking_authorization.Participant)))
+	hf.RegisterHandler("GET", "/current", h.handle_errors(h.check_permission(booking_shooting_handler_current.New(h.authenticationConverter.HttpRequestToAuthentication, h.modelService.GetByToken, h.shootingService.FindByModelId), booking_authorization.Participant)))
 	return hf
 }
 
@@ -146,7 +154,7 @@ func (h *handlerConfiguration) createUserHandlerFinder(prefix string) handler_fi
 }
 
 func (h *handlerConfiguration) check_permission(handler booking_handler.Handler, role booking_authorization.Role) booking_handler.Handler {
-	return booking_permission_check_handler.New(h.hasRole, h.httpRequestToAuthentication, role, handler)
+	return booking_permission_check_handler.New(h.authorizationService.HasRole, h.authenticationConverter.HttpRequestToAuthentication, role, handler)
 }
 
 func (h *handlerConfiguration) handle_errors(handler booking_handler.Handler) http.Handler {

@@ -47,7 +47,10 @@ angular.module('bookingControllers').controller('ShootingCreateCtrl', ['$scope',
   });
   $scope.reset = function () {
     $log.debug('reset create shooting form');
-    $scope.shooting = {};
+    $scope.shooting = {
+      'date_id': '',
+      'shooting_id': ''
+    };
     $scope.messages = [];
   }
   $scope.submit = function () {
@@ -67,7 +70,7 @@ angular.module('bookingControllers').controller('ShootingCreateCtrl', ['$scope',
 angular.module('bookingControllers').controller('ShootingShowCtrl', ['$scope', '$routeParams', '$log', '$location', 'ShootingService', function ($scope, $routeParams, $log, $location, ShootingService) {
   $log.debug('show shooting with id: ' + $routeParams.Id);
   ShootingService.get($routeParams.Id).then(function (result) {
-    $log.debug('shooting found');
+    $log.debug('shooting found', result);
     $scope.shooting = result;
   }, function (error) {
     $log.debug('shooting not found: ' + error);
@@ -84,6 +87,7 @@ angular.module('bookingControllers').controller('ShootingUpdateCtrl', ['$scope',
     $scope.dates = result;
   });
   ShootingService.get($routeParams.Id).then(function (result) {
+    $log.debug('get shooting ' + $routeParams.Id, result);
     $scope.shooting = result;
   }, function (error) {
     $log.debug('shooting not found');
@@ -130,7 +134,7 @@ angular.module('bookingControllers').controller('ShootingDeleteCtrl', ['$scope',
 }]);
 
 angular.module('bookingControllers').controller('ShootingSelectCtrl', ['$scope', '$log', '$location', 'ShootingService', function ($scope, $log, $location, ShootingService) {
-  ShootingService.list().then(function (result) {
+  ShootingService.current().then(function (result) {
     $log.debug('list ' + result.lenght + ' shootings for select success');
     $scope.shootingsWithoutDate = [];
     $scope.shootingsWithDate = [];
@@ -217,15 +221,15 @@ angular.module('bookingControllers').controller('ModelDeleteCtrl', ['$scope', '$
 }]);
 
 angular.module('bookingControllers').controller('ModelCompleteCtrl', ['$scope', '$routeParams', '$log', '$location', 'ModelService', function ($scope, $routeParams, $log, $location, ModelService) {
-  $log.debug('complete model with token: ' + $routeParams.Token);
-  ModelService.findByToken($routeParams.Token).then(function (result) {
-    $scope.model = result[0];
+  $log.debug('complete model');
+  ModelService.getCurrent().then(function (result) {
+    $scope.model = result;
   }, function (error) {
-    $log.debug('find model by token failed: ' + error);
+    $log.debug('find current model: ' + error);
     $location.path('/');
   });
   $scope.submit = function () {
-    ModelService.update($scope.model).then(function (result) {
+    ModelService.complete($scope.model).then(function (result) {
       $log.debug('update model success');
       $location.path('/shooting/select');
     }, function (error) {
@@ -296,7 +300,7 @@ angular.module('bookingControllers').controller('DateListCtrl', ['$scope', '$log
   });
 }]);
 
-angular.module('bookingControllers').controller('DateSelectCtrl', ['$scope', '$routeParams', '$log', 'ShootingService', 'DateService', function ($scope, $routeParams, $log, ShootingService, DateService) {
+angular.module('bookingControllers').controller('DateSelectCtrl', ['$scope', '$routeParams', '$log', '$location', 'ShootingService', 'DateService', function ($scope, $routeParams, $log, $location, ShootingService, DateService) {
   $log.debug('select date for shooting with id: ' + $routeParams.ShootingId);
   ShootingService.get($routeParams.ShootingId).then(function (result) {
     $log.debug('get shooting success');
@@ -314,6 +318,7 @@ angular.module('bookingControllers').controller('DateSelectCtrl', ['$scope', '$r
     $log.debug('book ' + date_id + ' for shooting ' + $routeParams.ShootingId);
     ShootingService.book(date_id, $routeParams.ShootingId).then(function (result) {
       $log.debug('book date for shooting success');
+      $location.path('/shooting/select');
     }, function (error) {
       $log.debug('book date for shooting failed: ' + error);
     });

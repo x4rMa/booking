@@ -50,6 +50,8 @@ angular.module('bookingServices').factory('AuthenticationService', ['$log', '$co
     delete $http.defaults.headers.common["X-Auth-Token"]
   };
 
+  $http.defaults.headers.common["X-Auth-Token"] = window.btoa(JSON.stringify(service.getCurrent()));
+
   return service;
 }]);
 
@@ -100,6 +102,9 @@ angular.module('bookingServices').factory('Shooting', ['$resource', function ($r
     query: {
       method: 'GET', params: {}, isArray: true
     },
+    current: {
+      url: '/shooting/current', method: 'GET', params: {}, isArray: true
+    },
     create: {
       method: 'POST', params: {}
     },
@@ -112,39 +117,97 @@ angular.module('bookingServices').factory('Shooting', ['$resource', function ($r
   });
 }]);
 
-angular.module('bookingServices').factory('ShootingService', ['$log', '$http', 'Shooting', function ($log, $http, Shooting) {
+angular.module('bookingServices').factory('ShootingService', ['$log', '$http', '$q', 'Shooting', function ($log, $http, $q, Shooting) {
   var service = {};
 
   service.create = function (data) {
     $log.debug('create shooting');
-    data.model_id = parseInt(data.model_id);
-    data.date_id = parseInt(data.date_id);
-    return Shooting.create(data).$promise;
+    var deferred = $q.defer();
+    Shooting.create(service.convert(data)).$promise.then(function (result) {
+      deferred.resolve(service.convert(result));
+    }, function (error) {
+      deferred.reject(error);
+    });
+    return deferred.promise;
   };
 
   service.update = function (data) {
     $log.debug('update shooting with id: ' + data.id);
-    return Shooting.update(data).$promise;
+    var deferred = $q.defer();
+    Shooting.update(service.convert(data)).$promise.then(function (result) {
+      deferred.resolve(service.convert(result));
+    }, function (error) {
+      deferred.reject(error);
+    });
+    return deferred.promise;
   };
 
   service.delete = function (id) {
     $log.debug('delete shooting with id: ' + id);
-    return Shooting.delete({Id: id}).$promise;
+    var deferred = $q.defer();
+    Shooting.delete(service.convert({Id: id})).$promise.then(function (result) {
+      deferred.resolve(service.convert(result));
+    }, function (error) {
+      deferred.reject(error);
+    });
+    return deferred.promise;
   };
 
   service.get = function (id) {
     $log.debug('get shooting with id: ' + id);
-    return Shooting.get({Id: id}).$promise;
+    var deferred = $q.defer();
+    Shooting.get(service.convert({Id: id})).$promise.then(function (result) {
+      deferred.resolve(service.convert(result));
+    }, function (error) {
+      deferred.reject(error);
+    });
+    return deferred.promise;
   };
 
   service.list = function () {
     $log.debug('list shootings');
-    return Shooting.query().$promise;
+    var deferred = $q.defer();
+    Shooting.query().$promise.then(function (result) {
+      angular.forEach(result, function (shooting) {
+        service.convert(shooting);
+      });
+      deferred.resolve(result);
+    }, function (error) {
+      deferred.reject(error);
+    });
+    return deferred.promise;
+  };
+
+  service.current = function () {
+    $log.debug('current shootings');
+    var deferred = $q.defer();
+    Shooting.current().$promise.then(function (result) {
+      angular.forEach(result, function (shooting) {
+        service.convert(shooting);
+      });
+      deferred.resolve(result);
+    }, function (error) {
+      deferred.reject(error);
+    });
+    return deferred.promise;
   };
 
   service.book = function (date_id, shooting_id) {
     $log.debug('book shooting with id: ' + shooting_id);
-    return $http.post('/shooting/book', {'id': parseInt(shooting_id), 'date_id': parseInt(date_id)});
+    return $http.post('/shooting/book', service.convert({'id': shooting_id, 'date_id': date_id}));
+  };
+
+  service.convert = function (data) {
+    var fields = ['id', 'date_id', 'model_id'];
+    angular.forEach(fields, function (field) {
+      var value = parseInt(data[field]);
+      if (value > 0) {
+        data[field] = value;
+      } else {
+        delete data[field];
+      }
+    });
+    return data;
   };
 
   return service;
@@ -163,7 +226,13 @@ angular.module('bookingServices').factory('Model', ['$resource', function ($reso
     },
     delete: {
       method: 'DELETE', params: {}
-    }
+    },
+    current: {
+      url: '/model/current', method: 'GET', params: {}
+    },
+    complete: {
+      url: '/model/complete', method: 'PUT', params: {}
+    },
   });
 }]);
 
@@ -178,6 +247,11 @@ angular.module('bookingServices').factory('ModelService', ['$log', 'Model', func
   service.update = function (data) {
     $log.debug('update model with id: ' + data.id);
     return Model.update(data).$promise;
+  };
+
+  service.complete = function (data) {
+    $log.debug('complete model with id: ' + data.id);
+    return Model.complete(data).$promise;
   };
 
   service.delete = function (id) {
@@ -200,13 +274,18 @@ angular.module('bookingServices').factory('ModelService', ['$log', 'Model', func
     return Model.query({token: token}).$promise;
   };
 
+  service.getCurrent = function () {
+    $log.debug('get current model');
+    return Model.current().$promise;
+  };
+
   return service;
 }]);
 
 angular.module('bookingServices').factory('Date', ['$resource', function ($resource) {
   return $resource('/date/:Id', {}, {
     listFree: {
-      url: '/date/free',  method: 'GET', params: {}, isArray: true
+      url: '/date/free', method: 'GET', params: {}, isArray: true
     },
     query: {
       method: 'GET', params: {}, isArray: true

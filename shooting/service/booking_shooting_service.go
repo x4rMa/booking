@@ -14,6 +14,7 @@ var (
 )
 
 type Service interface {
+	FindByModelId(modelId int) (*[]booking_shooting.Shooting, error)
 	List() (*[]booking_shooting.Shooting, error)
 	Get(id int) (*booking_shooting.Shooting, error)
 	Create(shooting *booking_shooting.Shooting) (*booking_shooting.Shooting, error)
@@ -72,4 +73,9 @@ func (s *shootingService) Get(id int) (*booking_shooting.Shooting, error) {
 func (s *shootingService) Delete(id int) (*booking_shooting.Shooting, error) {
 	logger.Debug("delete")
 	return s.storage.Delete(id)
+}
+
+func (s *shootingService) FindByModelId(modelId int) (*[]booking_shooting.Shooting, error) {
+	logger.Debugf("find by modelId %d", modelId)
+	return s.storage.Find();
 }

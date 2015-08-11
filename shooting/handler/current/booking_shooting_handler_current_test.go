@@ -1,4 +1,4 @@
-package list
+package current
 
 import (
 	"testing"
@@ -9,7 +9,7 @@ import (
 )
 
 func TestImplementsHttpHandler(t *testing.T) {
-	r := New(nil)
+	r := New(nil, nil, nil)
 	var i *booking_handler.Handler
 	err := AssertThat(r, Implements(i))
 	if err != nil {

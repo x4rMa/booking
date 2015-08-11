@@ -1,8 +1,6 @@
-package book
+package current
 
 import (
-	"encoding/json"
-	"io/ioutil"
 	"net/http"
 
 	booking_shooting "github.com/bborbe/booking/shooting"
@@ -10,28 +8,27 @@ import (
 	booking_model                        "github.com/bborbe/booking/model"
 	"github.com/bborbe/log"
 	json_handler "github.com/bborbe/server/handler/json"
-	"fmt"
 )
 
 var (
 	logger = log.DefaultLogger
 )
 
-type Book func(*booking_shooting.Shooting) (*booking_shooting.Shooting, error)
+type FindByModelId func( modelId int) (*[]booking_shooting.Shooting, error)
 type HttpRequestToAuthentication func(request *http.Request) (*booking_authentication.Authentication, error)
 type GetByToken func(token string) (*booking_model.Model, error)
 
 type handler struct {
-	book                        Book
 	httpRequestToAuthentication HttpRequestToAuthentication
 	getByToken                  GetByToken
+	findByModelId               FindByModelId
 }
 
-func New(httpRequestToAuthentication HttpRequestToAuthentication, getByToken GetByToken, book Book) *handler {
+func New(httpRequestToAuthentication HttpRequestToAuthentication, getByToken GetByToken, findByModelId FindByModelId) *handler {
 	h := new(handler)
-	h.httpRequestToAuthentication = httpRequestToAuthentication
+	h. httpRequestToAuthentication = httpRequestToAuthentication
 	h.getByToken = getByToken
-	h.book = book
+	h.findByModelId = findByModelId
 	return h
 }
 
@@ -44,26 +41,13 @@ func (h *handler) ServeHTTP(responseWriter http.ResponseWriter, request *http.Re
 	if err != nil {
 		return err
 	}
-
-	content, err := ioutil.ReadAll(request.Body)
-	if err != nil {
+	var list *[]booking_shooting.Shooting
+	if list, err = h.findByModelId(model.Id); err != nil {
+		logger.Debugf("list shootings failed: %v", err)
 		return err
 	}
-	logger.Debugf("shooting book: %s", string(content))
-	var f booking_shooting.Shooting
-	err = json.Unmarshal(content, &f)
-	if err != nil {
-		return err
-	}
-	if f.ModelId != model.Id {
-		logger.Debugf("permission")
-		return fmt.Errorf("permission denied")
-	}
-	obj, err := h.book(&f)
-	if err != nil {
-		return err
-	}
-	j := json_handler.NewJsonHandler(obj)
+	logger.Debugf("found %d shootings", len(*list))
+	j := json_handler.NewJsonHandler(*list)
 	j.ServeHTTP(responseWriter, request)
 	return nil
 }

@@ -31,7 +31,7 @@ func New(storage booking_user_storage.Storage) *userService {
 }
 
 func (s *userService) Create(d *booking_user.User) (*booking_user.User, error) {
-	logger.Debug("create")
+	logger.Debugf("create user %s", d.Login)
 	return s.storage.Create(d)
 }
 

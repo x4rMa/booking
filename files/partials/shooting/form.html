@@ -25,19 +25,19 @@
         <label class="col-md-4 control-label" for="model">Model</label>
 
         <div class="col-md-4">
-          <select id="model" name="model" class="form-control" ng-model="shooting.model_id">
-            <option value="">-</option>
+          <select id="model" name="model" class="form-control" ng-model="shooting.model_id" required="">
+            <option value="">bitte w&auml;hlen</option>
             <option ng-repeat="model in models" value="{{model.id}}">{{model.firstname}} {{model.lastname}}</option>
           </select>
         </div>
       </div>
 
       <div class="form-group">
-        <label class="col-md-4 control-label" for="model">Date</label>
+        <label class="col-md-4 control-label" for="model">Date {{shooting.date_id}}</label>
 
         <div class="col-md-4">
           <select id="date" name="date" class="form-control" ng-model="shooting.date_id">
-            <option value="">-</option>
+            <option value="">bitte w&auml;hlen</option>
             <option ng-repeat="date in dates" value="{{date.id}}">{{date.start}} {{date.end}}</option>
           </select>
         </div>

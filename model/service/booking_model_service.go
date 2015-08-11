@@ -25,7 +25,7 @@ type Service interface {
 	Create(model *booking_model.Model) (*booking_model.Model, error)
 	Delete(id int) (*booking_model.Model, error)
 	Update(model *booking_model.Model) (*booking_model.Model, error)
-	FindByToken(token string) (*[]booking_model.Model, error)
+	GetByToken(token string) (*booking_model.Model, error)
 	VerifyLogin(model *booking_model.Model) (bool, error)
 }
 
@@ -58,11 +58,11 @@ func (s *modelService) generateToken() (string, error) {
 		if err != nil {
 			return "", err
 		}
-		models, err := s.FindByToken(token)
+		model, err := s.GetByToken(token)
 		if err != nil {
 			return "", err
 		}
-		if len(*models) == 0 {
+		if model == nil{
 			return token, nil
 		}
 	}
@@ -70,15 +70,15 @@ func (s *modelService) generateToken() (string, error) {
 }
 
 func (s *modelService) VerifyLogin(m *booking_model.Model) (bool, error) {
-	list, err := s.FindByToken(m.Token)
+	model, err := s.GetByToken(m.Token)
 	if err != nil {
 		return false, err
 	}
-	return len(*list) > 0, nil
+	return model != nil, nil
 }
 
-func (s *modelService) FindByToken(token string) (*[]booking_model.Model, error) {
-	return s.storage.FindByToken(token)
+func (s *modelService) GetByToken(token string) (*booking_model.Model, error) {
+	return s.storage.GetByToken(token)
 }
 
 func (s *modelService) Update(d *booking_model.Model) (*booking_model.Model, error) {
