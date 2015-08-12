@@ -5,12 +5,13 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"fmt"
+
+	booking_authentication "github.com/bborbe/booking/authentication"
+	booking_model "github.com/bborbe/booking/model"
 	booking_shooting "github.com/bborbe/booking/shooting"
-	booking_authentication                         "github.com/bborbe/booking/authentication"
-	booking_model                        "github.com/bborbe/booking/model"
 	"github.com/bborbe/log"
 	json_handler "github.com/bborbe/server/handler/json"
-	"fmt"
 )
 
 var (
@@ -20,18 +21,21 @@ var (
 type Book func(*booking_shooting.Shooting) (*booking_shooting.Shooting, error)
 type HttpRequestToAuthentication func(request *http.Request) (*booking_authentication.Authentication, error)
 type GetByToken func(token string) (*booking_model.Model, error)
+type Get func(int) (*booking_shooting.Shooting, error)
 
 type handler struct {
 	book                        Book
 	httpRequestToAuthentication HttpRequestToAuthentication
 	getByToken                  GetByToken
+	get                         Get
 }
 
-func New(httpRequestToAuthentication HttpRequestToAuthentication, getByToken GetByToken, book Book) *handler {
+func New(httpRequestToAuthentication HttpRequestToAuthentication, getByToken GetByToken, book Book, get Get) *handler {
 	h := new(handler)
 	h.httpRequestToAuthentication = httpRequestToAuthentication
 	h.getByToken = getByToken
 	h.book = book
+	h.get = get
 	return h
 }
 
@@ -44,7 +48,6 @@ func (h *handler) ServeHTTP(responseWriter http.ResponseWriter, request *http.Re
 	if err != nil {
 		return err
 	}
-
 	content, err := ioutil.ReadAll(request.Body)
 	if err != nil {
 		return err
@@ -55,8 +58,12 @@ func (h *handler) ServeHTTP(responseWriter http.ResponseWriter, request *http.Re
 	if err != nil {
 		return err
 	}
-	if f.ModelId != model.Id {
-		logger.Debugf("permission")
+	shooting, err := h.get(f.Id)
+	if err != nil {
+		return err
+	}
+	if shooting.ModelId != model.Id {
+		logger.Debugf("permission %d != %d", f.ModelId, model.Id)
 		return fmt.Errorf("permission denied")
 	}
 	obj, err := h.book(&f)

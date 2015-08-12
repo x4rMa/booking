@@ -153,3 +153,39 @@ func TestHasRoleOrganizerIllegalParameter(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestAdminHasOrganizerRole(t *testing.T) {
+	r := New(createVerifyLogin(true, nil))
+	authentication := &booking_authentication.Authentication{Login: "admin"}
+	hasRole, err := r.HasRole(authentication, booking_authorization.Organizer)
+	if err = AssertThat(err, NilValue()); err != nil {
+		t.Fatal(err)
+	}
+	if err = AssertThat(hasRole, Is(true)); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestAdminHasParticipantRole(t *testing.T) {
+	r := New(createVerifyLogin(true, nil))
+	authentication := &booking_authentication.Authentication{Login: "admin"}
+	hasRole, err := r.HasRole(authentication, booking_authorization.Participant)
+	if err = AssertThat(err, NilValue()); err != nil {
+		t.Fatal(err)
+	}
+	if err = AssertThat(hasRole, Is(true)); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestOrganizerHasOrganizerRole(t *testing.T) {
+	r := New(createVerifyLogin(true, nil))
+	authentication := &booking_authentication.Authentication{Login: "orga"}
+	hasRole, err := r.HasRole(authentication, booking_authorization.Participant)
+	if err = AssertThat(err, NilValue()); err != nil {
+		t.Fatal(err)
+	}
+	if err = AssertThat(hasRole, Is(true)); err != nil {
+		t.Fatal(err)
+	}
+}

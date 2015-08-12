@@ -3,7 +3,7 @@ package get
 import (
 	"net/http"
 
-	shooting "github.com/bborbe/booking/shooting"
+	booking_shooting "github.com/bborbe/booking/shooting"
 	"github.com/bborbe/log"
 	json_handler "github.com/bborbe/server/handler/json"
 	"github.com/bborbe/server/idparser"
@@ -13,7 +13,7 @@ var (
 	logger = log.DefaultLogger
 )
 
-type Get func(int) (*shooting.Shooting, error)
+type Get func(int) (*booking_shooting.Shooting, error)
 
 type handler struct {
 	get Get

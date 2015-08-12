@@ -1,6 +1,8 @@
 package storage
 
 import (
+	"time"
+
 	booking_database "github.com/bborbe/booking/database"
 	booking_date "github.com/bborbe/booking/date"
 	_ "github.com/mattn/go-sqlite3"
@@ -8,7 +10,7 @@ import (
 
 type Storage interface {
 	Find() (*[]booking_date.Date, error)
-	FindWithoutShooting() (*[]booking_date.Date, error)
+	FindWithoutShootingAndInFuture() (*[]booking_date.Date, error)
 	Create(date *booking_date.Date) (*booking_date.Date, error)
 	Get(id int) (*booking_date.Date, error)
 	Delete(id int) (*booking_date.Date, error)
@@ -51,18 +53,20 @@ func (s *storage) Find() (*[]booking_date.Date, error) {
 	return dates, query.Error
 }
 
-func (s *storage) FindWithoutShooting() (*[]booking_date.Date, error) {
+func (s *storage) FindWithoutShootingAndInFuture() (*[]booking_date.Date, error) {
 	db, err := s.database.DB()
 	if err != nil {
 		return nil, err
 	}
 	dates := &[]booking_date.Date{}
 	query := db.Find(dates)
-	db.Joins("LEFT JOIN shooting ON shooting.date_id = date.id").Where("shooting.id IS NULL").Find(dates)
+	db.Joins("LEFT JOIN shooting ON shooting.date_id = date.id").Where("shooting.id IS NULL AND DATE(date.start) > DATE(?)", time.Now()).Find(dates)
 	return dates, query.Error
 }
 
 func (s *storage) Create(date *booking_date.Date) (*booking_date.Date, error) {
+	date.Created = time.Now()
+	date.Updated = time.Now()
 	db, err := s.database.DB()
 	if err != nil {
 		return nil, err
@@ -72,6 +76,7 @@ func (s *storage) Create(date *booking_date.Date) (*booking_date.Date, error) {
 }
 
 func (s *storage) Update(date *booking_date.Date) (*booking_date.Date, error) {
+	date.Updated = time.Now()
 	db, err := s.database.DB()
 	if err != nil {
 		return nil, err

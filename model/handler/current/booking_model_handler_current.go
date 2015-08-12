@@ -3,8 +3,8 @@ package current
 import (
 	"net/http"
 
-	booking_authentication                         "github.com/bborbe/booking/authentication"
-	booking_model                        "github.com/bborbe/booking/model"
+	booking_authentication "github.com/bborbe/booking/authentication"
+	booking_model "github.com/bborbe/booking/model"
 	"github.com/bborbe/log"
 	json_handler "github.com/bborbe/server/handler/json"
 )

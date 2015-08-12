@@ -3,6 +3,8 @@ package storage
 import (
 	"testing"
 
+	"time"
+
 	. "github.com/bborbe/assert"
 	booking_database "github.com/bborbe/booking/database"
 	booking_database_sqlite "github.com/bborbe/booking/database/sqlite"
@@ -12,7 +14,7 @@ import (
 )
 
 func createDatabase() booking_database.Database {
-	return booking_database_sqlite.New("/tmp/booking_test.db", false)
+	return booking_database_sqlite.New("/tmp/booking_test.db", true)
 }
 
 func createStorage(db booking_database.Database) *storage {
@@ -20,17 +22,17 @@ func createStorage(db booking_database.Database) *storage {
 }
 
 func TestImplementsStorage(t *testing.T) {
-	s := createStorage(createDatabase())
+	dateStorage := createStorage(createDatabase())
 	var i *Storage
-	err := AssertThat(s, Implements(i))
+	err := AssertThat(dateStorage, Implements(i))
 	if err != nil {
 		t.Fatal(err)
 	}
 }
 
 func TestListEmpty(t *testing.T) {
-	s := createStorage(createDatabase())
-	list, err := s.Find()
+	dateStorage := createStorage(createDatabase())
+	list, err := dateStorage.Find()
 	if err = AssertThat(err, NilValue()); err != nil {
 		t.Fatal(err)
 	}
@@ -42,16 +44,16 @@ func TestListEmpty(t *testing.T) {
 func TestCreateDate(t *testing.T) {
 	var err error
 	var dates *[]booking_date.Date
-	s := createStorage(createDatabase())
-	if err = s.Truncate(); err != nil {
+	dateStorage := createStorage(createDatabase())
+	if err = dateStorage.Truncate(); err != nil {
 		t.Fatal(err)
 	}
 	d := &booking_date.Date{
-		Start: "1",
-		End:   "2",
+		Start: time.Now(),
+		End:   time.Now(),
 	}
 
-	dates, err = s.Find()
+	dates, err = dateStorage.Find()
 	if err = AssertThat(err, NilValue()); err != nil {
 		t.Fatal(err)
 	}
@@ -61,11 +63,11 @@ func TestCreateDate(t *testing.T) {
 	if err = AssertThat(len(*dates), Is(0)); err != nil {
 		t.Fatal(err)
 	}
-	_, err = s.Create(d)
+	_, err = dateStorage.Create(d)
 	if err = AssertThat(err, NilValue()); err != nil {
 		t.Fatal(err)
 	}
-	dates, err = s.Find()
+	dates, err = dateStorage.Find()
 	if err = AssertThat(err, NilValue()); err != nil {
 		t.Fatal(err)
 	}
@@ -79,15 +81,15 @@ func TestCreateDate(t *testing.T) {
 
 func TestCreateDateHasId(t *testing.T) {
 	var err error
-	s := createStorage(createDatabase())
-	if err = s.Truncate(); err != nil {
+	dateStorage := createStorage(createDatabase())
+	if err = dateStorage.Truncate(); err != nil {
 		t.Fatal(err)
 	}
 	d := &booking_date.Date{
-		Start: "1",
-		End:   "2",
+		Start: time.Now(),
+		End:   time.Now(),
 	}
-	m, err := s.Create(d)
+	m, err := dateStorage.Create(d)
 	if err = AssertThat(err, NilValue()); err != nil {
 		t.Fatal(err)
 	}
@@ -99,18 +101,18 @@ func TestCreateDateHasId(t *testing.T) {
 	}
 }
 
-func TestFindWithoutShooting(t *testing.T) {
+func TestFindWithoutShootingAndInFuture(t *testing.T) {
 	var err error
 	var dates *[]booking_date.Date
-	db := createDatabase()
-	s := createStorage(db)
-	shootingStorage := shooting_storage.New(db)
-	if err = s.Truncate(); err != nil {
+	database := createDatabase()
+	dateStorage := createStorage(database)
+	shootingStorage := shooting_storage.New(database)
+	if err = dateStorage.Truncate(); err != nil {
 		t.Fatal(err)
 	}
 	// no dates
 	{
-		dates, err = s.FindWithoutShooting()
+		dates, err = dateStorage.FindWithoutShootingAndInFuture()
 		if err = AssertThat(err, NilValue()); err != nil {
 			t.Fatal(err)
 		}
@@ -121,14 +123,14 @@ func TestFindWithoutShooting(t *testing.T) {
 	// one date without shooting
 	{
 		d := &booking_date.Date{
-			Start: "1",
-			End:   "2",
+			Start: time.Now().Add(24 * time.Hour),
+			End:   time.Now().Add(25 * time.Hour),
 		}
-		_, err = s.Create(d)
+		_, err = dateStorage.Create(d)
 		if err = AssertThat(err, NilValue()); err != nil {
 			t.Fatal(err)
 		}
-		dates, err = s.FindWithoutShooting()
+		dates, err = dateStorage.FindWithoutShootingAndInFuture()
 		if err = AssertThat(err, NilValue()); err != nil {
 			t.Fatal(err)
 		}
@@ -140,10 +142,10 @@ func TestFindWithoutShooting(t *testing.T) {
 	{
 
 		d := &booking_date.Date{
-			Start: "1",
-			End:   "2",
+			Start: time.Now().Add(24 * time.Hour),
+			End:   time.Now().Add(25 * time.Hour),
 		}
-		d, err = s.Create(d)
+		d, err = dateStorage.Create(d)
 		if err = AssertThat(err, NilValue()); err != nil {
 			t.Fatal(err)
 		}
@@ -151,7 +153,26 @@ func TestFindWithoutShooting(t *testing.T) {
 		if err = AssertThat(err, NilValue()); err != nil {
 			t.Fatal(err)
 		}
-		dates, err = s.FindWithoutShooting()
+		dates, err = dateStorage.FindWithoutShootingAndInFuture()
+		if err = AssertThat(err, NilValue()); err != nil {
+			t.Fatal(err)
+		}
+		if err = AssertThat(len(*dates), Is(1)); err != nil {
+			t.Fatal(err)
+		}
+	}
+	// three dates one with shooting
+	{
+
+		d := &booking_date.Date{
+			Start: time.Now().Add(-2 * time.Hour),
+			End:   time.Now().Add(-1 * time.Hour),
+		}
+		d, err = dateStorage.Create(d)
+		if err = AssertThat(err, NilValue()); err != nil {
+			t.Fatal(err)
+		}
+		dates, err = dateStorage.FindWithoutShootingAndInFuture()
 		if err = AssertThat(err, NilValue()); err != nil {
 			t.Fatal(err)
 		}

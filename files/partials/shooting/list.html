@@ -6,13 +6,19 @@
     <ul ng-show="shootingsWithDate.length" class="shootings">
       <li ng-repeat="shooting in shootingsWithDate" class="thumbnail shooting-listing">
         <div style="float: left">
-          <a href="#/shooting/show/{{shooting.id}}">{{shooting.date_id}} {{shooting.name}}</a>
+          <a href="#/shooting/show/{{shooting.id}}">{{shooting.name}}</a>
         </div>
         <div style="float: right">
           <a href="#/shooting/update/{{shooting.id}}">edit</a>
           <a href="#/shooting/delete/{{shooting.id}}" onclick="confirm('sicher?')">delete</a>
         </div>
         <div style="clear: both"></div>
+        <div>
+          Termin: <a href="#/shooting/date/{{shooting.date_id}}">{{shooting.date.start}} bis {{shooting.date.end}}</a>
+        </div>
+        <div>
+          Model: <a href="#/shooting/model/{{shooting.model_id}}">{{shooting.model.firstname}} {{shooting.model.lastname}}</a>
+        </div>
       </li>
     </ul>
     <div ng-show="!shootingsWithDate.length">There is no shooting avaiable.</div>
@@ -28,6 +34,9 @@
           <a href="#/shooting/delete/{{shooting.id}}" onclick="confirm('sicher?')">delete</a>
         </div>
         <div style="clear: both"></div>
+        <div>
+          Model: <a href="#/shooting/model/{{shooting.model_id}}">{{shooting.model.firstname}} {{shooting.model.lastname}}</a>
+        </div>
       </li>
     </ul>
     <div ng-show="!shootingsWithoutDate.length">There is no shooting avaiable.</div>

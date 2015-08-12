@@ -206,15 +206,6 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
         },
       }
     }).
-    when('/date/select', {
-      templateUrl: 'partials/date/select.html',
-      controller: 'DateSelectCtrl',
-      resolve: {
-        permission: function (AuthorizationService, $route) {
-          return AuthorizationService.checkPermission('participant');
-        },
-      }
-    }).
     when('/date/delete/:Id', {
       template: '',
       controller: 'DateDeleteCtrl',

@@ -279,6 +279,19 @@ angular.module('bookingServices').factory('ModelService', ['$log', 'Model', func
     return Model.current().$promise;
   };
 
+  service.convert = function (data) {
+    var fields = ['id'];
+    angular.forEach(fields, function (field) {
+      var value = parseInt(data[field]);
+      if (value > 0) {
+        data[field] = value;
+      } else {
+        delete data[field];
+      }
+    });
+    return data;
+  };
+
   return service;
 }]);
 
@@ -335,6 +348,19 @@ angular.module('bookingServices').factory('DateService', ['$log', 'Date', functi
     return Date.listFree().$promise;
   };
 
+  service.convert = function (data) {
+    var fields = ['id'];
+    angular.forEach(fields, function (field) {
+      var value = parseInt(data[field]);
+      if (value > 0) {
+        data[field] = value;
+      } else {
+        delete data[field];
+      }
+    });
+    return data;
+  };
+
   return service;
 }]);
 
@@ -381,6 +407,19 @@ angular.module('bookingServices').factory('UserService', ['$log', 'User', functi
   service.list = function () {
     $log.debug('list users');
     return User.query().$promise;
+  };
+
+  service.convert = function (data) {
+    var fields = ['id'];
+    angular.forEach(fields, function (field) {
+      var value = parseInt(data[field]);
+      if (value > 0) {
+        data[field] = value;
+      } else {
+        delete data[field];
+      }
+    });
+    return data;
   };
 
   return service;

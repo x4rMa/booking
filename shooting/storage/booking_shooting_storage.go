@@ -1,6 +1,8 @@
 package storage
 
 import (
+	"time"
+
 	booking_database "github.com/bborbe/booking/database"
 	booking_shooting "github.com/bborbe/booking/shooting"
 	_ "github.com/mattn/go-sqlite3"
@@ -51,6 +53,8 @@ func (s *storage) Find() (*[]booking_shooting.Shooting, error) {
 }
 
 func (s *storage) Create(shooting *booking_shooting.Shooting) (*booking_shooting.Shooting, error) {
+	shooting.Created = time.Now()
+	shooting.Updated = time.Now()
 	db, err := s.database.DB()
 	if err != nil {
 		return nil, err
@@ -60,6 +64,7 @@ func (s *storage) Create(shooting *booking_shooting.Shooting) (*booking_shooting
 }
 
 func (s *storage) Update(shooting *booking_shooting.Shooting) (*booking_shooting.Shooting, error) {
+	shooting.Updated = time.Now()
 	db, err := s.database.DB()
 	if err != nil {
 		return nil, err

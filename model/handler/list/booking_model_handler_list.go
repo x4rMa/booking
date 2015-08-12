@@ -15,9 +15,8 @@ var (
 
 type List func() (*[]booking_model.Model, error)
 
-
 type handler struct {
-	list        List
+	list List
 }
 
 func New(list List) *handler {

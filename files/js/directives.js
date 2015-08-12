@@ -8,7 +8,8 @@ angular.module('bookingDirectives').directive('datetime', ['$log', function ($lo
     link: function (scope, elm, attrs, ctrl) {
       ctrl.$parsers.unshift(function (viewValue) {
         $log.debug('datetime');
-        var INTEGER_REGEXP = /^\d\d\d\d-\d\d-\d\d[\sT]\d\d:\d\d(:\d\d)$/;
+        // 2015-08-12T15:45:30+02:00
+        var INTEGER_REGEXP = /^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d([+-]\d\d:\d\d)?$/;
         if (INTEGER_REGEXP.test(viewValue)) {
           // it is valid
           ctrl.$setValidity('integer', true);

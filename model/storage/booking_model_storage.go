@@ -1,6 +1,8 @@
 package storage
 
 import (
+	"time"
+
 	booking_database "github.com/bborbe/booking/database"
 	booking_model "github.com/bborbe/booking/model"
 	_ "github.com/mattn/go-sqlite3"
@@ -52,6 +54,8 @@ func (s *storage) Find() (*[]booking_model.Model, error) {
 }
 
 func (s *storage) Create(model *booking_model.Model) (*booking_model.Model, error) {
+	model.Created = time.Now()
+	model.Updated = time.Now()
 	db, err := s.database.DB()
 	if err != nil {
 		return nil, err
@@ -61,6 +65,7 @@ func (s *storage) Create(model *booking_model.Model) (*booking_model.Model, erro
 }
 
 func (s *storage) Update(model *booking_model.Model) (*booking_model.Model, error) {
+	model.Updated = time.Now()
 	db, err := s.database.DB()
 	if err != nil {
 		return nil, err

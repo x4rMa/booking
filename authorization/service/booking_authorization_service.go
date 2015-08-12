@@ -35,7 +35,7 @@ func (s *service) HasRole(authentication *booking_authentication.Authentication,
 	if booking_authorization.Organizer == role && len(authentication.Token) == 0 && len(authentication.Login) > 0 {
 		return true, nil
 	}
-	if booking_authorization.Participant == role && len(authentication.Token) > 0 && len(authentication.Login) == 0 {
+	if booking_authorization.Participant == role && (len(authentication.Token) > 0 && len(authentication.Login) == 0 || len(authentication.Token) == 0 && len(authentication.Login) > 0) {
 		return true, nil
 	}
 	return false, nil

@@ -62,7 +62,7 @@ func (s *modelService) generateToken() (string, error) {
 		if err != nil {
 			return "", err
 		}
-		if model == nil{
+		if model == nil {
 			return token, nil
 		}
 	}

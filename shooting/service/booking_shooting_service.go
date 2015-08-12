@@ -77,5 +77,5 @@ func (s *shootingService) Delete(id int) (*booking_shooting.Shooting, error) {
 
 func (s *shootingService) FindByModelId(modelId int) (*[]booking_shooting.Shooting, error) {
 	logger.Debugf("find by modelId %d", modelId)
-	return s.storage.Find();
+	return s.storage.Find()
 }

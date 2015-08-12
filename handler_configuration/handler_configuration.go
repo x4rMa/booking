@@ -20,20 +20,20 @@ import (
 	booking_date_handler_update "github.com/bborbe/booking/date/handler/update"
 	booking_date_service "github.com/bborbe/booking/date/service"
 
+	booking_model_handler_complete "github.com/bborbe/booking/model/handler/complete"
 	booking_model_handler_create "github.com/bborbe/booking/model/handler/create"
+	booking_model_handler_current "github.com/bborbe/booking/model/handler/current"
 	booking_model_handler_delete "github.com/bborbe/booking/model/handler/delete"
 	booking_model_handler_get "github.com/bborbe/booking/model/handler/get"
-	booking_model_handler_current "github.com/bborbe/booking/model/handler/current"
-	booking_model_handler_complete "github.com/bborbe/booking/model/handler/complete"
 	booking_model_handler_list "github.com/bborbe/booking/model/handler/list"
 	booking_model_handler_update "github.com/bborbe/booking/model/handler/update"
 	booking_model_service "github.com/bborbe/booking/model/service"
 
 	booking_shooting_handler_book "github.com/bborbe/booking/shooting/handler/book"
 	booking_shooting_handler_create "github.com/bborbe/booking/shooting/handler/create"
+	booking_shooting_handler_current "github.com/bborbe/booking/shooting/handler/current"
 	booking_shooting_handler_delete "github.com/bborbe/booking/shooting/handler/delete"
 	booking_shooting_handler_get "github.com/bborbe/booking/shooting/handler/get"
-	booking_shooting_handler_current "github.com/bborbe/booking/shooting/handler/current"
 	booking_shooting_handler_list "github.com/bborbe/booking/shooting/handler/list"
 	booking_shooting_handler_update "github.com/bborbe/booking/shooting/handler/update"
 	booking_shooting_service "github.com/bborbe/booking/shooting/service"
@@ -45,9 +45,9 @@ import (
 	booking_user_handler_update "github.com/bborbe/booking/user/handler/update"
 	booking_user_service "github.com/bborbe/booking/user/service"
 
+	booking_authentication_converter "github.com/bborbe/booking/authentication/converter"
 	booking_authentication_handler_verifylogin "github.com/bborbe/booking/authentication/handler/verifylogin"
 	booking_authentication_service "github.com/bborbe/booking/authentication/service"
-	booking_authentication_converter "github.com/bborbe/booking/authentication/converter"
 
 	booking_authorization "github.com/bborbe/booking/authorization"
 	booking_authorization_service "github.com/bborbe/booking/authorization/service"
@@ -59,17 +59,17 @@ import (
 var logger = log.DefaultLogger
 
 type handlerConfiguration struct {
-	documentRoot                string
-	dateService                 booking_date_service.Service
-	modelService                booking_model_service.Service
-	shootingService             booking_shooting_service.Service
-	userService                 booking_user_service.Service
-	authenticationService       booking_authentication_service.Service
-	authorizationService        booking_authorization_service.Service
-	authenticationConverter     booking_authentication_converter.Converter
+	documentRoot            string
+	dateService             booking_date_service.Service
+	modelService            booking_model_service.Service
+	shootingService         booking_shooting_service.Service
+	userService             booking_user_service.Service
+	authenticationService   booking_authentication_service.Service
+	authorizationService    booking_authorization_service.Service
+	authenticationConverter booking_authentication_converter.Converter
 }
 
-func New(documentRoot string, dateService booking_date_service.Service, modelService booking_model_service.Service, shootingService booking_shooting_service.Service, userService booking_user_service.Service, authenticationService booking_authentication_service.Service, authorizationService       booking_authorization_service.Service, authenticationConverter booking_authentication_converter.Converter) *handlerConfiguration {
+func New(documentRoot string, dateService booking_date_service.Service, modelService booking_model_service.Service, shootingService booking_shooting_service.Service, userService booking_user_service.Service, authenticationService booking_authentication_service.Service, authorizationService booking_authorization_service.Service, authenticationConverter booking_authentication_converter.Converter) *handlerConfiguration {
 	h := new(handlerConfiguration)
 	h.documentRoot = documentRoot
 	h.dateService = dateService
@@ -109,7 +109,7 @@ func (h *handlerConfiguration) createDateHandlerFinder(prefix string) handler_fi
 	hf.RegisterListHandler(h.handle_errors(h.check_permission(booking_date_handler_list.New(h.dateService.List), booking_authorization.Organizer)))
 	hf.RegisterCreateHandler(h.handle_errors(h.check_permission(booking_date_handler_create.New(h.dateService.Create), booking_authorization.Organizer)))
 	hf.RegisterDeleteHandler(h.handle_errors(h.check_permission(booking_date_handler_delete.New(h.dateService.Delete), booking_authorization.Organizer)))
-	hf.RegisterGetHandler(h.handle_errors(h.check_permission(booking_date_handler_get.New(h.dateService.Get), booking_authorization.Organizer)))
+	hf.RegisterGetHandler(h.handle_errors(h.check_permission(booking_date_handler_get.New(h.dateService.Get), booking_authorization.Participant)))
 	hf.RegisterUpdateHandler(h.handle_errors(h.check_permission(booking_date_handler_update.New(h.dateService.Update), booking_authorization.Organizer)))
 	hf.RegisterPatchHandler(h.handle_errors(h.check_permission(booking_date_handler_update.New(h.dateService.Update), booking_authorization.Organizer)))
 	hf.RegisterHandler("GET", "/free", h.handle_errors(h.check_permission(booking_date_handler_list.New(h.dateService.ListFree), booking_authorization.Participant)))
@@ -134,10 +134,10 @@ func (h *handlerConfiguration) createShootingHandlerFinder(prefix string) handle
 	hf.RegisterListHandler(h.handle_errors(h.check_permission(booking_shooting_handler_list.New(h.shootingService.List), booking_authorization.Organizer)))
 	hf.RegisterCreateHandler(h.handle_errors(h.check_permission(booking_shooting_handler_create.New(h.shootingService.Create), booking_authorization.Organizer)))
 	hf.RegisterDeleteHandler(h.handle_errors(h.check_permission(booking_shooting_handler_delete.New(h.shootingService.Delete), booking_authorization.Organizer)))
-	hf.RegisterGetHandler(h.handle_errors(h.check_permission(booking_shooting_handler_get.New(h.shootingService.Get), booking_authorization.Organizer)))
+	hf.RegisterGetHandler(h.handle_errors(h.check_permission(booking_shooting_handler_get.New(h.shootingService.Get), booking_authorization.Participant)))
 	hf.RegisterUpdateHandler(h.handle_errors(h.check_permission(booking_shooting_handler_update.New(h.shootingService.Update), booking_authorization.Organizer)))
 	hf.RegisterPatchHandler(h.handle_errors(h.check_permission(booking_shooting_handler_update.New(h.shootingService.Update), booking_authorization.Organizer)))
-	hf.RegisterHandler("POST", "/book", h.handle_errors(h.check_permission(booking_shooting_handler_book.New(h.authenticationConverter.HttpRequestToAuthentication, h.modelService.GetByToken,h.shootingService.Book), booking_authorization.Participant)))
+	hf.RegisterHandler("POST", "/book", h.handle_errors(h.check_permission(booking_shooting_handler_book.New(h.authenticationConverter.HttpRequestToAuthentication, h.modelService.GetByToken, h.shootingService.Book, h.shootingService.Get), booking_authorization.Participant)))
 	hf.RegisterHandler("GET", "/current", h.handle_errors(h.check_permission(booking_shooting_handler_current.New(h.authenticationConverter.HttpRequestToAuthentication, h.modelService.GetByToken, h.shootingService.FindByModelId), booking_authorization.Participant)))
 	return hf
 }

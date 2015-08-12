@@ -31,12 +31,13 @@ import (
 
 	booking_authentication_converter "github.com/bborbe/booking/authentication/converter"
 
+	"encoding/base64"
+	"encoding/json"
+
 	booking_authorization "github.com/bborbe/booking/authorization"
 	booking_authorization_service "github.com/bborbe/booking/authorization/service"
 	booking_permission_check_handler "github.com/bborbe/booking/permission_check_handler"
 	booking_tokengenerator "github.com/bborbe/booking/tokengenerator"
-	"encoding/json"
-	"encoding/base64"
 )
 
 func createHasRole(valid bool, err error) booking_permission_check_handler.HasRole {
@@ -54,16 +55,18 @@ func createHttpRequestToAuthentication(authentication *booking_authentication.Au
 func createRequest(path string, userService booking_user_service.Service) (*http.Request, error) {
 	login := "admin"
 	pass := "test123"
-	token, err := createToken(&booking_authentication.Authentication{Login:login, Password:pass})
+	token, err := createToken(&booking_authentication.Authentication{Login: login, Password: pass})
 	if err != nil {
 		return nil, err
 	}
-	_, err = userService.Create(&booking_user.User{Login:login, Password:pass})
+	_, err = userService.Create(&booking_user.User{Login: login, Password: pass})
 	if err != nil {
 		return nil, err
 	}
 	req, err := server_mock.NewHttpRequestMock(path)
-	if err != nil {return nil, err}
+	if err != nil {
+		return nil, err
+	}
 	req.Header["X-Auth-Token"] = []string{token}
 	return req, nil
 }
@@ -76,7 +79,7 @@ func createToken(authentication *booking_authentication.Authentication) (string,
 	return base64.StdEncoding.EncodeToString(b), nil
 }
 
-func createHandler(db booking_database.Database , userService booking_user_service.Service) http.Handler {
+func createHandler(db booking_database.Database, userService booking_user_service.Service) http.Handler {
 	tokengenerator := booking_tokengenerator.New()
 	modelService := booking_model_service.New(booking_model_storage.New(db), tokengenerator)
 	dateService := booking_date_service.New(booking_date_storage.New(db))
@@ -151,7 +154,7 @@ func TestVerifyLoginHandlerFound(t *testing.T) {
 	resp := server_mock.NewHttpResponseWriterMock()
 	db := booking_database_sqlite.New("/tmp/booking_test.db", false)
 	userService := booking_user_service.New(booking_user_storage.New(db))
-	_,err := userService.Create(&booking_user.User{Login:"testuser", Password:"testpassword"})
+	_, err := userService.Create(&booking_user.User{Login: "testuser", Password: "testpassword"})
 	if err = AssertThat(err, NilValue()); err != nil {
 		t.Fatal(err)
 	}

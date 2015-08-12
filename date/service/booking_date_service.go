@@ -47,7 +47,7 @@ func (s *dateService) List() (*[]booking_date.Date, error) {
 
 func (s *dateService) ListFree() (*[]booking_date.Date, error) {
 	logger.Debug("list free dates")
-	return s.storage.FindWithoutShooting()
+	return s.storage.FindWithoutShootingAndInFuture()
 }
 
 func (s *dateService) Get(id int) (*booking_date.Date, error) {
