@@ -28,6 +28,7 @@ func New(update Update) *handler {
 }
 
 func (h *handler) ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) error {
+	logger.Debug("update user")
 	content, err := ioutil.ReadAll(request.Body)
 	if err != nil {
 		return err

@@ -4,8 +4,13 @@ import (
 	"net/http"
 
 	booking_user "github.com/bborbe/booking/user"
+	"github.com/bborbe/log"
 	json_handler "github.com/bborbe/server/handler/json"
 	"github.com/bborbe/server/idparser"
+)
+
+var (
+	logger = log.DefaultLogger
 )
 
 type Get func(int) (*booking_user.User, error)
@@ -21,6 +26,7 @@ func New(get Get) *handler {
 }
 
 func (h *handler) ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) error {
+	logger.Debug("get user")
 	value, err := idparser.ParseIdFormRequest(request)
 	if err != nil {
 		return err

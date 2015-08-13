@@ -35,7 +35,9 @@ func New(verifyLogin VerifyLogin, hasRole HasRole, httpRequestToAuthentication H
 }
 
 func (h *handler) ServeHTTP(resp http.ResponseWriter, req *http.Request) error {
+	logger.Debug("check permission")
 	if err := h.checkPermission(req); err != nil {
+		logger.Debugf("check permission failed: %v", err)
 		return err
 	}
 	logger.Debug("permission granted")

@@ -26,6 +26,7 @@ func New(delete Delete) *handler {
 }
 
 func (h *handler) ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) error {
+	logger.Debug("delete user")
 	id, err := idparser.ParseIdFormRequest(request)
 	if err != nil {
 		return err

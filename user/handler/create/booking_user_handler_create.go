@@ -28,6 +28,7 @@ func New(create Create) *handler {
 }
 
 func (h *handler) ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) error {
+	logger.Debug("create user")
 	content, err := ioutil.ReadAll(request.Body)
 	if err != nil {
 		return err
