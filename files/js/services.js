@@ -20,7 +20,7 @@ angular.module('bookingServices').factory('AuthenticationService', ['$log', '$co
   service.verifyLogin = function (user) {
     $log.debug('verifyLogin for user: ' + user.login + ' token: ' + user.token);
     var deferred = $q.defer();
-    $http.post('/authentication/verifyLogin', user).then(function (response) {
+    $http.post('authentication/verifyLogin', user).then(function (response) {
       $log.debug('verifylogin call success');
       deferred.resolve(response.data);
     }, function (response) {
@@ -111,7 +111,7 @@ angular.module('bookingServices').factory('AuthorizationService', ['$log', '$q',
 }]);
 
 angular.module('bookingServices').factory('Shooting', ['$resource', function ($resource) {
-  return $resource('/shooting/:Id', {}, {
+  return $resource('shooting/:Id', {}, {
     query: {
       method: 'GET', params: {}, isArray: true
     },
@@ -190,12 +190,12 @@ angular.module('bookingServices').factory('ShootingService', ['$log', '$http', '
 
   service.book = function (date_id, shooting_id) {
     $log.debug('book shooting with id: ' + shooting_id);
-    return $http.post('/shooting/book', service.convert({'id': shooting_id, 'date_id': date_id}));
+    return $http.post('shooting/book', service.convert({'id': shooting_id, 'date_id': date_id}));
   };
 
   service.refuse = function (shooting_id) {
     $log.debug('refuse shooting with id: ' + shooting_id);
-    return $http.post('/shooting/refuse', service.convert({'id': shooting_id}));
+    return $http.post('shooting/refuse', service.convert({'id': shooting_id}));
   };
 
   service.convert = function (data) {
@@ -215,7 +215,7 @@ angular.module('bookingServices').factory('ShootingService', ['$log', '$http', '
 }]);
 
 angular.module('bookingServices').factory('Model', ['$resource', function ($resource) {
-  return $resource('/model/:Id', {}, {
+  return $resource('model/:Id', {}, {
     query: {
       method: 'GET', params: {}, isArray: true
     },
@@ -229,10 +229,10 @@ angular.module('bookingServices').factory('Model', ['$resource', function ($reso
       method: 'DELETE', params: {}
     },
     current: {
-      url: '/model/current', method: 'GET', params: {}
+      url: 'model/current', method: 'GET', params: {}
     },
     complete: {
-      url: '/model/complete', method: 'PUT', params: {}
+      url: 'model/complete', method: 'PUT', params: {}
     },
   });
 }]);
@@ -314,9 +314,9 @@ angular.module('bookingServices').factory('ModelService', ['$log', '$q', 'Model'
 }]);
 
 angular.module('bookingServices').factory('Date', ['$resource', function ($resource) {
-  return $resource('/date/:Id', {}, {
+  return $resource('date/:Id', {}, {
     listFree: {
-      url: '/date/free', method: 'GET', params: {}, isArray: true
+      url: 'date/free', method: 'GET', params: {}, isArray: true
     },
     query: {
       method: 'GET', params: {}, isArray: true
@@ -383,7 +383,7 @@ angular.module('bookingServices').factory('DateService', ['$log', 'Date', functi
 }]);
 
 angular.module('bookingServices').factory('User', ['$resource', function ($resource) {
-  return $resource('/user/:Id', {}, {
+  return $resource('user/:Id', {}, {
     query: {
       method: 'GET', params: {}, isArray: true
     },
