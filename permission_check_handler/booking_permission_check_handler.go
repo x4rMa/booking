@@ -14,16 +14,19 @@ var logger = log.DefaultLogger
 
 type HasRole func(authentication *booking_authentication.Authentication, role booking_authorization.Role) (bool, error)
 type HttpRequestToAuthentication func(request *http.Request) (*booking_authentication.Authentication, error)
+type VerifyLogin func(authentication *booking_authentication.Authentication) (bool, error)
 
 type handler struct {
 	requiredRole                booking_authorization.Role
 	hasRole                     HasRole
+	verifyLogin                 VerifyLogin
 	httpRequestToAuthentication HttpRequestToAuthentication
 	subHandler                  booking_handler.Handler
 }
 
-func New(hasRole HasRole, httpRequestToAuthentication HttpRequestToAuthentication, requiredRole booking_authorization.Role, subHandler booking_handler.Handler) *handler {
+func New(verifyLogin VerifyLogin, hasRole HasRole, httpRequestToAuthentication HttpRequestToAuthentication, requiredRole booking_authorization.Role, subHandler booking_handler.Handler) *handler {
 	h := new(handler)
+	h.verifyLogin = verifyLogin
 	h.requiredRole = requiredRole
 	h.hasRole = hasRole
 	h.httpRequestToAuthentication = httpRequestToAuthentication
@@ -47,6 +50,15 @@ func (h *handler) checkPermission(req *http.Request) error {
 	if err != nil {
 		logger.Debugf("httpRequestToAuthentication failed: %v", err)
 		return err
+	}
+	valid, err := h.verifyLogin(authentication)
+	if err != nil {
+		logger.Debugf("verifyLogin failed: %v", err)
+		return err
+	}
+	if !valid {
+		logger.Debugf("validLogin false")
+		return fmt.Errorf("permission denied")
 	}
 	hasRole, err := h.hasRole(authentication, h.requiredRole)
 	if err != nil {

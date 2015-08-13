@@ -4,8 +4,8 @@
   <form name="userForm" class="form-horizontal" ng-submit="submit()">
     <fieldset>
 
-      <legend ng-if="!user.id">Create User</legend>
-      <legend ng-if="user.id">Update User</legend>
+      <legend ng-if="!user.id">Benutzer anlegen</legend>
+      <legend ng-if="user.id">Benutzer bearbeiten</legend>
 
       <ul class="messages">
         <li ng-repeat="message in messages">
@@ -14,18 +14,18 @@
       </ul>
 
       <div class="form-group">
-        <label class="col-md-4 control-label" for="login">Login</label>
+        <label class="col-md-4 control-label" for="login">Benutzername</label>
 
         <div class="col-md-4">
-          <input type="text" id="login" name="login" ng-model="user.login" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required="" placeholder="login" class="form-control input-md"/>
+          <input type="text" id="login" name="login" ng-model="user.login" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required="" placeholder="Benutzername" class="form-control input-md"/>
         </div>
       </div>
 
       <div class="form-group">
-        <label class="col-md-4 control-label" for="password">Password</label>
+        <label class="col-md-4 control-label" for="password">Passwort</label>
 
         <div class="col-md-4">
-          <input type="password" id="password" name="password" ng-model="user.password" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required="" placeholder="password" class="form-control input-md"/>
+          <input type="password" id="password" name="password" ng-model="user.password" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required="" placeholder="Passwort" class="form-control input-md"/>
         </div>
       </div>
 
@@ -33,7 +33,7 @@
         <label class="col-md-4 control-label" for="singlebutton"></label>
 
         <div class="col-md-4">
-            <input type="submit" id="singlebutton" name="singlebutton" class="btn btn-primary" ng-disabled="userForm.$invalid" value="save"/>
+            <input type="submit" id="singlebutton" name="singlebutton" class="btn btn-primary" ng-disabled="userForm.$invalid" value="speichern"/>
         </div>
       </div>
 

@@ -16,6 +16,8 @@ var (
 
 type Service interface {
 	VerifyLogin(authentication *booking_authentication.Authentication) (bool, error)
+	VerifyModel(authentication *booking_authentication.Authentication) (bool, error)
+	VerifyUser(authentication *booking_authentication.Authentication) (bool, error)
 }
 
 type authenticationService struct {
@@ -30,20 +32,9 @@ func New(userService user_service.Service, modelService model_service.Service) *
 	return d
 }
 
-func (s *authenticationService) VerifyLogin(auth *booking_authentication.Authentication) (bool, error) {
-	logger.Debugf("verify login for authentication: %s", auth.Login)
-	if len(auth.Login) > 0 && len(auth.Password) > 0 {
-		valid, err := s.userService.VerifyLogin(&booking_user.User{Login: auth.Login, Password: auth.Password})
-		if err != nil {
-			return false, err
-		}
-		if valid {
-			logger.Debug("found valid user")
-			return true, nil
-		}
-	}
-	if len(auth.Token) > 0 {
-		valid, err := s.modelService.VerifyLogin(&booking_model.Model{Token: auth.Token})
+func (s *authenticationService) VerifyModel(authentication *booking_authentication.Authentication) (bool, error) {
+	if len(authentication.Token) > 0 {
+		valid, err := s.modelService.VerifyLogin(&booking_model.Model{Token: authentication.Token})
 		if err != nil {
 			return false, err
 		}
@@ -52,6 +43,32 @@ func (s *authenticationService) VerifyLogin(auth *booking_authentication.Authent
 			return true, nil
 		}
 	}
-	logger.Debug("found no valid user or model")
+	logger.Debug("found no valid model")
+	return false, nil
+}
+
+func (s *authenticationService) VerifyUser(authentication *booking_authentication.Authentication) (bool, error) {
+	logger.Debugf("verify login for authentication: %s", authentication.Login)
+	if len(authentication.Login) > 0 && len(authentication.Password) > 0 {
+		valid, err := s.userService.VerifyLogin(&booking_user.User{Login: authentication.Login, Password: authentication.Password})
+		if err != nil {
+			return false, err
+		}
+		if valid {
+			logger.Debug("found valid user")
+			return true, nil
+		}
+	}
+	logger.Debug("found no valid user")
+	return false, nil
+}
+
+func (s *authenticationService) VerifyLogin(authentication *booking_authentication.Authentication) (bool, error) {
+	if valid, err := s.VerifyUser(authentication); valid || err != nil {
+		return valid, err
+	}
+	if valid, err := s.VerifyModel(authentication); valid || err != nil {
+		return valid, err
+	}
 	return false, nil
 }

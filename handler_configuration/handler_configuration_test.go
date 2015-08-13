@@ -85,7 +85,7 @@ func createHandler(db booking_database.Database, userService booking_user_servic
 	dateService := booking_date_service.New(booking_date_storage.New(db))
 	authenticationService := booking_authentication_service.New(userService, modelService)
 	shootingService := booking_shooting_service.New(booking_shooting_storage.New(db), eventbus.New())
-	authorizationService := booking_authorization_service.New(authenticationService.VerifyLogin)
+	authorizationService := booking_authorization_service.New()
 	authenticationConverter := booking_authentication_converter.New()
 	handlerConfiguration := New("/tmp", dateService, modelService, shootingService, userService, authenticationService, authorizationService, authenticationConverter)
 	return handlerConfiguration.GetHandler()

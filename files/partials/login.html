@@ -4,25 +4,21 @@
   <form name="loginForm" class="form-horizontal" ng-submit="submit()">
     <fieldset>
 
-      <legend>Login</legend>
-
-      <div ng-if="loginForm.$error.required">
-        Foo
-      </div>
+      <legend>Anmelden</legend>
 
       <div class="form-group">
-        <label class="col-md-4 control-label" for="login">Username</label>
+        <label class="col-md-4 control-label" for="login">Benutzername</label>
 
         <div class="col-md-4">
-          <input type="text" id="login" name="login" ng-model="user.login" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required="" placeholder="username" class="form-control input-md"/>
+          <input type="text" id="login" name="login" ng-model="user.login" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required="" placeholder="Benutzername" class="form-control input-md"/>
         </div>
       </div>
 
       <div class="form-group">
-        <label class="col-md-4 control-label" for="password">Password</label>
+        <label class="col-md-4 control-label" for="password">Passwort</label>
 
         <div class="col-md-4">
-          <input type="password" id="password" name="password" ng-model="user.password" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required="" placeholder="password" class="form-control input-md"/>
+          <input type="password" id="password" name="password" ng-model="user.password" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required="" placeholder="Passwort" class="form-control input-md"/>
         </div>
       </div>
 
@@ -30,7 +26,7 @@
         <label class="col-md-4 control-label" for="singlebutton"></label>
 
         <div class="col-md-4">
-          <input type="submit" id="singlebutton" name="singlebutton" class="btn btn-primary" value="login"/>
+          <input type="submit" id="singlebutton" name="singlebutton" class="btn btn-primary" value="anmelden"/>
         </div>
       </div>
 

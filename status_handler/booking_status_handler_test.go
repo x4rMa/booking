@@ -1,15 +1,14 @@
-package book
+package status_handler
 
 import (
 	"testing"
 
-	booking_handler "github.com/bborbe/booking/handler"
-
 	. "github.com/bborbe/assert"
+	booking_handler "github.com/bborbe/booking/handler"
 )
 
-func TestImplementsHttpHandler(t *testing.T) {
-	r := New(nil, nil, nil, nil)
+func TestImplementsHandler(t *testing.T) {
+	r := New()
 	var i *booking_handler.Handler
 	err := AssertThat(r, Implements(i))
 	if err != nil {

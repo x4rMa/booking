@@ -5,19 +5,18 @@ import (
 	booking_authorization "github.com/bborbe/booking/authorization"
 )
 
-type VerifyLogin func(authentication *booking_authentication.Authentication) (bool, error)
-
 type Service interface {
 	HasRole(authentication *booking_authentication.Authentication, role booking_authorization.Role) (bool, error)
+	IsAdministrator(authentication *booking_authentication.Authentication) bool
+	IsOrganizer(authentication *booking_authentication.Authentication) bool
+	IsParticipant(authentication *booking_authentication.Authentication) bool
 }
 
 type service struct {
-	verifyLogin VerifyLogin
 }
 
-func New(verifyLogin VerifyLogin) *service {
+func New() *service {
 	s := new(service)
-	s.verifyLogin = verifyLogin
 	return s
 }
 
@@ -25,18 +24,26 @@ func (s *service) HasRole(authentication *booking_authentication.Authentication,
 	if booking_authorization.None == role {
 		return true, nil
 	}
-	valid, err := s.verifyLogin(authentication)
-	if err != nil || !valid {
-		return valid, err
-	}
-	if booking_authorization.Administrator == role && len(authentication.Token) == 0 && authentication.Login == "admin" {
+	if booking_authorization.Administrator == role && s.IsAdministrator(authentication) {
 		return true, nil
 	}
-	if booking_authorization.Organizer == role && len(authentication.Token) == 0 && len(authentication.Login) > 0 {
+	if booking_authorization.Organizer == role && (s.IsAdministrator(authentication) || s.IsOrganizer(authentication)) {
 		return true, nil
 	}
-	if booking_authorization.Participant == role && (len(authentication.Token) > 0 && len(authentication.Login) == 0 || len(authentication.Token) == 0 && len(authentication.Login) > 0) {
+	if booking_authorization.Participant == role && (s.IsAdministrator(authentication) || s.IsOrganizer(authentication) || s.IsParticipant(authentication)) {
 		return true, nil
 	}
 	return false, nil
+}
+
+func (s *service) IsAdministrator(authentication *booking_authentication.Authentication) bool {
+	return len(authentication.Token) == 0 && authentication.Login == "admin"
+}
+
+func (s *service) IsOrganizer(authentication *booking_authentication.Authentication) bool {
+	return len(authentication.Token) == 0 && len(authentication.Login) > 0
+}
+
+func (s *service) IsParticipant(authentication *booking_authentication.Authentication) bool {
+	return len(authentication.Token) > 0 && len(authentication.Login) == 0
 }

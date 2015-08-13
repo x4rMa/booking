@@ -2,10 +2,18 @@
 <div class="container">
 
   <div class="starter-template">
-    <h1>Termin f&uuml;r "{{shooting.name}}" w&auml;hlen</h1>
+    <h1>Termin f&uuml;r "{{shooting.name}}" buchen</h1>
+
+    <p>Hier siehst Du eine Liste der noch freien Termine. Mit dem kick auf "jetzt buchen" kannst Du einen Termin reservieren.</p>
     <ul ng-show="dates.length" class="dates">
-      <li ng-repeat="date in dates" class="thumbnail date-listing">
-        <a ng-click="book(date.id)"><b>Start:</b> {{date.start}} <b>End:</b> {{date.end}}</a>
+      <li ng-repeat="date in dates | orderBy:'start'" class="thumbnail date-listing">
+        <div style="float:left">
+          {{date.start | date:'yyyy-MM-dd HH:mm'}} bis {{date.end | date:'yyyy-MM-dd HH:mm'}}
+        </div>
+        <div style="float:right">
+          <a ng-click="book(date.id)">jetzt buchen</a>
+        </div>
+        <div style="clear:both"></div>
       </li>
     </ul>
     <div ng-show="!dates.length">Aktuell sind keine freien Termine verf&uuml;gbar.</div>

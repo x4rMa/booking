@@ -2,15 +2,20 @@
 <div class="container">
 
   <div class="starter-template">
-    <h1>Dates</h1>
+    <h1>Termine</h1>
     <ul ng-show="dates.length" class="dates">
-      <li ng-repeat="date in dates" class="thumbnail date-listing">
-        <a href="#/date/show/{{date.id}}"><b>Start:</b> {{date.start}} <b>End:</b> {{date.end}}</a>
-        <a href="#/date/update/{{date.id}}">edit</a>
-        <a href="#/date/delete/{{date.id}}" onclick="confirm('delete?')">delete</a>
+      <li ng-repeat="date in dates | orderBy:'start'" class="thumbnail date-listing">
+        <div style="float:left">
+          <a href="#/date/update/{{date.id}}">{{date.start | date:'yyyy-MM-dd HH:mm'}}</a> bis <a href="#/date/update/{{date.id}}">{{date.end | date:'yyyy-MM-dd HH:mm'}}</a>
+        </div>
+        <div style="float:right">
+          <a href="#/date/update/{{date.id}}">bearbeiten</a>
+          <a href="#/date/delete/{{date.id}}" onclick="confirm('delete?')">l&ouml;schen</a>
+        </div>
+        <div style="clear:both"></div>
       </li>
     </ul>
-    <div ng-show="!dates.length">There is no date avaiable.</div>
+    <div ng-show="!dates.length">Kein Termin vorhanden.</div>
 
   </div>
 </div>

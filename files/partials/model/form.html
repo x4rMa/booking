@@ -4,7 +4,8 @@
   <form name="shootingForm" class="form-horizontal" ng-submit="submit()">
     <fieldset>
 
-      <legend>Create Model</legend>
+      <legend ng-if="!model.id">Model anlegen</legend>
+      <legend ng-if="model.id">Model bearbeiten</legend>
 
       <ul class="messages">
         <li ng-repeat="message in messages">
@@ -13,18 +14,18 @@
       </ul>
 
       <div class="form-group">
-        <label class="col-md-4 control-label" for="firstname">Firstname</label>
+        <label class="col-md-4 control-label" for="firstname">Vorname</label>
 
         <div class="col-md-4">
-          <input type="text" id="firstname" name="firstname" ng-model="model.firstname" ng-model-options="{ updateOn: 'blur' }" min="0" max="255" placeholder="firstname" class="form-control input-md"/>
+          <input type="text" id="firstname" name="firstname" ng-model="model.firstname" ng-model-options="{ updateOn: 'blur' }" min="0" max="255" placeholder="Vorname" class="form-control input-md"/>
         </div>
       </div>
 
       <div class="form-group">
-        <label class="col-md-4 control-label" for="lastname">Lastname</label>
+        <label class="col-md-4 control-label" for="lastname">Nachname</label>
 
         <div class="col-md-4">
-          <input type="text" id="lastname" name="lastname" ng-model="model.lastname" ng-model-options="{ updateOn: 'blur' }" min="0" max="255" placeholder="lastname" class="form-control input-md"/>
+          <input type="text" id="lastname" name="lastname" ng-model="model.lastname" ng-model-options="{ updateOn: 'blur' }" min="0" max="255" placeholder="Nachname" class="form-control input-md"/>
         </div>
       </div>
 
@@ -33,16 +34,16 @@
         <label class="col-md-4 control-label" for="email">Email</label>
 
         <div class="col-md-4">
-          <input type="email" id="email" name="email" ng-model="model.email" ng-model-options="{ updateOn: 'blur' }" min="0" max="255" placeholder="email" class="form-control input-md"/>
+          <input type="email" id="email" name="email" ng-model="model.email" ng-model-options="{ updateOn: 'blur' }" min="0" max="255" placeholder="Email" class="form-control input-md"/>
         </div>
       </div>
 
 
       <div class="form-group">
-        <label class="col-md-4 control-label" for="phone">Phone</label>
+        <label class="col-md-4 control-label" for="phone">Telefon</label>
 
         <div class="col-md-4">
-          <input type="text" id="phone" name="phone" ng-model="model.phone" ng-model-options="{ updateOn: 'blur' }" min="0" max="255" placeholder="phone" class="form-control input-md"/>
+          <input type="text" id="phone" name="phone" ng-model="model.phone" ng-model-options="{ updateOn: 'blur' }" min="0" max="255" placeholder="Telefon" class="form-control input-md"/>
         </div>
       </div>
 
@@ -50,7 +51,7 @@
         <label class="col-md-4 control-label" for="singlebutton"></label>
 
         <div class="col-md-4">
-          <input type="submit" id="singlebutton" name="singlebutton" class="btn btn-primary" ng-disabled="userForm.$invalid" value="save"/>
+          <input type="submit" id="singlebutton" name="singlebutton" class="btn btn-primary" ng-disabled="userForm.$invalid" value="speichern"/>
         </div>
       </div>
 

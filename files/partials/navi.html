@@ -2,16 +2,17 @@
   <div class="container">
     <div id="navbar" class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
-        <li ng-show="isOrganizer"><a href="#/shooting/create">Shooting Create</a></li>
-        <li ng-show="isOrganizer"><a href="#/shooting/list">Shooting List</a></li>
-        <li ng-show="isOrganizer"><a href="#/model/create">Model Create</a></li>
-        <li ng-show="isOrganizer"><a href="#/model/list">Model List</a></li>
-        <li ng-show="isOrganizer"><a href="#/date/create">Date Create</a></li>
-        <li ng-show="isOrganizer"><a href="#/date/list">Date List</a></li>
-        <li ng-show="isAdministrator"><a href="#/user/create">User Create</a></li>
-        <li ng-show="isAdministrator"><a href="#/user/list">User List</a></li>
+        <li ng-show="isOrganizer"><a href="#/shooting/list">Shootings</a></li>
+        <li ng-show="isOrganizer"><a href="#/shooting/create">Shooting anlegen</a></li>
+        <li ng-show="isOrganizer"><a href="#/model/list">Models</a></li>
+        <li ng-show="isOrganizer"><a href="#/model/create">Model anlegen</a></li>
+        <li ng-show="isOrganizer"><a href="#/date/list">Termine</a></li>
+        <li ng-show="isOrganizer"><a href="#/date/create">Termin anlegen</a></li>
+        <li ng-show="isAdministrator"><a href="#/user/list">Benutzer</a></li>
+        <li ng-show="isAdministrator"><a href="#/user/create">Benutzer anlegen</a></li>
         <li ng-show="isParticipant"><a href="#/shooting/select">Shootings</a></li>
-        <li ng-show="isLoggedIn"><a href="#/logout">Logout</a></li>
+        <li ng-show="isParticipant"><a href="#/model/complete">Meine Daten</a></li>
+        <li ng-show="isLoggedIn"><a href="#/logout">Abmelden</a></li>
       </ul>
     </div>
   </div>

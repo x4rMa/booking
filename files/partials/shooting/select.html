@@ -2,22 +2,22 @@
 <div class="container">
 
   <div class="starter-template">
-    <h1>Shooting mit Termin</h1>
+    <h1>Shootings mit Termin</h1>
     <ul ng-show="shootingsWithDate.length" class="shootings">
-      <li ng-repeat="shooting in shootingsWithDate" class="thumbnail shooting-listing">
+      <li ng-repeat="shooting in shootingsWithDate | orderBy:'date.start'" class="thumbnail shooting-listing">
         <div>{{shooting.name}}</div>
-        <div>{{shooting.date.start}} bis {{shooting.date.end}}</div>
+        <div>{{shooting.date.start | date:'yyyy-MM-dd HH:mm'}} bis {{shooting.date.end | date:'yyyy-MM-dd HH:mm'}}</div>
       </li>
     </ul>
-    <div ng-show="!shootingsWithDate.length">Keine Shooting mit Termin vorhanden.</div>
+    <div ng-show="!shootingsWithDate.length">Keine Shootings mit Termin vorhanden.</div>
 
-    <h1>Shooting ohne Termin</h1>
+    <h1>Shootings ohne Termin</h1>
     <ul ng-show="shootingsWithoutDate.length" class="shootings">
-      <li ng-repeat="shooting in shootingsWithoutDate" class="thumbnail shooting-listing">
+      <li ng-repeat="shooting in shootingsWithoutDate | orderBy:'name'" class="thumbnail shooting-listing">
         <a href="#/date/select/{{shooting.id}}">{{shooting.name}}</a>
       </li>
     </ul>
-    <div ng-show="!shootingsWithoutDate.length">Keine Shooting ohne Termin vorhanden.</div>
+    <div ng-show="!shootingsWithoutDate.length">Keine Shootings ohne Termin vorhanden.</div>
 
   </div>
 </div>

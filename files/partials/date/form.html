@@ -4,8 +4,8 @@
   <form name="dateForm" class="form-horizontal" ng-submit="submit()">
     <fieldset>
 
-      <legend ng-if="!date.id">Create Date</legend>
-      <legend ng-if="date.id">Update Date</legend>
+      <legend ng-if="!date.id">Termin anlegen</legend>
+      <legend ng-if="date.id">Termin bearbeiten</legend>
 
       <ul class="messages">
         <li ng-repeat="message in messages">
@@ -22,7 +22,7 @@
       </div>
 
       <div class="form-group">
-        <label class="col-md-4 control-label" for="end">End</label>
+        <label class="col-md-4 control-label" for="end">Ende</label>
 
         <div class="col-md-4">
           <input type="text" id="end" name="end" ng-model="date.end" ng-model-options="{ updateOn: 'blur' }" min="1" max="255" required="" datetime placeholder="2015-08-12T15:45:30+02:00" class="form-control input-md"/>
@@ -33,7 +33,7 @@
         <label class="col-md-4 control-label" for="singlebutton"></label>
 
         <div class="col-md-4">
-          <input type="submit" id="singlebutton" name="singlebutton" class="btn btn-primary"  ng-disabled="dateForm.$invalid" value="save"/>
+          <input type="submit" id="singlebutton" name="singlebutton" class="btn btn-primary"  ng-disabled="dateForm.$invalid" value="speichern"/>
         </div>
       </div>
 

@@ -112,34 +112,44 @@ angular.module('bookingControllers').controller('ShootingUpdateCtrl', ['$scope',
 }]);
 
 angular.module('bookingControllers').controller('ShootingListCtrl', ['$scope', '$log', 'ShootingService', 'DateService', 'ModelService', function ($scope, $log, ShootingService, DateService, ModelService) {
-  ShootingService.list().then(function (result) {
-    $log.debug('list ' + result.length + ' shootings');
-    $scope.shootingsWithoutDate = [];
-    $scope.shootingsWithDate = [];
-    angular.forEach(result, function (shooting) {
-      if (shooting.model_id && shooting.model_id > 0) {
-        ModelService.get(shooting.model_id).then(function (result) {
-          shooting.model = result;
-        }, function (error) {
-          $log.debug('get model failed: ' + error);
-        });
-      }
-      if (shooting.date_id && shooting.date_id > 0) {
-        $log.debug('push to shootingsWithDate');
-        DateService.get(shooting.date_id).then(function (date) {
-          shooting.date = date;
-        }, function (error) {
-          $log.debug('get date failed: ' + error);
-        });
-        $scope.shootingsWithDate.push(shooting);
-      } else {
-        $log.debug('push to shootingsWithoutDate');
-        $scope.shootingsWithoutDate.push(shooting);
-      }
+  $scope.refuse = function (shooting) {
+    ShootingService.refuse(shooting.id).then(function (result) {
+      $scope.list();
+    }, function (error) {
+      $log.debug('refuse shooting failed: ' + error);
     });
-  }, function (error) {
-    $log.debug('list shootings failed: ' + error);
-  });
+  };
+  $scope.list = function () {
+    ShootingService.list().then(function (result) {
+      $log.debug('list ' + result.length + ' shootings');
+      $scope.shootingsWithoutDate = [];
+      $scope.shootingsWithDate = [];
+      angular.forEach(result, function (shooting) {
+        if (shooting.model_id && shooting.model_id > 0) {
+          ModelService.get(shooting.model_id).then(function (result) {
+            shooting.model = result;
+          }, function (error) {
+            $log.debug('get model failed: ' + error);
+          });
+        }
+        if (shooting.date_id && shooting.date_id > 0) {
+          $log.debug('push to shootingsWithDate');
+          DateService.get(shooting.date_id).then(function (date) {
+            shooting.date = date;
+          }, function (error) {
+            $log.debug('get date failed: ' + error);
+          });
+          $scope.shootingsWithDate.push(shooting);
+        } else {
+          $log.debug('push to shootingsWithoutDate');
+          $scope.shootingsWithoutDate.push(shooting);
+        }
+      });
+    }, function (error) {
+      $log.debug('list shootings failed: ' + error);
+    });
+  };
+  $scope.list();
 }]);
 
 angular.module('bookingControllers').controller('ShootingDeleteCtrl', ['$scope', '$routeParams', '$log', '$location', 'ShootingService', function ($scope, $routeParams, $log, $location, ShootingService) {
@@ -153,27 +163,38 @@ angular.module('bookingControllers').controller('ShootingDeleteCtrl', ['$scope',
   });
 }]);
 
-angular.module('bookingControllers').controller('ShootingSelectCtrl', ['$scope', '$log', '$location', 'ShootingService', 'DateService', function ($scope, $log, $location, ShootingService, DateService) {
-  ShootingService.current().then(function (result) {
-    $log.debug('list ' + result.lenght + ' shootings for select success');
-    $scope.shootingsWithoutDate = [];
-    $scope.shootingsWithDate = [];
-    angular.forEach(result, function (shooting) {
-      if (shooting.date_id && shooting.date_id > 0) {
-        $log.debug('push to shootingsWithDate');
-        DateService.get(shooting.date_id).then(function (result) {
-          shooting.date = result;
-        }, function (error) {
-          $log.debug('get date failed: ' + error);
-        });
-        $scope.shootingsWithDate.push(shooting);
-      } else {
-        $log.debug('push to shootingsWithoutDate');
-        $scope.shootingsWithoutDate.push(shooting);
-      }
+angular.module('bookingControllers').controller('ShootingSelectCtrl', ['$scope', '$log', '$location', 'ShootingService', 'DateService', 'ModelService', function ($scope, $log, $location, ShootingService, DateService, ModelService) {
+  $scope.list = function () {
+    ShootingService.list().then(function (result) {
+      $log.debug('list ' + result.lenght + ' shootings for select success');
+      $scope.shootingsWithoutDate = [];
+      $scope.shootingsWithDate = [];
+      angular.forEach(result, function (shooting) {
+        if (shooting.date_id && shooting.date_id > 0) {
+          $log.debug('push to shootingsWithDate');
+          DateService.get(shooting.date_id).then(function (result) {
+            shooting.date = result;
+          }, function (error) {
+            $log.debug('get date failed: ' + error);
+          });
+          $scope.shootingsWithDate.push(shooting);
+        } else {
+          $log.debug('push to shootingsWithoutDate');
+          $scope.shootingsWithoutDate.push(shooting);
+        }
+      });
+    }, function (error) {
+      $log.debug('list shootings for select failed: ' + error);
     });
+  };
+  ModelService.isComplete().then(function (result) {
+    if (result) {
+      $scope.list();
+    } else {
+      $location.path("/model/complete")
+    }
   }, function (error) {
-    $log.debug('list shootings for select failed: ' + error);
+    $log.debug('isComplete failed: ' + error);
   });
 }]);
 
@@ -247,7 +268,7 @@ angular.module('bookingControllers').controller('ModelDeleteCtrl', ['$scope', '$
 
 angular.module('bookingControllers').controller('ModelCompleteCtrl', ['$scope', '$routeParams', '$log', '$location', 'ModelService', function ($scope, $routeParams, $log, $location, ModelService) {
   $log.debug('complete model');
-  ModelService.getCurrent().then(function (result) {
+  ModelService.current().then(function (result) {
     $scope.model = result;
   }, function (error) {
     $log.debug('find current model: ' + error);
@@ -268,7 +289,7 @@ angular.module('bookingControllers').controller('ModelAuthCtrl', ['$scope', '$ro
   AuthenticationService.login({'token': $routeParams.Token}).then(function (result) {
     if (result) {
       $log.debug('auth model success');
-      $location.path('/model/complete');
+      $location.path('/shooting/select');
     } else {
       $log.debug('auth model failed');
       $location.path('/');
@@ -380,7 +401,7 @@ angular.module('bookingControllers').controller('UserCreateCtrl', ['$scope', '$l
     UserService.create($scope.user).then(function (result) {
       $log.debug('create user success with id: ' + result.id);
       $scope.reset();
-      $location.path('/user/show/' + result.id);
+      $location.path('/user/list');
     }, function (error) {
       $log.debug('create user failed: ' + error);
       $scope.messages.push(error);
@@ -410,7 +431,7 @@ angular.module('bookingControllers').controller('UserUpdateCtrl', ['$scope', '$r
   $scope.submit = function () {
     UserService.update($scope.user).then(function (data) {
       $log.debug('update user success');
-      $location.path('/user/show/' + data.id);
+      $location.path('/user/list');
     }, function (error) {
       $log.debug('update user failed: ' + error);
     });

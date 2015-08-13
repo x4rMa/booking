@@ -58,10 +58,21 @@ angular.module('bookingServices').factory('AuthenticationService', ['$log', '$co
 angular.module('bookingServices').factory('AuthorizationService', ['$log', '$q', '$location', '$rootScope', 'AuthenticationService', function ($log, $q, $location, $rootScope, AuthenticationService) {
   var service = {};
 
+  service.hasRoles = function (roles) {
+    var result = false;
+    angular.forEach(roles, function (role) {
+      if (service.hasRole(role)) {
+        $log.debug('has role: ' + role);
+        result = true;
+      }
+    });
+    return result;
+  };
+
   service.hasRole = function (role) {
     var result = false;
     if (AuthenticationService.isLoggedIn()) {
-      if (role == 'administrator' && AuthenticationService.getCurrent().login == 'admin') {
+      if (role == 'administrator' && AuthenticationService.getCurrent().login == 'admin' && AuthenticationService.getCurrent().password) {
         result = true;
       }
       if (role == 'organizer' && AuthenticationService.getCurrent().login && AuthenticationService.getCurrent().password) {
@@ -75,12 +86,14 @@ angular.module('bookingServices').factory('AuthorizationService', ['$log', '$q',
     return result;
   };
 
-  service.checkPermission = function (role) {
+  service.checkPermission = function (roles) {
     var deferred = $q.defer();
-    $log.debug("checkPermission: " + role);
-    if (service.hasRole(role)) {
+    $log.debug("checkPermission: " + roles);
+    if (service.hasRoles(roles)) {
+      $log.debug('permission granted');
       deferred.resolve();
     } else {
+      $log.debug('permission denied');
       //If user does not have required access,
       //we will route the user to unauthorized access page
       $location.path('/login');
@@ -101,9 +114,6 @@ angular.module('bookingServices').factory('Shooting', ['$resource', function ($r
   return $resource('/shooting/:Id', {}, {
     query: {
       method: 'GET', params: {}, isArray: true
-    },
-    current: {
-      url: '/shooting/current', method: 'GET', params: {}, isArray: true
     },
     create: {
       method: 'POST', params: {}
@@ -178,23 +188,14 @@ angular.module('bookingServices').factory('ShootingService', ['$log', '$http', '
     return deferred.promise;
   };
 
-  service.current = function () {
-    $log.debug('current shootings');
-    var deferred = $q.defer();
-    Shooting.current().$promise.then(function (result) {
-      angular.forEach(result, function (shooting) {
-        service.convert(shooting);
-      });
-      deferred.resolve(result);
-    }, function (error) {
-      deferred.reject(error);
-    });
-    return deferred.promise;
-  };
-
   service.book = function (date_id, shooting_id) {
     $log.debug('book shooting with id: ' + shooting_id);
     return $http.post('/shooting/book', service.convert({'id': shooting_id, 'date_id': date_id}));
+  };
+
+  service.refuse = function (shooting_id) {
+    $log.debug('refuse shooting with id: ' + shooting_id);
+    return $http.post('/shooting/refuse', service.convert({'id': shooting_id}));
   };
 
   service.convert = function (data) {
@@ -236,7 +237,7 @@ angular.module('bookingServices').factory('Model', ['$resource', function ($reso
   });
 }]);
 
-angular.module('bookingServices').factory('ModelService', ['$log', 'Model', function ($log, Model) {
+angular.module('bookingServices').factory('ModelService', ['$log', '$q', 'Model', function ($log, $q, Model) {
   var service = {};
 
   service.create = function (data) {
@@ -274,9 +275,26 @@ angular.module('bookingServices').factory('ModelService', ['$log', 'Model', func
     return Model.query({token: token}).$promise;
   };
 
-  service.getCurrent = function () {
+  service.current = function () {
     $log.debug('get current model');
     return Model.current().$promise;
+  };
+
+  service.isComplete = function () {
+    $log.debug('isComplete');
+    var deferred = $q.defer();
+    Model.current().$promise.then(function (result) {
+      if (result.firstname.length > 0 && result.lastname.length > 0 && result.phone.length > 0 && result.email.length > 0) {
+        $log.debug('model is complete');
+        deferred.resolve(true);
+      } else {
+        $log.debug('model is not complete');
+        deferred.resolve(false);
+      }
+    }, function (error) {
+      deferred.reject(error);
+    });
+    return deferred.promise;
   };
 
   service.convert = function (data) {

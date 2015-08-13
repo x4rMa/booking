@@ -29,9 +29,7 @@ import (
 	booking_model_handler_update "github.com/bborbe/booking/model/handler/update"
 	booking_model_service "github.com/bborbe/booking/model/service"
 
-	booking_shooting_handler_book "github.com/bborbe/booking/shooting/handler/book"
 	booking_shooting_handler_create "github.com/bborbe/booking/shooting/handler/create"
-	booking_shooting_handler_current "github.com/bborbe/booking/shooting/handler/current"
 	booking_shooting_handler_delete "github.com/bborbe/booking/shooting/handler/delete"
 	booking_shooting_handler_get "github.com/bborbe/booking/shooting/handler/get"
 	booking_shooting_handler_list "github.com/bborbe/booking/shooting/handler/list"
@@ -54,6 +52,7 @@ import (
 	booking_error_handler "github.com/bborbe/booking/error_handler"
 	booking_handler "github.com/bborbe/booking/handler"
 	booking_permission_check_handler "github.com/bborbe/booking/permission_check_handler"
+	booking_status_handler "github.com/bborbe/booking/status_handler"
 )
 
 var logger = log.DefaultLogger
@@ -95,6 +94,7 @@ func (h *handlerConfiguration) GetHandler() http.Handler {
 	handlerFinder.RegisterHandlerFinder("/shooting", h.createShootingHandlerFinder("/shooting"))
 	handlerFinder.RegisterHandlerFinder("/user", h.createUserHandlerFinder("/user"))
 	handlerFinder.RegisterHandlerFinder("/authentication", h.createAuthenticationHandlerFinder("/authentication"))
+	handlerFinder.RegisterHandler("/status", h.handle_errors(booking_status_handler.New()))
 	return log_handler.NewLogHandler(fallback.NewFallback(handlerFinder, static.NewHandlerStaticContentReturnCode("not found", 404)))
 }
 
@@ -121,7 +121,7 @@ func (h *handlerConfiguration) createModelHandlerFinder(prefix string) handler_f
 	hf.RegisterListHandler(h.handle_errors(h.check_permission(booking_model_handler_list.New(h.modelService.List), booking_authorization.Organizer)))
 	hf.RegisterCreateHandler(h.handle_errors(h.check_permission(booking_model_handler_create.New(h.modelService.Create), booking_authorization.Organizer)))
 	hf.RegisterDeleteHandler(h.handle_errors(h.check_permission(booking_model_handler_delete.New(h.modelService.Delete), booking_authorization.Organizer)))
-	hf.RegisterGetHandler(h.handle_errors(h.check_permission(booking_model_handler_get.New(h.modelService.Get), booking_authorization.Organizer)))
+	hf.RegisterGetHandler(h.handle_errors(h.check_permission(booking_model_handler_get.New(h.modelService.Get, h.authenticationConverter.HttpRequestToAuthentication, h.authorizationService.IsParticipant, h.modelService.GetByToken), booking_authorization.Organizer)))
 	hf.RegisterUpdateHandler(h.handle_errors(h.check_permission(booking_model_handler_update.New(h.modelService.Update), booking_authorization.Organizer)))
 	hf.RegisterPatchHandler(h.handle_errors(h.check_permission(booking_model_handler_update.New(h.modelService.Update), booking_authorization.Organizer)))
 	hf.RegisterHandler("GET", "/current", h.handle_errors(h.check_permission(booking_model_handler_current.New(h.authenticationConverter.HttpRequestToAuthentication, h.modelService.GetByToken), booking_authorization.Participant)))
@@ -131,14 +131,14 @@ func (h *handlerConfiguration) createModelHandlerFinder(prefix string) handler_f
 
 func (h *handlerConfiguration) createShootingHandlerFinder(prefix string) handler_finder.HandlerFinder {
 	hf := rest.New(prefix)
-	hf.RegisterListHandler(h.handle_errors(h.check_permission(booking_shooting_handler_list.New(h.shootingService.List), booking_authorization.Organizer)))
+	hf.RegisterListHandler(h.handle_errors(h.check_permission(booking_shooting_handler_list.New(h.shootingService.List, h.authorizationService.IsParticipant, h.authenticationConverter.HttpRequestToAuthentication, h.modelService.GetByToken, h.shootingService.FindByModelId), booking_authorization.Participant)))
 	hf.RegisterCreateHandler(h.handle_errors(h.check_permission(booking_shooting_handler_create.New(h.shootingService.Create), booking_authorization.Organizer)))
 	hf.RegisterDeleteHandler(h.handle_errors(h.check_permission(booking_shooting_handler_delete.New(h.shootingService.Delete), booking_authorization.Organizer)))
 	hf.RegisterGetHandler(h.handle_errors(h.check_permission(booking_shooting_handler_get.New(h.shootingService.Get), booking_authorization.Participant)))
-	hf.RegisterUpdateHandler(h.handle_errors(h.check_permission(booking_shooting_handler_update.New(h.shootingService.Update), booking_authorization.Organizer)))
-	hf.RegisterPatchHandler(h.handle_errors(h.check_permission(booking_shooting_handler_update.New(h.shootingService.Update), booking_authorization.Organizer)))
-	hf.RegisterHandler("POST", "/book", h.handle_errors(h.check_permission(booking_shooting_handler_book.New(h.authenticationConverter.HttpRequestToAuthentication, h.modelService.GetByToken, h.shootingService.Book, h.shootingService.Get), booking_authorization.Participant)))
-	hf.RegisterHandler("GET", "/current", h.handle_errors(h.check_permission(booking_shooting_handler_current.New(h.authenticationConverter.HttpRequestToAuthentication, h.modelService.GetByToken, h.shootingService.FindByModelId), booking_authorization.Participant)))
+	hf.RegisterUpdateHandler(h.handle_errors(h.check_permission(booking_shooting_handler_update.New(h.authenticationConverter.HttpRequestToAuthentication, h.modelService.GetByToken, h.shootingService.Update, h.shootingService.Get, h.authorizationService.IsParticipant), booking_authorization.Participant)))
+	hf.RegisterPatchHandler(h.handle_errors(h.check_permission(booking_shooting_handler_update.New(h.authenticationConverter.HttpRequestToAuthentication, h.modelService.GetByToken, h.shootingService.Update, h.shootingService.Get, h.authorizationService.IsParticipant), booking_authorization.Participant)))
+	hf.RegisterHandler("POST", "/book", h.handle_errors(h.check_permission(booking_shooting_handler_update.New(h.authenticationConverter.HttpRequestToAuthentication, h.modelService.GetByToken, h.shootingService.Book, h.shootingService.Get, h.authorizationService.IsParticipant), booking_authorization.Participant)))
+	hf.RegisterHandler("POST", "/refuse", h.handle_errors(h.check_permission(booking_shooting_handler_update.New(h.authenticationConverter.HttpRequestToAuthentication, h.modelService.GetByToken, h.shootingService.Refuse, h.shootingService.Get, h.authorizationService.IsParticipant), booking_authorization.Participant)))
 	return hf
 }
 
@@ -154,7 +154,7 @@ func (h *handlerConfiguration) createUserHandlerFinder(prefix string) handler_fi
 }
 
 func (h *handlerConfiguration) check_permission(handler booking_handler.Handler, role booking_authorization.Role) booking_handler.Handler {
-	return booking_permission_check_handler.New(h.authorizationService.HasRole, h.authenticationConverter.HttpRequestToAuthentication, role, handler)
+	return booking_permission_check_handler.New(h.authenticationService.VerifyLogin, h.authorizationService.HasRole, h.authenticationConverter.HttpRequestToAuthentication, role, handler)
 }
 
 func (h *handlerConfiguration) handle_errors(handler booking_handler.Handler) http.Handler {

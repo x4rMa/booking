@@ -4,15 +4,18 @@
   <div class="starter-template">
     <h1>Models</h1>
     <ul ng-show="models.length" class="models">
-      <li ng-repeat="model in models" class="thumbnail model-listing">
-        <p>
-          <a href="#/model/show/{{model.id}}"><b>Firstname:</b> {{model.firstname}} <b>Lastname:</b> {{model.lastname}} <b>Email:</b> {{model.email}} <b>Phone:</b> {{model.phone}}</a>
-          <a href="#/model/update/{{model.id}}">edit</a>
-          <a href="#/model/delete/{{model.id}}" onclick="confirm('delete?')">delete</a>
-        </p>
+      <li ng-repeat="model in models | orderBy:'firstname+lastname'" class="thumbnail model-listing">
+        <div style="float:left">
+          <a href="#/model/show/{{model.id}}">{{model.firstname}} {{model.lastname}}</a>
+        </div>
+        <div style="float:right">
+          <a href="#/model/update/{{model.id}}">bearbeiten</a>
+          <a href="#/model/delete/{{model.id}}">l&ouml;schen</a>
+        </div>
+        <div style="clear:both"></div>
       </li>
     </ul>
-    <div ng-show="!models.length">There is no models avaiable.</div>
+    <div ng-show="!models.length">Kein Model vorhaden.</div>
 
   </div>
 </div>

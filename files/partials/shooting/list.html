@@ -4,42 +4,44 @@
   <div class="starter-template">
     <h1>Shooting mit Termin</h1>
     <ul ng-show="shootingsWithDate.length" class="shootings">
-      <li ng-repeat="shooting in shootingsWithDate" class="thumbnail shooting-listing">
+      <li ng-repeat="shooting in shootingsWithDate | orderBy:'date.start'" class="thumbnail shooting-listing">
         <div style="float: left">
-          <a href="#/shooting/show/{{shooting.id}}">{{shooting.name}}</a>
+          <a href="#/shooting/update/{{shooting.id}}">{{shooting.name}}</a>
         </div>
         <div style="float: right">
-          <a href="#/shooting/update/{{shooting.id}}">edit</a>
-          <a href="#/shooting/delete/{{shooting.id}}" onclick="confirm('sicher?')">delete</a>
+          <a ng-click="refuse(shooting)">absagen</a>
+          <a href="#/shooting/update/{{shooting.id}}">bearbeiten</a>
+          <a href="#/shooting/delete/{{shooting.id}}">l&ouml;schen</a>
         </div>
         <div style="clear: both"></div>
         <div>
-          Termin: <a href="#/shooting/date/{{shooting.date_id}}">{{shooting.date.start}} bis {{shooting.date.end}}</a>
+          Termin: <a href="#/date/update/{{shooting.date_id}}">{{shooting.date.start | date:'yyyy-MM-dd HH:mm'}} bis {{shooting.date.end | date:'yyyy-MM-dd HH:mm'}}</a>
         </div>
         <div>
-          Model: <a href="#/shooting/model/{{shooting.model_id}}">{{shooting.model.firstname}} {{shooting.model.lastname}}</a>
+          Model: <a href="#/model/show/{{shooting.model_id}}">{{shooting.model.firstname}} {{shooting.model.lastname}}</a>
         </div>
       </li>
     </ul>
-    <div ng-show="!shootingsWithDate.length">There is no shooting avaiable.</div>
+    <div ng-show="!shootingsWithDate.length">Keine Shootings mit Termin vorhanden.</div>
 
     <h1>Shooting ohne Termin</h1>
     <ul ng-show="shootingsWithoutDate.length" class="shootings">
-      <li ng-repeat="shooting in shootingsWithoutDate" class="thumbnail shooting-listing">
+      <li ng-repeat="shooting in shootingsWithoutDate | orderBy:'name'" class="thumbnail shooting-listing">
         <div style="float: left">
           <a href="#/shooting/show/{{shooting.id}}">{{shooting.name}}</a>
         </div>
         <div style="float: right">
-          <a href="#/shooting/update/{{shooting.id}}">edit</a>
-          <a href="#/shooting/delete/{{shooting.id}}" onclick="confirm('sicher?')">delete</a>
+          <a href="#/date/select/{{shooting.id}}">buchen</a>
+          <a href="#/shooting/update/{{shooting.id}}">bearbeiten</a>
+          <a href="#/shooting/delete/{{shooting.id}}">l&ouml;schen</a>
         </div>
         <div style="clear: both"></div>
         <div>
-          Model: <a href="#/shooting/model/{{shooting.model_id}}">{{shooting.model.firstname}} {{shooting.model.lastname}}</a>
+          Model: <a href="#/model/show/{{shooting.model_id}}">{{shooting.model.firstname}} {{shooting.model.lastname}}</a>
         </div>
       </li>
     </ul>
-    <div ng-show="!shootingsWithoutDate.length">There is no shooting avaiable.</div>
+    <div ng-show="!shootingsWithoutDate.length">Keine Shootings ohne Termin vorhanden.</div>
 
 
   </div>

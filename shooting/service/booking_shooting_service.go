@@ -2,6 +2,7 @@ package service
 
 import (
 	booking_booked_event "github.com/bborbe/booking/booked_event"
+	"github.com/bborbe/booking/refused_event"
 	booking_shooting "github.com/bborbe/booking/shooting"
 	booking_shooting_storage "github.com/bborbe/booking/shooting/storage"
 	"github.com/bborbe/eventbus"
@@ -21,6 +22,7 @@ type Service interface {
 	Delete(id int) (*booking_shooting.Shooting, error)
 	Update(d *booking_shooting.Shooting) (*booking_shooting.Shooting, error)
 	Book(d *booking_shooting.Shooting) (*booking_shooting.Shooting, error)
+	Refuse(d *booking_shooting.Shooting) (*booking_shooting.Shooting, error)
 }
 
 type shootingService struct {
@@ -57,6 +59,21 @@ func (s *shootingService) Book(d *booking_shooting.Shooting) (*booking_shooting.
 		return nil, err
 	}
 	s.eventbus.Publish(booking_booked_event.New(*result))
+	return result, nil
+}
+
+func (s *shootingService) Refuse(d *booking_shooting.Shooting) (*booking_shooting.Shooting, error) {
+	logger.Debug("refuse")
+	obj, err := s.storage.Get(d.Id)
+	if err != nil {
+		return nil, err
+	}
+	obj.DateId = 0
+	result, err := s.storage.Update(obj)
+	if err != nil {
+		return nil, err
+	}
+	s.eventbus.Publish(refused_event.New(*result))
 	return result, nil
 }
 
