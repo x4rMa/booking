@@ -28,7 +28,7 @@
     <ul ng-show="shootingsWithoutDate.length" class="shootings">
       <li ng-repeat="shooting in shootingsWithoutDate | orderBy:'name'" class="thumbnail shooting-listing">
         <div style="float: left">
-          <a href="#/shooting/show/{{shooting.id}}">{{shooting.name}}</a>
+          <a href="#/shooting/update/{{shooting.id}}">{{shooting.name}}</a>
         </div>
         <div style="float: right">
           <a href="#/date/select/{{shooting.id}}">buchen</a>
