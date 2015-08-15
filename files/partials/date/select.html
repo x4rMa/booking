@@ -1,4 +1,4 @@
-<div ng-include src="'partials/navi.html'"></div>
+<div ng-include src="'partials/navi_top.html'"></div>
 <div class="container">
 
   <div class="starter-template">
@@ -11,7 +11,7 @@
           {{date.start | date:'yyyy-MM-dd HH:mm'}} bis {{date.end | date:'yyyy-MM-dd HH:mm'}}
         </div>
         <div style="float:right">
-          <a ng-click="book(date.id)">jetzt buchen</a>
+          <a ng-click="book(date.id)" confirmation-needed="sicher?">jetzt buchen</a>
         </div>
         <div style="clear:both"></div>
       </li>
@@ -20,3 +20,4 @@
 
   </div>
 </div>
+<div ng-include src="'partials/navi_bottom.html'"></div>

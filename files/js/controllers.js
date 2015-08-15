@@ -30,12 +30,15 @@ angular.module('bookingControllers').controller('LogoutCtrl', ['$scope', '$log',
   $location.path('/');
 }]);
 
-angular.module('bookingControllers').controller('NaviCtrl', ['$scope', '$log', 'AuthenticationService', 'AuthorizationService', function ($scope, $log, AuthenticationService, AuthorizationService) {
+angular.module('bookingControllers').controller('NaviTopCtrl', ['$scope', '$log', 'AuthenticationService', 'AuthorizationService', function ($scope, $log, AuthenticationService, AuthorizationService) {
   $log.debug('navi');
   $scope.isAdministrator = AuthorizationService.hasRole('administrator');
   $scope.isOrganizer = AuthorizationService.hasRole('organizer');
   $scope.isParticipant = AuthorizationService.hasRole('participant');
   $scope.isLoggedIn = AuthenticationService.isLoggedIn();
+}]);
+
+angular.module('bookingControllers').controller('NaviBottomCtrl', ['$scope', function ($scope) {
 }]);
 
 angular.module('bookingControllers').controller('ShootingCreateCtrl', ['$scope', '$log', '$location', 'ShootingService', 'ModelService', 'DateService', function ($scope, $log, $location, ShootingService, ModelService, DateService) {
@@ -149,18 +152,15 @@ angular.module('bookingControllers').controller('ShootingListCtrl', ['$scope', '
       $log.debug('list shootings failed: ' + error);
     });
   };
+  $scope.delete = function (shooting_id) {
+    ShootingService.delete(shooting_id).then(function (result) {
+      $log.debug('shooting deleted');
+      $scope.list();
+    }, function (error) {
+      $log.debug('delete shooting failed: ' + error);
+    });
+  };
   $scope.list();
-}]);
-
-angular.module('bookingControllers').controller('ShootingDeleteCtrl', ['$scope', '$routeParams', '$log', '$location', 'ShootingService', function ($scope, $routeParams, $log, $location, ShootingService) {
-  $log.debug('delete shooting with id: ' + $routeParams.Id);
-  ShootingService.delete($routeParams.Id).then(function (result) {
-    $log.debug('shooting deleted');
-    $location.path('/shooting/list');
-  }, function (error) {
-    $log.debug('delete shooting failed: ' + error);
-    $location.path('/shooting/list');
-  });
 }]);
 
 angular.module('bookingControllers').controller('ShootingSelectCtrl', ['$scope', '$log', '$location', 'ShootingService', 'DateService', 'ModelService', function ($scope, $log, $location, ShootingService, DateService, ModelService) {
@@ -199,12 +199,23 @@ angular.module('bookingControllers').controller('ShootingSelectCtrl', ['$scope',
 }]);
 
 angular.module('bookingControllers').controller('ModelListCtrl', ['$scope', '$log', 'ModelService', function ($scope, $log, ModelService) {
-  ModelService.list().then(function (result) {
-    $log.debug('list models success');
-    $scope.models = result;
-  }, function (error) {
-    $log.debug('list models failed: ' + error);
-  });
+  $scope.list = function () {
+    ModelService.list().then(function (result) {
+      $log.debug('list models success');
+      $scope.models = result;
+    }, function (error) {
+      $log.debug('list models failed: ' + error);
+    });
+  };
+  $scope.delete = function (model_id) {
+    ModelService.delete(model_id).then(function (result) {
+      $log.debug('delete model success');
+      $scope.list();
+    }, function (error) {
+      $log.debug('delete model failed: ' + error);
+    });
+  };
+  $scope.list();
 }]);
 
 angular.module('bookingControllers').controller('ModelCreateCtrl', ['$scope', '$log', '$location', 'ModelService', function ($scope, $log, $location, ModelService) {
@@ -227,9 +238,13 @@ angular.module('bookingControllers').controller('ModelCreateCtrl', ['$scope', '$
 }]);
 
 angular.module('bookingControllers').controller('ModelShowCtrl', ['$scope', '$routeParams', '$log', '$location', 'ModelService', function ($scope, $routeParams, $log, $location, ModelService) {
+  $scope.buildLink = function (token) {
+    var pos = $location.absUrl().indexOf('#');
+    var url = $location.absUrl().substring(0, pos);
+    return url + '#/model/auth/' + token;
+  };
   $log.debug('show model with id: ' + $routeParams.Id);
   ModelService.get($routeParams.Id).then(function (result) {
-    $scope.link = $location.protocol() + '://' + $location.host() + ':' + $location.port() + '/#/model/auth/' + result.token;
     $scope.model = result;
   }, function (error) {
     $log.debug('model not found: ' + error);
@@ -253,17 +268,6 @@ angular.module('bookingControllers').controller('ModelUpdateCtrl', ['$scope', '$
       $log.debug('update model failed: ' + error);
     });
   };
-}]);
-
-angular.module('bookingControllers').controller('ModelDeleteCtrl', ['$scope', '$routeParams', '$log', '$location', 'ModelService', function ($scope, $routeParams, $log, $location, ModelService) {
-  $log.debug('delete model with id: ' + $routeParams.Id);
-  ModelService.delete($routeParams.Id).then(function (result) {
-    $log.debug('delete model success');
-    $location.path('/model/list');
-  }, function (error) {
-    $log.debug('delete model failed: ' + error);
-    $location.path('/model/list');
-  });
 }]);
 
 angular.module('bookingControllers').controller('ModelCompleteCtrl', ['$scope', '$routeParams', '$log', '$location', 'ModelService', function ($scope, $routeParams, $log, $location, ModelService) {
@@ -338,15 +342,26 @@ angular.module('bookingControllers').controller('DateUpdateCtrl', ['$scope', '$r
 }]);
 
 angular.module('bookingControllers').controller('DateListCtrl', ['$scope', '$log', 'DateService', function ($scope, $log, DateService) {
-  DateService.list().then(function (result) {
-    $log.debug('list dates success');
-    $scope.dates = result;
-  }, function (error) {
-    $log.debug('list dates failed: ' + error);
-  });
+  $scope.list = function () {
+    DateService.list().then(function (result) {
+      $log.debug('list dates success');
+      $scope.dates = result;
+    }, function (error) {
+      $log.debug('list dates failed: ' + error);
+    });
+  };
+  $scope.delete = function (date_id) {
+    DateService.delete(date_id).then(function (result) {
+      $log.debug('delete date sucess');
+      $scope.list();
+    }, function (error) {
+      $log.debug('delete date failed: ' + error);
+    });
+  };
+  $scope.list();
 }]);
 
-angular.module('bookingControllers').controller('DateSelectCtrl', ['$scope', '$routeParams', '$log', '$location', 'ShootingService', 'DateService', function ($scope, $routeParams, $log, $location, ShootingService, DateService) {
+angular.module('bookingControllers').controller('DateSelectCtrl', ['$scope', '$routeParams', '$log', '$location', 'ShootingService', 'DateService','AuthorizationService', function ($scope, $routeParams, $log, $location, ShootingService, DateService,AuthorizationService) {
   $log.debug('select date for shooting with id: ' + $routeParams.ShootingId);
   ShootingService.get($routeParams.ShootingId).then(function (result) {
     $log.debug('get shooting success');
@@ -364,31 +379,35 @@ angular.module('bookingControllers').controller('DateSelectCtrl', ['$scope', '$r
     $log.debug('book ' + date_id + ' for shooting ' + $routeParams.ShootingId);
     ShootingService.book(date_id, $routeParams.ShootingId).then(function (result) {
       $log.debug('book date for shooting success');
-      $location.path('/shooting/select');
+      if (AuthorizationService.hasRole('participant')) {
+        $location.path('/shooting/select');
+      } else {
+        $location.path('/shooting/list');
+      }
     }, function (error) {
       $log.debug('book date for shooting failed: ' + error);
     });
   };
 }]);
 
-angular.module('bookingControllers').controller('DateDeleteCtrl', ['$scope', '$routeParams', '$log', '$location', 'DateService', function ($scope, $routeParams, $log, $location, DateService) {
-  $log.debug('delete date with id: ' + $routeParams.Id);
-  DateService.delete($routeParams.Id).then(function (result) {
-    $log.debug('delete date sucess');
-    $location.path('/date/list');
-  }, function (error) {
-    $log.debug('delete date failed: ' + error);
-    $location.path('/date/list');
-  });
-}]);
-
 angular.module('bookingControllers').controller('UserListCtrl', ['$scope', '$log', 'UserService', function ($scope, $log, UserService) {
-  UserService.list().then(function (result) {
-    $log.debug('list users success');
-    $scope.users = result;
-  }, function (error) {
-    $log.debug('list users failed: ' + error);
-  });
+  $scope.list = function () {
+    UserService.list().then(function (result) {
+      $log.debug('list users success');
+      $scope.users = result;
+    }, function (error) {
+      $log.debug('list users failed: ' + error);
+    });
+  };
+  $scope.delete = function (user_id) {
+    UserService.delete(user_id).then(function (result) {
+      $log.debug('delete user success');
+      $scope.list();
+    }, function (error) {
+      $log.debug('delete user failed: ' + error);
+    });
+  };
+  $scope.list();
 }]);
 
 angular.module('bookingControllers').controller('UserCreateCtrl', ['$scope', '$log', '$location', 'UserService', function ($scope, $log, $location, UserService) {
@@ -436,15 +455,4 @@ angular.module('bookingControllers').controller('UserUpdateCtrl', ['$scope', '$r
       $log.debug('update user failed: ' + error);
     });
   };
-}]);
-
-angular.module('bookingControllers').controller('UserDeleteCtrl', ['$scope', '$routeParams', '$log', '$location', 'UserService', function ($scope, $routeParams, $log, $location, UserService) {
-  $log.debug('delete user with id: ' + $routeParams.Id);
-  UserService.delete($routeParams.Id).then(function (result) {
-    $log.debug('delete user success');
-    $location.path('/user/list');
-  }, function (error) {
-    $log.debug('delete user failed: ' + error);
-    $location.path('/user/list');
-  });
 }]);

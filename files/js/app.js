@@ -55,15 +55,6 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
         },
       }
     }).
-    when('/user/delete/:Id', {
-      template: '',
-      controller: 'UserDeleteCtrl',
-      resolve: {
-        permission: function (AuthorizationService, $route) {
-          return AuthorizationService.checkPermission(['administrator']);
-        },
-      }
-    }).
     // shooting
     when('/shooting/create', {
       templateUrl: 'partials/shooting/form.html',
@@ -98,15 +89,6 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
       resolve: {
         permission: function (AuthorizationService, $route) {
           return AuthorizationService.checkPermission(['organizer', 'participant']);
-        },
-      }
-    }).
-    when('/shooting/delete/:Id', {
-      template: '',
-      controller: 'ShootingDeleteCtrl',
-      resolve: {
-        permission: function (AuthorizationService, $route) {
-          return AuthorizationService.checkPermission(['organizer']);
         },
       }
     }).
@@ -165,15 +147,6 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
         },
       }
     }).
-    when('/model/delete/:Id', {
-      template: '',
-      controller: 'ModelDeleteCtrl',
-      resolve: {
-        permission: function (AuthorizationService, $route) {
-          return AuthorizationService.checkPermission(['organizer']);
-        },
-      }
-    }).
     when('/model/auth/:Token', {
       template: '',
       controller: 'ModelAuthCtrl'
@@ -200,15 +173,6 @@ angular.module('bookingApp').config(['$routeProvider', function ($routeProvider)
     when('/date/list', {
       templateUrl: 'partials/date/list.html',
       controller: 'DateListCtrl',
-      resolve: {
-        permission: function (AuthorizationService, $route) {
-          return AuthorizationService.checkPermission(['organizer']);
-        },
-      }
-    }).
-    when('/date/delete/:Id', {
-      template: '',
-      controller: 'DateDeleteCtrl',
       resolve: {
         permission: function (AuthorizationService, $route) {
           return AuthorizationService.checkPermission(['organizer']);

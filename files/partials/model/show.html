@@ -1,14 +1,15 @@
-<div ng-include src="'partials/navi.html'"></div>
+<div ng-include src="'partials/navi_top.html'"></div>
 <div class="container">
   <div class="starter-template">
     <h1>{{model.firstname}} {{model.lastname}}</h1>
 
     <div>Email: {{model.email}}</div>
     <div>Telefon: {{model.phone}}</div>
-    <pre>{{link}}</pre>
+    <pre>{{buildLink(model.token)}}</pre>
     <div>
       <a href="#/model/update/{{model.id}}">bearbeiten</a>
     </div>
   </div>
 </div>
 
+<div ng-include src="'partials/navi_bottom.html'"></div>

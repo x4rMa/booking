@@ -1,4 +1,4 @@
-<div ng-include src="'partials/navi.html'"></div>
+<div ng-include src="'partials/navi_top.html'"></div>
 <div class="container">
 
   <div class="starter-template">
@@ -9,9 +9,9 @@
           <a href="#/shooting/update/{{shooting.id}}">{{shooting.name}}</a>
         </div>
         <div style="float: right">
-          <a ng-click="refuse(shooting)">absagen</a>
+          <a ng-click="refuse(shooting)" confirmation-needed="sicher?">absagen</a>
           <a href="#/shooting/update/{{shooting.id}}">bearbeiten</a>
-          <a href="#/shooting/delete/{{shooting.id}}">l&ouml;schen</a>
+          <a ng-click="delete(shooting.id)" confirmation-needed="wirklich l&ouml;schen?">l&ouml;schen</a>
         </div>
         <div style="clear: both"></div>
         <div>
@@ -33,7 +33,7 @@
         <div style="float: right">
           <a href="#/date/select/{{shooting.id}}">buchen</a>
           <a href="#/shooting/update/{{shooting.id}}">bearbeiten</a>
-          <a href="#/shooting/delete/{{shooting.id}}">l&ouml;schen</a>
+          <a ng-click="delete(shooting.id)" confirmation-needed="wirklich l&ouml;schen?">l&ouml;schen</a>
         </div>
         <div style="clear: both"></div>
         <div>
@@ -46,3 +46,4 @@
 
   </div>
 </div>
+<div ng-include src="'partials/navi_bottom.html'"></div>
